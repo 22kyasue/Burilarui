@@ -11,7 +11,10 @@
       "Bash(npm run dev:*)",
       "Bash(npm install)",
       "Bash(python:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm run build:*)",
+      "Bash(python3:*)",
+      "Bash(# Check if server is running pgrep -f \"\"burilar_api.py\"\" && echo \"\"Server running\"\" || echo \"\"Server NOT running\"\" # Test the login API directly echo \"\"\"\" echo \"\"Testing API...\"\" curl -s -X POST http://localhost:5050/api/auth/login \\\\ -H \"\"Content-Type: application/json\"\" \\\\ -d ''{\"\"email\"\": \"\"test@example.com\"\", \"\"password\"\": \"\"password123\"\"}'' 2>&1)"
     ]
   }
 }

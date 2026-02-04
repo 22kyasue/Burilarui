@@ -23,7 +23,10 @@ import { Header } from "./components/Header";
 import { SettingsModal } from "./components/SettingsModal";
 import { IntegrationScreen } from "./components/IntegrationScreen";
 import { TrackingSettingsScreen } from "./components/TrackingSettingsScreen";
+import { LoginModal } from "./components/LoginModal";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { Menu, Sparkles, Bell } from "lucide-react";
+import * as chatsApi from "./api/chats";
 
 interface Message {
   id: string;
@@ -48,8 +51,10 @@ interface Chat {
   notificationGranularity?: "update" | "prompt";
 }
 
-export default function App() {
+function AppContent() {
+  const { user, isAuthenticated, isLoading: authLoading, login, register, loginWithGoogle, loginWithApple, logout, error: authError, clearError } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [shouldScrollToHistory, setShouldScrollToHistory] = useState(false);
   const [currentMode, setCurrentMode] = useState<"default" | "pro">("default");
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -119,53 +124,63 @@ export default function App() {
   // Initialize empty - will be populated from API
   const [chats, setChats] = useState<Chat[]>([]);
 
-  // Fetch tracking data from backend on mount
+  // Fetch chats from backend when authenticated
   useEffect(() => {
-    const fetchTrackingData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/tracking/list');
-        const data = await response.json();
+        if (isAuthenticated) {
+          // Fetch user's chats from API
+          const userChats = await chatsApi.getChats();
+          setChats(userChats);
+          if (userChats.length > 0) {
+            setCurrentChatId(userChats[0].id);
+          }
+        } else {
+          // For non-authenticated users, fetch tracking data (legacy behavior)
+          const response = await fetch('/api/tracking/list');
+          const data = await response.json();
 
-        if (data.plans && Array.isArray(data.plans)) {
-          // Transform backend tracking plans to Chat format
-          const transformedChats: Chat[] = data.plans.map((plan: any) => ({
-            id: plan.id,
-            title: plan.topic || plan.original_query || 'Untitled',
-            messages: plan.last_search_result ? [
-              {
-                id: `${plan.id}-query`,
-                content: plan.original_query || plan.topic,
-                role: 'user' as const,
-                timestamp: new Date(plan.created_at),
-              },
-              {
-                id: `${plan.id}-result`,
-                content: plan.last_search_result,
-                role: 'assistant' as const,
-                timestamp: plan.last_search_time ? new Date(plan.last_search_time) : new Date(plan.created_at),
-                sources: 6,
-              }
-            ] : [],
-            updatedAt: plan.last_search_time ? new Date(plan.last_search_time) : new Date(plan.created_at),
-            pinned: false,
-            isTracking: plan.status === 'tracking',
-            trackingActive: plan.active,
-            updateCount: plan.updates?.length || 0,
-            trackingFrequency: `${plan.frequency_hours}時間ごと`,
-          }));
+          if (data.plans && Array.isArray(data.plans)) {
+            // Transform backend tracking plans to Chat format
+            const transformedChats: Chat[] = data.plans.map((plan: any) => ({
+              id: plan.id,
+              title: plan.topic || plan.original_query || 'Untitled',
+              messages: plan.last_search_result ? [
+                {
+                  id: `${plan.id}-query`,
+                  content: plan.original_query || plan.topic,
+                  role: 'user' as const,
+                  timestamp: new Date(plan.created_at),
+                },
+                {
+                  id: `${plan.id}-result`,
+                  content: plan.last_search_result,
+                  role: 'assistant' as const,
+                  timestamp: plan.last_search_time ? new Date(plan.last_search_time) : new Date(plan.created_at),
+                  sources: 6,
+                }
+              ] : [],
+              updatedAt: plan.last_search_time ? new Date(plan.last_search_time) : new Date(plan.created_at),
+              pinned: false,
+              isTracking: plan.status === 'tracking',
+              trackingActive: plan.active,
+              updateCount: plan.updates?.length || 0,
+              trackingFrequency: `${plan.frequency_hours}時間ごと`,
+            }));
 
-          setChats(transformedChats);
-          if (transformedChats.length > 0) {
-            setCurrentChatId(transformedChats[0].id);
+            setChats(transformedChats);
+            if (transformedChats.length > 0) {
+              setCurrentChatId(transformedChats[0].id);
+            }
           }
         }
       } catch (error) {
-        console.error('Failed to fetch tracking data:', error);
+        console.error('Failed to fetch data:', error);
       }
     };
 
-    fetchTrackingData();
-  }, []);
+    fetchData();
+  }, [isAuthenticated]);
 
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
 
@@ -174,7 +189,7 @@ export default function App() {
     ? chats.find((chat) => chat.id === currentChatId)
     : null;
 
-  const handleSendMessage = (content: string) => {
+  const handleSendMessage = async (content: string) => {
     if (!content.trim() || !currentChatId) return;
 
     const userMessage: Message = {
@@ -184,19 +199,32 @@ export default function App() {
       timestamp: new Date(),
     };
 
+    const chat = chats.find((c) => c.id === currentChatId);
+    const updatedMessages = chat ? [...chat.messages, userMessage] : [userMessage];
+    const newTitle = chat && chat.messages.length === 0 ? content.slice(0, 30) : chat?.title;
+
+    // Update via API if authenticated
+    if (isAuthenticated) {
+      try {
+        await chatsApi.updateChat(currentChatId, {
+          messages: updatedMessages,
+          title: newTitle,
+        });
+      } catch (error) {
+        console.error('Failed to update chat:', error);
+      }
+    }
+
     setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === currentChatId
+      prevChats.map((c) =>
+        c.id === currentChatId
           ? {
-              ...chat,
-              messages: [...chat.messages, userMessage],
+              ...c,
+              messages: updatedMessages,
               updatedAt: new Date(),
-              title:
-                chat.messages.length === 0
-                  ? content.slice(0, 30)
-                  : chat.title,
+              title: newTitle || c.title,
             }
-          : chat,
+          : c,
       ),
     );
   };
@@ -331,7 +359,16 @@ https://research.example.org/paper`;
     }
   };
 
-  const handleDeleteChat = (chatId: string) => {
+  const handleDeleteChat = async (chatId: string) => {
+    // Delete from API if authenticated
+    if (isAuthenticated) {
+      try {
+        await chatsApi.deleteChat(chatId);
+      } catch (error) {
+        console.error('Failed to delete chat:', error);
+      }
+    }
+
     setChats((prevChats) =>
       prevChats.filter((chat) => chat.id !== chatId),
     );
@@ -345,12 +382,26 @@ https://research.example.org/paper`;
     }
   };
 
-  const handleTogglePin = (chatId: string) => {
+  const handleTogglePin = async (chatId: string) => {
+    const chat = chats.find((c) => c.id === chatId);
+    if (!chat) return;
+
+    const newPinned = !chat.pinned;
+
+    // Update via API if authenticated
+    if (isAuthenticated) {
+      try {
+        await chatsApi.updateChat(chatId, { pinned: newPinned });
+      } catch (error) {
+        console.error('Failed to toggle pin:', error);
+      }
+    }
+
     setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === chatId
-          ? { ...chat, pinned: !chat.pinned }
-          : chat,
+      prevChats.map((c) =>
+        c.id === chatId
+          ? { ...c, pinned: newPinned }
+          : c,
       ),
     );
   };
@@ -520,6 +571,12 @@ https://research.example.org/paper`;
           onNotificationClick={() => setIsUpdatePanelOpen(true)}
           onProClick={() => {}} // 無効化
           theme={theme}
+          user={user}
+          isAuthenticated={isAuthenticated}
+          onLoginClick={() => setIsLoginModalOpen(true)}
+          onLogout={logout}
+          onProfileSettings={() => setIsSettingsModalOpen(true)}
+          onPlanManagement={() => setCurrentView("planManagement")}
         />
 
         <AnimatePresence mode="wait">
@@ -551,7 +608,6 @@ https://research.example.org/paper`;
                 theme={theme}
                 onSendMessage={async (message) => {
                   // 新しいチャットを作成
-                  const newChatId = Date.now().toString();
                   const userMessage: Message = {
                     id: Date.now().toString(),
                     content: message,
@@ -559,12 +615,27 @@ https://research.example.org/paper`;
                     timestamp: new Date(),
                   };
 
-                  const newChat: Chat = {
+                  let newChatId = Date.now().toString();
+                  let newChat: Chat = {
                     id: newChatId,
                     title: message.slice(0, 30),
                     messages: [userMessage],
                     updatedAt: new Date(),
                   };
+
+                  // Save to API if authenticated
+                  if (isAuthenticated) {
+                    try {
+                      const savedChat = await chatsApi.createChat({
+                        title: message.slice(0, 30),
+                        messages: [userMessage],
+                      });
+                      newChat = savedChat;
+                      newChatId = savedChat.id;
+                    } catch (error) {
+                      console.error('Failed to save chat:', error);
+                    }
+                  }
 
                   setChats((prev) => [newChat, ...prev]);
                   setCurrentChatId(newChatId);
@@ -602,12 +673,26 @@ https://research.example.org/paper`;
                       sources: data.search_result ? 6 : 0,
                     };
 
+                    // Update chat with assistant message
+                    const updatedMessages = [...newChat.messages, assistantMessage];
+
+                    // Save to API if authenticated
+                    if (isAuthenticated) {
+                      try {
+                        await chatsApi.updateChat(newChatId, {
+                          messages: updatedMessages,
+                        });
+                      } catch (error) {
+                        console.error('Failed to update chat:', error);
+                      }
+                    }
+
                     setChats((prevChats) =>
                       prevChats.map((chat) =>
                         chat.id === newChatId
                           ? {
                               ...chat,
-                              messages: [...chat.messages, assistantMessage],
+                              messages: updatedMessages,
                               updatedAt: new Date(),
                             }
                           : chat,
@@ -1116,6 +1201,29 @@ https://research.example.org/paper`;
         theme={theme}
         onThemeChange={(newTheme) => setTheme(newTheme)}
       />
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => {
+          setIsLoginModalOpen(false);
+          clearError();
+        }}
+        onLogin={login}
+        onRegister={register}
+        onGoogleLogin={loginWithGoogle}
+        onAppleLogin={loginWithApple}
+        error={authError}
+        isLoading={authLoading}
+      />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

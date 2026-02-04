@@ -13,8 +13,11 @@ app = Flask(__name__, static_folder='build', static_url_path='')
 CORS(app)
 
 # Register API blueprints
-from backend.routes import notifications_bp
+from backend.routes import notifications_bp, auth_bp, chats_bp
+from backend.middleware.auth import auth_optional, auth_required, get_current_user
 app.register_blueprint(notifications_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(chats_bp)
 
 # Perplexity API configuration
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY", "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")  # Set via environment variable or replace placeholder
@@ -64,8 +67,9 @@ def call_perplexity(messages: List[Dict], model: str = "sonar"):
 
 class TrackingPlan:
     """Represents a tracking plan for a specific topic."""
-    def __init__(self, topic: str, objective: str, frequency_hours: int, keywords: List[str], status: str = "pending"):
+    def __init__(self, topic: str, objective: str, frequency_hours: int, keywords: List[str], status: str = "pending", user_id: str = None):
         self.id = str(int(time.time() * 1000))
+        self.user_id = user_id  # Owner of this tracking plan
         self.topic = topic
         self.objective = objective
         self.frequency_hours = frequency_hours
@@ -79,10 +83,11 @@ class TrackingPlan:
         self.status = status  # "pending", "tracking", "completed", "needs_clarification"
         self.original_query = ""
         self.clarification_info = None
-    
+
     def to_dict(self) -> Dict:
         return {
             'id': self.id,
+            'user_id': self.user_id,
             'topic': self.topic,
             'objective': self.objective,
             'frequency_hours': self.frequency_hours,
@@ -371,7 +376,8 @@ If there are no significant changes, respond with only "NO_CHANGE".
                             objective=plan_dict['objective'],
                             frequency_hours=plan_dict['frequency_hours'],
                             keywords=plan_dict['keywords'],
-                            status=plan_dict.get('status', 'tracking')
+                            status=plan_dict.get('status', 'tracking'),
+                            user_id=plan_dict.get('user_id')
                         )
                         plan.id = plan_dict['id']
                         plan.last_search_result = plan_dict['last_search_result']
@@ -379,17 +385,21 @@ If there are no significant changes, respond with only "NO_CHANGE".
                         plan.updates = plan_dict.get('updates', [])
                         plan.original_query = plan_dict.get('original_query', '')
                         plan.clarification_info = plan_dict.get('clarification_info')
-                        
+
                         if plan_dict['last_search_time']:
                             plan.last_search_time = datetime.fromisoformat(plan_dict['last_search_time'])
                         if plan_dict['next_search_time']:
                             plan.next_search_time = datetime.fromisoformat(plan_dict['next_search_time'])
                         if plan_dict['created_at']:
                             plan.created_at = datetime.fromisoformat(plan_dict['created_at'])
-                        
+
                         self.tracking_plans[plan_id] = plan
             except Exception as e:
                 print(f"Error loading tracking plans: {str(e)}")
+
+    def get_user_plans(self, user_id: str) -> List[TrackingPlan]:
+        """Get all tracking plans for a specific user."""
+        return [plan for plan in self.tracking_plans.values() if plan.user_id == user_id]
 
 # Initialize tracker
 tracker = BurilarTracker()
@@ -409,17 +419,21 @@ def serve_static(path):
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/api/search', methods=['POST'])
+@auth_optional
 def initial_search():
     """Perform initial search and assess topic status."""
+    user = get_current_user()
+    user_id = user['id'] if user else None
+
     data = request.json
     query = data.get('query')
-    
+
     if not query:
         return jsonify({'error': 'Query is required'}), 400
-    
+
     # First, check if query needs clarification
     clarification_check = tracker.check_needs_clarification(query)
-    
+
     if clarification_check.get('needs_clarification'):
         # Save this as a plan with "needs_clarification" status
         plan = TrackingPlan(
@@ -427,7 +441,8 @@ def initial_search():
             objective="Needs clarification",
             frequency_hours=12,
             keywords=[],
-            status="needs_clarification"
+            status="needs_clarification",
+            user_id=user_id
         )
         plan.original_query = query
         plan.clarification_info = {
@@ -436,7 +451,7 @@ def initial_search():
         }
         tracker.tracking_plans[plan.id] = plan
         tracker.save_tracking_plans()
-        
+
         return jsonify({
             'query': query,
             'plan_id': plan.id,
@@ -444,13 +459,13 @@ def initial_search():
             'reason': clarification_check.get('reason', 'Query is ambiguous'),
             'clarification_questions': clarification_check.get('clarification_questions', [])
         })
-    
+
     # Perform initial search
     search_result = tracker.search_with_ai(query)
-    
+
     # Assess status
     status_info = tracker.assess_topic_status(search_result)
-    
+
     response = {
         'query': query,
         'needs_clarification': False,
@@ -458,10 +473,11 @@ def initial_search():
         'status': status_info['status'],
         'status_explanation': status_info['explanation']
     }
-    
+
     # Create and save plan regardless of status
     if status_info['status'] == 'in_progress':
         plan = tracker.generate_tracking_plan(query, search_result)
+        plan.user_id = user_id
         plan.last_search_result = search_result
         plan.status = "pending"  # Waiting for user to start tracking
         plan.original_query = query
@@ -479,76 +495,124 @@ def initial_search():
             objective="Query resolved",
             frequency_hours=12,
             keywords=[],
-            status="completed"
+            status="completed",
+            user_id=user_id
         )
         plan.last_search_result = search_result
         plan.original_query = query
         response['plan_id'] = plan.id
-    
+
     # Store the plan
     tracker.tracking_plans[plan.id] = plan
     tracker.save_tracking_plans()
-    
+
     return jsonify(response)
 
 @app.route('/api/tracking/start', methods=['POST'])
+@auth_optional
 def start_tracking():
     """Start tracking a plan."""
+    user = get_current_user()
+    user_id = user['id'] if user else None
+
     data = request.json
     plan_id = data.get('plan_id')
     frequency_hours = data.get('frequency_hours')
-    
+
     if not plan_id or plan_id not in tracker.tracking_plans:
         return jsonify({'error': 'Invalid plan_id'}), 400
-    
+
     plan = tracker.tracking_plans[plan_id]
-    
+
+    # Check ownership
+    if plan.user_id and plan.user_id != user_id:
+        return jsonify({'error': 'Plan not found'}), 404
+
     # Update frequency if provided
     if frequency_hours:
         plan.frequency_hours = frequency_hours
-    
+
     tracker.start_tracking(plan)
-    
+
     return jsonify({
         'message': 'Tracking started',
         'plan': plan.to_dict()
     })
 
 @app.route('/api/tracking/list', methods=['GET'])
+@auth_optional
 def list_tracking():
-    """List all tracking plans (active and inactive)."""
-    plans = [plan.to_dict() for plan in tracker.tracking_plans.values()]
+    """List all tracking plans for the current user."""
+    user = get_current_user()
+    user_id = user['id'] if user else None
+
+    # Filter plans by user_id (or show all if no user)
+    if user_id:
+        plans = [plan.to_dict() for plan in tracker.tracking_plans.values() if plan.user_id == user_id]
+    else:
+        # For unauthenticated users, only show plans without user_id (legacy/public)
+        plans = [plan.to_dict() for plan in tracker.tracking_plans.values() if plan.user_id is None]
+
     return jsonify({'plans': plans})
 
 @app.route('/api/tracking/<plan_id>', methods=['GET'])
+@auth_optional
 def get_tracking_plan(plan_id):
     """Get details of a specific tracking plan."""
+    user = get_current_user()
+    user_id = user['id'] if user else None
+
     if plan_id not in tracker.tracking_plans:
         return jsonify({'error': 'Plan not found'}), 404
-    
+
     plan = tracker.tracking_plans[plan_id]
+
+    # Check ownership
+    if plan.user_id and plan.user_id != user_id:
+        return jsonify({'error': 'Plan not found'}), 404
+
     return jsonify(plan.to_dict())
 
 @app.route('/api/tracking/<plan_id>/stop', methods=['POST'])
+@auth_optional
 def stop_tracking(plan_id):
     """Stop tracking a plan."""
+    user = get_current_user()
+    user_id = user['id'] if user else None
+
     if plan_id not in tracker.tracking_plans:
         return jsonify({'error': 'Plan not found'}), 404
-    
-    tracker.tracking_plans[plan_id].active = False
+
+    plan = tracker.tracking_plans[plan_id]
+
+    # Check ownership
+    if plan.user_id and plan.user_id != user_id:
+        return jsonify({'error': 'Plan not found'}), 404
+
+    plan.active = False
     tracker.save_tracking_plans()
-    
+
     return jsonify({'message': 'Tracking stopped'})
 
 @app.route('/api/tracking/<plan_id>/delete', methods=['DELETE'])
+@auth_optional
 def delete_tracking(plan_id):
     """Delete a tracking plan."""
+    user = get_current_user()
+    user_id = user['id'] if user else None
+
     if plan_id not in tracker.tracking_plans:
         return jsonify({'error': 'Plan not found'}), 404
-    
+
+    plan = tracker.tracking_plans[plan_id]
+
+    # Check ownership
+    if plan.user_id and plan.user_id != user_id:
+        return jsonify({'error': 'Plan not found'}), 404
+
     del tracker.tracking_plans[plan_id]
     tracker.save_tracking_plans()
-    
+
     return jsonify({'message': 'Tracking plan deleted'})
 
 @app.route('/api/tracking/check', methods=['POST'])

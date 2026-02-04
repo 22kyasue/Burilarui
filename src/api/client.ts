@@ -7,15 +7,31 @@ import type { ApiError, RequestOptions } from './types';
 
 // Configuration
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const AUTH_TOKEN_KEY = 'burilar_auth_token';
+const REFRESH_TOKEN_KEY = 'burilar_refresh_token';
 
-// Token storage (can be replaced with more secure storage later)
+// Token storage with localStorage persistence
 let authToken: string | null = null;
+let refreshTokenValue: string | null = null;
+
+// Initialize from localStorage on module load
+if (typeof window !== 'undefined') {
+  authToken = localStorage.getItem(AUTH_TOKEN_KEY);
+  refreshTokenValue = localStorage.getItem(REFRESH_TOKEN_KEY);
+}
 
 /**
- * Set the authentication token
+ * Set the authentication token (persists to localStorage)
  */
 export function setAuthToken(token: string | null): void {
   authToken = token;
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+    } else {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+    }
+  }
 }
 
 /**
@@ -23,6 +39,35 @@ export function setAuthToken(token: string | null): void {
  */
 export function getAuthToken(): string | null {
   return authToken;
+}
+
+/**
+ * Set the refresh token (persists to localStorage)
+ */
+export function setRefreshToken(token: string | null): void {
+  refreshTokenValue = token;
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem(REFRESH_TOKEN_KEY, token);
+    } else {
+      localStorage.removeItem(REFRESH_TOKEN_KEY);
+    }
+  }
+}
+
+/**
+ * Get the refresh token
+ */
+export function getRefreshToken(): string | null {
+  return refreshTokenValue;
+}
+
+/**
+ * Clear all auth tokens (used on logout)
+ */
+export function clearAuthTokens(): void {
+  setAuthToken(null);
+  setRefreshToken(null);
 }
 
 /**
@@ -49,7 +94,16 @@ function buildUrl(
   endpoint: string,
   params?: Record<string, string | number | boolean | undefined>
 ): string {
-  const url = new URL(endpoint, BASE_URL.startsWith('http') ? BASE_URL : window.location.origin + BASE_URL);
+  // Remove leading slash from endpoint and ensure BASE_URL format
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+  const baseUrl = BASE_URL.endsWith('/') ? BASE_URL : BASE_URL + '/';
+
+  // Build full URL
+  const fullUrl = BASE_URL.startsWith('http')
+    ? baseUrl + cleanEndpoint
+    : window.location.origin + baseUrl + cleanEndpoint;
+
+  const url = new URL(fullUrl);
 
   if (params) {
     Object.entries(params).forEach(([key, value]) => {

@@ -1,4 +1,13 @@
-import { Bell } from 'lucide-react';
+import { Bell, LogIn } from 'lucide-react';
+import { UserDropdown } from './UserDropdown';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  plan?: 'free' | 'pro' | 'enterprise';
+}
 
 interface HeaderProps {
   onLogoClick: () => void;
@@ -6,9 +15,27 @@ interface HeaderProps {
   onNotificationClick?: () => void;
   onProClick?: () => void;
   theme?: 'light' | 'dark';
+  user?: User | null;
+  isAuthenticated?: boolean;
+  onLoginClick?: () => void;
+  onLogout?: () => void;
+  onProfileSettings?: () => void;
+  onPlanManagement?: () => void;
 }
 
-export function Header({ onLogoClick, unreadCount = 8, onNotificationClick, onProClick, theme = 'light' }: HeaderProps) {
+export function Header({
+  onLogoClick,
+  unreadCount = 8,
+  onNotificationClick,
+  onProClick,
+  theme = 'light',
+  user,
+  isAuthenticated = false,
+  onLoginClick,
+  onLogout,
+  onProfileSettings,
+  onPlanManagement,
+}: HeaderProps) {
   return (
     <header className={`backdrop-blur-md border-b flex-shrink-0 z-10 shadow-sm transition-colors ${
       theme === 'dark' 
@@ -49,21 +76,38 @@ export function Header({ onLogoClick, unreadCount = 8, onNotificationClick, onPr
             )}
           </button>
 
-          {/* PRO Badge */}
-          <div
-            className="px-3 py-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold rounded-full cursor-default select-none"
-            onClick={onProClick}
-          >
-            PRO
-          </div>
+          {/* PRO Badge - only show if user has pro plan */}
+          {isAuthenticated && user?.plan === 'pro' && (
+            <div
+              className="px-3 py-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold rounded-full cursor-default select-none"
+              onClick={onProClick}
+            >
+              PRO
+            </div>
+          )}
 
-          {/* User Icon */}
-          <button
-            className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-semibold text-sm hover:opacity-80 transition-opacity"
-            aria-label="ユーザーメニュー"
-          >
-            K
-          </button>
+          {/* User Section */}
+          {isAuthenticated && user ? (
+            <UserDropdown
+              user={user}
+              onLogout={onLogout || (() => {})}
+              onProfileSettings={onProfileSettings}
+              onPlanManagement={onPlanManagement}
+              theme={theme}
+            />
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                theme === 'dark'
+                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                  : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white'
+              }`}
+            >
+              <LogIn className="w-4 h-4" />
+              <span className="text-sm font-medium">ログイン</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

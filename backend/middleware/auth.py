@@ -1,59 +1,115 @@
 """
-Authentication Middleware (Placeholder)
-Currently a no-op for single-user dev mode.
-Will be replaced with real JWT auth later.
+Authentication Middleware
+JWT token validation and user context management.
 """
 
 from functools import wraps
-from flask import request, g
-
-# Placeholder user for dev mode
-DEV_USER = {
-    'id': 'dev-user-001',
-    'email': 'dev@burilar.local',
-    'name': 'Dev User',
-    'plan_id': 'pro',
-}
+from flask import request, jsonify, g
+from backend.utils.auth import decode_token
+from backend.storage import user_storage
 
 
 def get_current_user():
     """
-    Get the current authenticated user.
-    Currently returns a placeholder dev user.
-
-    TODO: Implement real JWT token validation
-    - Extract token from Authorization header
-    - Validate token signature
-    - Look up user from database
-    - Return user or raise 401
+    Get the current authenticated user from request context.
+    Returns None if not authenticated.
     """
-    return getattr(g, 'current_user', DEV_USER)
+    return getattr(g, 'current_user', None)
 
 
 def auth_required(f):
     """
     Decorator to require authentication.
-    Currently a no-op that sets dev user.
-
-    TODO: Implement real authentication check
-    - Validate JWT token
-    - Return 401 if invalid/missing
-    - Set g.current_user for downstream use
+    Validates JWT token and sets g.current_user.
+    Returns 401 if token is invalid or missing.
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # In dev mode, just set the dev user
-        g.current_user = DEV_USER
+        # Get token from Authorization header
+        auth_header = request.headers.get('Authorization', '')
 
-        # TODO: Real implementation would:
-        # token = request.headers.get('Authorization', '').replace('Bearer ', '')
-        # if not token:
-        #     return jsonify({'error': 'Authentication required'}), 401
-        # try:
-        #     payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-        #     g.current_user = get_user_by_id(payload['user_id'])
-        # except jwt.InvalidTokenError:
-        #     return jsonify({'error': 'Invalid token'}), 401
+        if not auth_header.startswith('Bearer '):
+            return jsonify({
+                'error': {
+                    'code': 'UNAUTHORIZED',
+                    'message': '認証が必要です'
+                }
+            }), 401
+
+        token = auth_header.replace('Bearer ', '')
+
+        if not token:
+            return jsonify({
+                'error': {
+                    'code': 'UNAUTHORIZED',
+                    'message': '認証が必要です'
+                }
+            }), 401
+
+        # Decode and validate token
+        payload = decode_token(token)
+
+        if not payload:
+            return jsonify({
+                'error': {
+                    'code': 'INVALID_TOKEN',
+                    'message': 'トークンが無効または期限切れです'
+                }
+            }), 401
+
+        # Get user from storage
+        user = user_storage.get(payload['user_id'])
+
+        if not user:
+            return jsonify({
+                'error': {
+                    'code': 'USER_NOT_FOUND',
+                    'message': 'ユーザーが見つかりません'
+                }
+            }), 401
+
+        # Set current user in request context
+        g.current_user = {
+            'id': user['id'],
+            'email': user['email'],
+            'name': user['name'],
+            'plan': user.get('plan', 'free'),
+        }
 
         return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def auth_optional(f):
+    """
+    Decorator for optional authentication.
+    Sets g.current_user if valid token provided, but doesn't require it.
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        g.current_user = None
+
+        # Try to get token from Authorization header
+        auth_header = request.headers.get('Authorization', '')
+
+        if auth_header.startswith('Bearer '):
+            token = auth_header.replace('Bearer ', '')
+
+            if token:
+                payload = decode_token(token)
+
+                if payload:
+                    user = user_storage.get(payload['user_id'])
+
+                    if user:
+                        g.current_user = {
+                            'id': user['id'],
+                            'email': user['email'],
+                            'name': user['name'],
+                            'plan': user.get('plan', 'free'),
+                        }
+
+        return f(*args, **kwargs)
+
     return decorated_function
