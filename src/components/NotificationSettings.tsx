@@ -1,5 +1,5 @@
 import { ArrowLeft, Bell, Mail, Smartphone, Monitor, Clock, Check, Pin, Activity, Pause, RefreshCw, Menu } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Chat {
   id: string;
@@ -95,6 +95,74 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
   // スタンダード設定を管理
   const [standardSettings, setStandardSettings] = useState<PromptNotificationSettings>(defaultSettings);
 
+  // Loading state
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+
+  // Load global settings from API on mount
+  useEffect(() => {
+    const loadGlobalSettings = async () => {
+      try {
+        const response = await fetch('/api/notifications/settings/global');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.settings) {
+            setStandardSettings({
+              searchFrequency: data.settings.frequency_hours || 24,
+              emailNotifications: data.settings.email_enabled ?? true,
+              pushNotifications: data.settings.push_enabled ?? true,
+              inAppNotifications: data.settings.in_app_enabled ?? true,
+              notifyOnNewUpdate: data.settings.notify_on_update ?? true,
+              notifyOnDailyDigest: data.settings.daily_digest ?? false,
+              notifyOnWeeklyDigest: data.settings.weekly_digest ?? false,
+              notifyOnNoUpdate: data.settings.notify_on_no_change ?? false,
+              notificationDetail: data.settings.detail_level || 'summary',
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load global settings:', error);
+      } finally {
+        setIsLoadingSettings(false);
+      }
+    };
+
+    loadGlobalSettings();
+  }, []);
+
+  // Load tracking-specific settings when a prompt is selected
+  useEffect(() => {
+    if (selectedPromptId === null) return;
+
+    const loadTrackingSettings = async () => {
+      try {
+        const response = await fetch(`/api/notifications/settings/tracking/${selectedPromptId}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.settings) {
+            setPromptSettings(prev => ({
+              ...prev,
+              [selectedPromptId]: {
+                searchFrequency: data.settings.frequency_hours || standardSettings.searchFrequency,
+                emailNotifications: data.settings.email_enabled ?? standardSettings.emailNotifications,
+                pushNotifications: data.settings.push_enabled ?? standardSettings.pushNotifications,
+                inAppNotifications: data.settings.in_app_enabled ?? standardSettings.inAppNotifications,
+                notifyOnNewUpdate: data.settings.notify_on_update ?? standardSettings.notifyOnNewUpdate,
+                notifyOnDailyDigest: data.settings.daily_digest ?? standardSettings.notifyOnDailyDigest,
+                notifyOnWeeklyDigest: data.settings.weekly_digest ?? standardSettings.notifyOnWeeklyDigest,
+                notifyOnNoUpdate: data.settings.notify_on_no_change ?? standardSettings.notifyOnNoUpdate,
+                notificationDetail: data.settings.detail_level || standardSettings.notificationDetail,
+              },
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load tracking settings:', error);
+      }
+    };
+
+    loadTrackingSettings();
+  }, [selectedPromptId, standardSettings]);
+
   // 各プロンプトのステータスを管理
   const [promptStatuses, setPromptStatuses] = useState<Record<string, 'active' | 'paused'>>({});
 
@@ -147,17 +215,50 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
   
   const canSave = hasNotificationMethod && hasNotificationTiming && hasSearchFrequency && hasNotificationDetail;
 
-  const handleSave = () => {
-    if (!canSave) {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    if (!canSave || isSaving) {
       return;
     }
-    
-    console.log('Settings saved:', {
-      selectedPromptId,
-      settings: currentSettings,
-    });
-    
-    alert('設定を保存しました');
+
+    setIsSaving(true);
+
+    const apiSettings = {
+      frequency_hours: currentSettings.searchFrequency,
+      email_enabled: currentSettings.emailNotifications,
+      push_enabled: currentSettings.pushNotifications,
+      in_app_enabled: currentSettings.inAppNotifications,
+      notify_on_update: currentSettings.notifyOnNewUpdate,
+      daily_digest: currentSettings.notifyOnDailyDigest,
+      weekly_digest: currentSettings.notifyOnWeeklyDigest,
+      notify_on_no_change: currentSettings.notifyOnNoUpdate,
+      detail_level: currentSettings.notificationDetail,
+    };
+
+    try {
+      const endpoint = selectedPromptId === null
+        ? '/api/notifications/settings/global'
+        : `/api/notifications/settings/tracking/${selectedPromptId}`;
+
+      const response = await fetch(endpoint, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(apiSettings),
+      });
+
+      if (response.ok) {
+        alert('設定を保存しました');
+      } else {
+        const error = await response.json();
+        alert(`保存に失敗しました: ${error.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      alert('保存に失敗しました。ネットワークエラーが発生しました。');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -810,15 +911,15 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={!canSave}
+                  disabled={!canSave || isSaving}
                   className={`px-6 py-2.5 rounded-xl transition-colors font-medium ${
-                    canSave
+                    canSave && !isSaving
                       ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 cursor-pointer shadow-md'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
                   }`}
                   title={!canSave ? '全ての必須項目を設定してください' : ''}
                 >
-                  設定を保存
+                  {isSaving ? '保存中...' : '設定を保存'}
                 </button>
               </div>
               

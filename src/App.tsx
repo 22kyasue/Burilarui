@@ -115,463 +115,60 @@ export default function App() {
   
   // TrackingStatusBadgeへの参照
   const trackingStatusBadgeRef = useRef<HTMLDivElement>(null);
-  
-  const [chats, setChats] = useState<Chat[]>([
-    {
-      id: "apple-intelligence",
-      title: "Apple Intelligenceの最新動向",
-      messages: [
-        {
-          id: "ai-m1",
-          content:
-            "Apple Intelligenceの2024〜2025年の動向についてキャッチアップしたい。最新の動向を教えてください。",
-          role: "user",
-          timestamp: new Date(Date.now() - 1000 * 60 * 5),
-        },
-        {
-          id: "ai-m2",
-          content: `Appleは2024〜2025年にかけて、生成AI基盤「Apple Intelligence」を発表し、2025年にも追加アップデートを行っています。2025年時点での動きは「新発表」「拡張」「順次リリース済み」の三つに整理できます。
 
-## 新しい発表（2025年）
+  // Initialize empty - will be populated from API
+  const [chats, setChats] = useState<Chat[]>([]);
 
-- WWDC25で、Live Translation（リアルタイム翻訳）、画面内容を理解するVisual Intelligence拡張、Apple Intelligence向けAPIなどを追加発表。[apple:+3]
+  // Fetch tracking data from backend on mount
+  useEffect(() => {
+    const fetchTrackingData = async () => {
+      try {
+        const response = await fetch('/api/tracking/list');
+        const data = await response.json();
 
-- 秋には、これら新機能の一部が実際に使えるようになったことが公式に案内されています。[apple]
+        if (data.plans && Array.isArray(data.plans)) {
+          // Transform backend tracking plans to Chat format
+          const transformedChats: Chat[] = data.plans.map((plan: any) => ({
+            id: plan.id,
+            title: plan.topic || plan.original_query || 'Untitled',
+            messages: plan.last_search_result ? [
+              {
+                id: `${plan.id}-query`,
+                content: plan.original_query || plan.topic,
+                role: 'user' as const,
+                timestamp: new Date(plan.created_at),
+              },
+              {
+                id: `${plan.id}-result`,
+                content: plan.last_search_result,
+                role: 'assistant' as const,
+                timestamp: plan.last_search_time ? new Date(plan.last_search_time) : new Date(plan.created_at),
+                sources: 6,
+              }
+            ] : [],
+            updatedAt: plan.last_search_time ? new Date(plan.last_search_time) : new Date(plan.created_at),
+            pinned: false,
+            isTracking: plan.status === 'tracking',
+            trackingActive: plan.active,
+            updateCount: plan.updates?.length || 0,
+            trackingFrequency: `${plan.frequency_hours}時間ごと`,
+          }));
 
-## 以前の発表からの変更・拡張
+          setChats(transformedChats);
+          if (transformedChats.length > 0) {
+            setCurrentChatId(transformedChats[0].id);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch tracking data:', error);
+      }
+    };
 
-- 2024年の初期発表内容（Writing Tools、Genmoji、Image Playground、Siri強化、ChatGPT連携など）は維持されつつ、対象領域や統合の深さが広がる方向で拡張。[techcrunch:+2]
+    fetchTrackingData();
+  }, []);
 
-- 大きな方針転換や機能撤回というより、「Live Translation」「Visual Intelligence」などを中核に、システム横断の体験として整理し直した形です。[apple:+3]
+  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
 
-## 実際にリリースされた主な機能
-
-- **文章系**：Writing Tools（リライト・要約・校正）、通知・メール要約、スマート返信。[apple:+1]
-
-- **画像系**：PhotosのClean Up、Genmoji、Image Playground、Image Wandなどの生成系機能。[techcrunch:+2]
-
-- **アシスタント系**：新Siri UIとType to Siri、製品ナレッジ強化、ChatGPT連携。[techcrunch:+1]
-
-- **2025年追加**：Live Translation、画面コンテンツを理解して提案するVisual Intelligence拡張などがOSアップデートとして順次提供済みです。[apple:+1]`,
-          role: "assistant",
-          timestamp: new Date(Date.now() - 1000 * 60 * 4),
-          sources: 6,
-          images: [
-            "https://images.unsplash.com/photo-1738641928061-e68c5e8e2f2b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcHBsZSUyMGludGVsbGlnZW5jZSUyMGFpJTIwdGVjaG5vbG9neXxlbnwxfHx8fDE3Njc0MjQ1NDB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-            "https://images.unsplash.com/photo-1658494603398-2def8bb2742a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpUGhvbmUlMjBBSSUyMGZlYXR1cmVzfGVufDF8fHx8MTc2NzQyNDU0MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-          ],
-        },
-      ],
-      updatedAt: new Date(Date.now() - 1000 * 60 * 4),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "1",
-      title: "React開発のベストプラクティス",
-      messages: [
-        {
-          id: "1",
-          content: "Reactのベストプラクティスを教えてください",
-          role: "user",
-          timestamp: new Date(Date.now() - 86400000 * 2),
-        },
-        {
-          id: "2",
-          content:
-            "Reactのベストプラクティスをいくつかご紹介します...",
-          role: "assistant",
-          timestamp: new Date(Date.now() - 86400000 * 2),
-        },
-      ],
-      updatedAt: new Date(Date.now() - 86400000 * 2),
-      pinned: true,
-      isTracking: true,
-      trackingActive: true,
-      updateCount: 3,
-    },
-    {
-      id: "1-1",
-      title: "AIモデルの最新トレンド",
-      messages: [
-        {
-          id: "m1-1-1",
-          content:
-            "以下の技術分野について最新トレンドを調査してください：\n\n【調査項目】\n1. 技術概要と進化\n   - 技術の基本原理と最新の発展状況\n   - 主要な技術的ブレークスルー（過去1-2年）\n   - 技術成熟度（Gartnerハイプサイクル等）\n\n2. 市場動向\n   - 市場規模と成長予測\n   - 主な資トレンドとVC動向\n   - 企業にる技術導入率\n\n【技術分野】: AIモデルの最新トレンド",
-          role: "user",
-          timestamp: new Date(Date.now() - 1000 * 60 * 16),
-        },
-        {
-          id: "m1-1-2",
-          content: `AIモデルの最新トレンドに関する包括的な回答です。各アップデートのを統合し、実用的なストプラクィスと具体的な実装例を提供します。
-
-**情報:**
-
-詳細な技術解説、実装パターン、パフォーマンス最適化の手法、そして実際のユースケースを含めた完全な回答がここに表示されます。 📝
-
-**文献:**
-
-[1] Example Article on Recent Developments
-https://example.com/article1
-
-[2] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper
-
-[3] Example Article on Recent Developments
-https://example.com/article1
-
-[4] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper`,
-          role: "assistant",
-          timestamp: new Date(Date.now() - 1000 * 60 * 15),
-        },
-      ],
-      updatedAt: new Date(Date.now() - 1000 * 60 * 15), // 15分前
-      pinned: false,
-      isTracking: true,
-      trackingActive: true,
-      updateCount: 1,
-    },
-    {
-      id: "1-2",
-      title: "ユニリーバのマーティング戦略調査",
-      messages: [
-        {
-          id: "m1-2-1",
-          content:
-            "FIFAワールドカップやUEFA EUROなどのスポーツスポンサーシップにおいて、Rexona（レクソーナ）やDove（ダヴ）などのブランドがどのような消費者参加型イベントやメッセージ発信（自信、ジェンダー平等など）を行っているか調査する。\n日本国内の消費者参加型エコプログラム「UMILE（ユーマイル）」について、現在のキャンペーン内容、対象店舗、回収ボックスの設置場所、消費者がどのように参加できるか詳しく調べる。\nダヴ（Dove）の「リアルビューティー」キャンペーンや「自己肯定感向上プロジェクト（Dove Self-Esteem Project）」について、日本国内の学校教育やワークショップでの実施事例、一般向けの教材提供などを調査する。\nラックス（LUX）が展開する「Social Damage Care」や採用バイアスに関するキャンペーンなど、ジェンダー平等や固定観念の打破を目指す具体的な活動内容を調べる。",
-          role: "user",
-          timestamp: new Date(Date.now() - 1000 * 60 * 46),
-        },
-        {
-          id: "m1-2-2",
-          content: `ユニリーバのマーケティング戦略調査に関する最新のアップデート情報を含む包括的な回答です。各アップデートの内容を統合し、実用的なベストプラクティスと具体的な実装例を提供します。
-
-**情報:**
-
-詳細な技術解説、実装パターン、パフォーマンス最適化の手法、そして実際のユースケースを含めた完全な回答がここに表示されます。 📝
-
-**文献:**
-
-[1] Example Article on Recent Developments
-https://example.com/article1
-
-[2] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper
-
-[3] Example Article on Recent Developments
-https://example.com/article1
-
-[4] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper`,
-          role: "assistant",
-          timestamp: new Date(Date.now() - 1000 * 60 * 45),
-        },
-      ],
-      updatedAt: new Date(Date.now() - 1000 * 60 * 45), // 45分前
-      pinned: true,
-      isTracking: true,
-      trackingActive: false,
-      updateCount: 4,
-    },
-    {
-      id: "2",
-      title: "カリスマ宣言師",
-      messages: [
-        {
-          id: "3",
-          content: "TypeScriptの型システムについて詳しく",
-          role: "user",
-          timestamp: new Date(Date.now() - 86400000 * 5),
-        },
-      ],
-      updatedAt: new Date(Date.now() - 86400000 * 5),
-      pinned: false,
-      isTracking: true,
-      trackingActive: false,
-      updateCount: 7,
-    },
-    {
-      id: "3",
-      title:
-        "Badminton Doubles: Teamwork and Effective Strategies",
-      messages: [
-        {
-          id: "m3-1",
-          content:
-            "Badminton Doublesにおけるチームワークと効果的な戦略について調査してください。",
-          role: "user",
-          timestamp: new Date(
-            Date.now() - 86400000 * 3 - 1000 * 60,
-          ),
-        },
-        {
-          id: "m3-2",
-          content: `Badminton Doubles: Teamwork and Effective Strategiesに関する最新の包括的な回答です。各アップデートの内容を統合し、実用的なベストプラクティスと具体的な実装例を提供します。
-
-**情報:**
-
-詳細な技術解説、実装パターン、パフォーマンス最適化の手法、そして実際のユースケースを含めた全な回答がここに表示されます。 📝
-
-**文献:**
-
-[1] Example Article on Recent Developments
-https://example.com/article1
-
-[2] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper
-
-[3] Example Article on Recent Developments
-https://example.com/article1
-
-[4] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper`,
-          role: "assistant",
-          timestamp: new Date(Date.now() - 86400000 * 3),
-        },
-      ],
-      updatedAt: new Date(Date.now() - 86400000 * 3),
-      pinned: false,
-      isTracking: true,
-      trackingActive: true,
-      updateCount: 2,
-    },
-    {
-      id: "4",
-      title: "広告代理店向け自己PR戦略概要案",
-      messages: [
-        {
-          id: "m4-1",
-          content:
-            "広告代理店への就職活動における効果的な自己PR戦略について、業界特性を踏まえた概要案を作成してください。",
-          role: "user",
-          timestamp: new Date(
-            Date.now() - 86400000 * 4 - 1000 * 60,
-          ),
-        },
-        {
-          id: "m4-2",
-          content: `広告代理店向け自己PR戦略概要案に関する最新の包括的な回答です。各アップデートの内容を統合し、用的なベストプラクティスと具体的な実装例を提供します。
-
-**情報:**
-
-詳細な技術解説、実装パターン、パフォーマンス最適化の手法、そして実際のユースケースを含めた完全な回答がここに表示されます。 📝
-
-**文献:**
-
-[1] Example Article on Recent Developments
-https://example.com/article1
-
-[2] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper
-
-[3] Example Article on Recent Developments
-https://example.com/article1
-
-[4] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper`,
-          role: "assistant",
-          timestamp: new Date(Date.now() - 86400000 * 4),
-        },
-      ],
-      updatedAt: new Date(Date.now() - 86400000 * 4),
-      pinned: true,
-      isTracking: true,
-      trackingActive: false,
-      updateCount: 5,
-    },
-    {
-      id: "5",
-      title: "JPモルガンAM営業回答チアドバイス",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 5),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "6",
-      title: "70分手がラダブ作成の教え方",
-      messages: [
-        {
-          id: "m6-1",
-          content:
-            "70分で効果的なラブレターの作方法について教えてください。",
-          role: "user",
-          timestamp: new Date(
-            Date.now() - 86400000 * 6 - 1000 * 60,
-          ),
-        },
-        {
-          id: "m6-2",
-          content: `70分手がラダブ作成の教え方に関する最新の包括的な回答です。各アップデートの内容を統合し、実用的なベストプラクティスと具体的な実装例を提供します。
-
-**情報:**
-
-詳細な技術解説、実装パターン、パフォーマンス最適化の手法、そして実際のユースケースを含め全な回答がここに表示されます。 📝
-
-**文献:**
-
-[1] Example Article on Recent Developments
-https://example.com/article1
-
-[2] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper
-
-[3] Example Article on Recent Developments
-https://example.com/article1
-
-[4] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper`,
-          role: "assistant",
-          timestamp: new Date(Date.now() - 86400000 * 6),
-        },
-      ],
-      updatedAt: new Date(Date.now() - 86400000 * 6),
-      pinned: true,
-      isTracking: true,
-      trackingActive: true,
-      updateCount: 1,
-    },
-    {
-      id: "7",
-      title: "Influenza Certificate Delivery Update",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 7),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "8",
-      title: "アメリカ有害管理ブランド・ストラテジ...",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 8),
-      pinned: true,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "9",
-      title: "応募書類の回答方式ガイド",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 9),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "10",
-      title: "ニーチェの「神の死」を解説",
-      messages: [
-        {
-          id: "m10-1",
-          content:
-            "ニーチェの「神の死」という概念について、哲学的背景と現代社会への影響を詳しく解説してください。",
-          role: "user",
-          timestamp: new Date(
-            Date.now() - 86400000 * 10 - 1000 * 60,
-          ),
-        },
-        {
-          id: "m10-2",
-          content: `ニーチェの「神の死」を解説に関する最新の包括的な回答です。各アップデートの内容を統合し、実用的なベストプラクティスと具体的な実装例を提供します。
-
-**情報:**
-
-詳細な技術解説、実装パターン、パフォーマンス最適化の手法、そして実際のユースケースを含めた完全な回答がここに表示されます。 📝
-
-**文献:**
-
-[1] Example Article on Recent Developments
-https://example.com/article1
-
-[2] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper
-
-[3] Example Article on Recent Developments
-https://example.com/article1
-
-[4] Research Paper: Latest Findings and Analysis
-https://research.example.org/paper`,
-          role: "assistant",
-          timestamp: new Date(Date.now() - 86400000 * 10),
-        },
-      ],
-      updatedAt: new Date(Date.now() - 86400000 * 10),
-      pinned: false,
-      isTracking: true,
-      trackingActive: true,
-      updateCount: 12,
-    },
-    {
-      id: "11",
-      title: "コピーライダーの度器購受け示価",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 11),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "12",
-      title: "動画投稿の要約と考",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 12),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "13",
-      title: "迷プロポーズへの返答",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 13),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "14",
-      title: "JP Morgan's Industry Focus: AI",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 14),
-      pinned: true,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "15",
-      title: "JPモガン戦量回復：やかりと繊細...",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 15),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "16",
-      title: "声と顔特許で促も速度を契明",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 16),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-    {
-      id: "17",
-      title: "面倒不審期のたの回答本可",
-      messages: [],
-      updatedAt: new Date(Date.now() - 86400000 * 17),
-      pinned: false,
-      isTracking: false,
-      trackingActive: false,
-    },
-  ]);
-  const [currentChatId, setCurrentChatId] = useState<
-    string | null
-  >("apple-intelligence");
 
   const currentChat = currentChatId
     ? chats.find((chat) => chat.id === currentChatId)
@@ -952,7 +549,7 @@ https://research.example.org/paper`;
                 currentMode={currentMode}
                 onModeChange={setCurrentMode}
                 theme={theme}
-                onSendMessage={(message) => {
+                onSendMessage={async (message) => {
                   // 新しいチャットを作成
                   const newChatId = Date.now().toString();
                   const userMessage: Message = {
@@ -973,14 +570,36 @@ https://research.example.org/paper`;
                   setCurrentChatId(newChatId);
                   setCurrentView("chat");
 
-                  // AIの応答をシミュレート
-                  setTimeout(() => {
+                  // 実際のAPIを呼び出し
+                  try {
+                    const response = await fetch('/api/search', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({ query: message }),
+                    });
+
+                    const data = await response.json();
+
+                    // Handle different response types
+                    let responseContent = '';
+                    if (data.needs_clarification) {
+                      responseContent = `${data.reason}\n\n**Clarification needed:**\n${data.clarification_questions?.map((q: string) => `- ${q}`).join('\n') || ''}`;
+                    } else if (data.search_result) {
+                      responseContent = data.search_result;
+                    } else if (data.error) {
+                      responseContent = `Error: ${data.error}`;
+                    } else {
+                      responseContent = 'No response received';
+                    }
+
                     const assistantMessage: Message = {
                       id: (Date.now() + 1).toString(),
-                      content: `「${message}」についての回答です。\n\nこちらは検索結果に基づいた詳細な情報となります。`,
+                      content: responseContent,
                       role: "assistant",
                       timestamp: new Date(),
-                      sources: 6,
+                      sources: data.search_result ? 6 : 0,
                     };
 
                     setChats((prevChats) =>
@@ -1004,7 +623,26 @@ https://research.example.org/paper`;
                         accepted: false,
                       },
                     ]);
-                  }, 1000);
+                  } catch (error) {
+                    const errorMessage: Message = {
+                      id: (Date.now() + 1).toString(),
+                      content: `Error: ${error instanceof Error ? error.message : 'Failed to fetch response'}`,
+                      role: "assistant",
+                      timestamp: new Date(),
+                    };
+
+                    setChats((prevChats) =>
+                      prevChats.map((chat) =>
+                        chat.id === newChatId
+                          ? {
+                              ...chat,
+                              messages: [...chat.messages, errorMessage],
+                              updatedAt: new Date(),
+                            }
+                          : chat,
+                      ),
+                    );
+                  }
                 }}
                 onOpenTrackingDetail={(theme, query) => {
                   // 直接TrackingDetailを開く

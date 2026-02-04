@@ -2,14 +2,14 @@ import os
 import json
 import time
 from datetime import datetime, timedelta
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import requests
 from typing import Dict, List, Optional
 import threading
 
-# Initialize Flask app
-app = Flask(__name__)
+# Initialize Flask app - serve static files from build folder
+app = Flask(__name__, static_folder='build', static_url_path='')
 CORS(app)
 
 # Register API blueprints
@@ -399,7 +399,14 @@ tracker = BurilarTracker()
 @app.route('/')
 def index():
     """Serve the main web interface."""
-    return render_template('index.html')
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    """Serve static files or fallback to index.html for SPA routing."""
+    if os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/api/search', methods=['POST'])
 def initial_search():
@@ -561,4 +568,5 @@ checker_thread = threading.Thread(target=background_checker, daemon=True)
 checker_thread.start()
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5050)
+    # Use stat reloader instead of watchdog to avoid watching site-packages
+    app.run(debug=True, port=5050, use_reloader=True, reloader_type='stat')

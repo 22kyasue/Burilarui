@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(pip install:*)",
+      "Bash(python burilar_api.py:*)",
+      "Bash(curl:*)",
+      "Bash(cmd /c \"npm install\")",
+      "Bash(powershell.exe -Command \"cd ''C:\\\\Users\\\\kense\\\\Desktop\\\\Burilarui''; npm install\")",
+      "Bash(powershell.exe -Command \"node --version\")",
+      "Bash(npm run dev:*)",
+      "Bash(npm install)",
+      "Bash(python:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

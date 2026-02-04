@@ -9,6 +9,8 @@ interface TrackingDetailProps {
   frequency: string;
   query: string;
   mode?: "default" | "pro";
+  planId?: string; // Optional: if provided, we're editing an existing plan
+  onTrackingStarted?: (planId: string) => void; // Callback when tracking starts
 }
 
 export function TrackingDetail({
