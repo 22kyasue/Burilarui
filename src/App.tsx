@@ -80,13 +80,17 @@ function AppContent() {
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isUpdatePanelOpen, setIsUpdatePanelOpen] =
     useState(false);
+
+  interface TrackingSuggestion {
+    messageId: string;
+    query: string;
+    accepted: boolean;
+    suggestedPrompt?: string;
+    imageUrl?: string;
+  }
   const [trackingSuggestions, setTrackingSuggestions] =
     useState<
-      Array<{
-        messageId: string;
-        query: string;
-        accepted: boolean;
-      }>
+      Array<TrackingSuggestion>
     >([
       {
         messageId: "ai-m1",
@@ -103,21 +107,21 @@ function AppContent() {
     useState(false);
   const [isDefaultModeDetailOpen, setIsDefaultModeDetailOpen] =
     useState(false);
-  
+
   // SimpleTrackingSetupとDetailの切り替え状態
   const [showSimpleTrackingSetup, setShowSimpleTrackingSetup] = useState(false);
   const [showDetailSettings, setShowDetailSettings] = useState(false);
-  
+
   // ブラッシュアップモード専用のチャット履歴
   const [refinementMessages, setRefinementMessages] = useState<Message[]>([]);
-  
+
   // トラッキング提案カードへの参照を保持
   const trackingSuggestionCardRef = useRef<HTMLDivElement>(null);
-  
+
   // メインチャット画面のスクロール用ref
   const chatScrollContainerRef = useRef<HTMLDivElement>(null);
   const chatMessagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   // TrackingStatusBadgeへの参照
   const trackingStatusBadgeRef = useRef<HTMLDivElement>(null);
 
@@ -219,11 +223,11 @@ function AppContent() {
       prevChats.map((c) =>
         c.id === currentChatId
           ? {
-              ...c,
-              messages: updatedMessages,
-              updatedAt: new Date(),
-              title: newTitle || c.title,
-            }
+            ...c,
+            messages: updatedMessages,
+            updatedAt: new Date(),
+            title: newTitle || c.title,
+          }
           : c,
       ),
     );
@@ -427,7 +431,7 @@ https://research.example.org/paper`;
   // メインチャット画面のメッセージが更新されたら自動スクロール
   useEffect(() => {
     if (currentChat && currentChat.messages.length > 0 && chatMessagesEndRef.current) {
-      chatMessagesEndRef.current.scrollIntoView({ 
+      chatMessagesEndRef.current.scrollIntoView({
         behavior: "smooth",
         block: "end"
       });
@@ -438,7 +442,7 @@ https://research.example.org/paper`;
   useEffect(() => {
     if (!isTrackingDetailOpen && !isDefaultModeDetailOpen && trackingStatusBadgeRef.current) {
       setTimeout(() => {
-        trackingStatusBadgeRef.current?.scrollIntoView({ 
+        trackingStatusBadgeRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "center"
         });
@@ -450,9 +454,8 @@ https://research.example.org/paper`;
   if (isLoading) {
     return (
       <div
-        className={`flex h-screen w-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 items-center justify-center overflow-hidden transition-opacity duration-500 ${
-          isFadingOut ? "opacity-0" : "opacity-100"
-        }`}
+        className={`flex h-screen w-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 items-center justify-center overflow-hidden transition-opacity duration-500 ${isFadingOut ? "opacity-0" : "opacity-100"
+          }`}
       >
         <div className="text-center">
           {/* ロゴテキスト */}
@@ -499,11 +502,10 @@ https://research.example.org/paper`;
   }
 
   return (
-    <div className={`flex h-screen overflow-hidden transition-colors duration-300 ${
-      theme === 'dark' 
-        ? 'bg-gradient-to-br from-[#1a1f2e] via-[#252a3a] to-[#2a1f2e]' 
-        : 'bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]'
-    }`}>
+    <div className={`flex h-screen overflow-hidden transition-colors duration-300 ${theme === 'dark'
+      ? 'bg-gradient-to-br from-[#1a1f2e] via-[#252a3a] to-[#2a1f2e]'
+      : 'bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]'
+      }`}>
       {/* Notebook Creation Modal */}
       <NotebookCreationModal
         isOpen={isNotebookModalOpen}
@@ -560,16 +562,15 @@ https://research.example.org/paper`;
 
       {/* Main Content Area - with margin when sidebar is open */}
       <div
-        className={`flex-1 flex flex-col transition-all duration-300 ${
-          isSidebarOpen ? "ml-80" : "ml-16"
-        }`}
+        className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? "ml-80" : "ml-16"
+          }`}
       >
         {/* Fixed Header - shown in all views */}
         <Header
           onLogoClick={handleNewChat}
           unreadCount={8}
           onNotificationClick={() => setIsUpdatePanelOpen(true)}
-          onProClick={() => {}} // 無効化
+          onProClick={() => { }} // 無効化
           theme={theme}
           user={user}
           isAuthenticated={isAuthenticated}
@@ -691,23 +692,38 @@ https://research.example.org/paper`;
                       prevChats.map((chat) =>
                         chat.id === newChatId
                           ? {
-                              ...chat,
-                              messages: updatedMessages,
-                              updatedAt: new Date(),
-                            }
+                            ...chat,
+                            messages: updatedMessages,
+                            updatedAt: new Date(),
+                          }
                           : chat,
                       ),
                     );
 
                     // トラッキング提案を追加
-                    setTrackingSuggestions((prev) => [
-                      ...prev,
-                      {
-                        messageId: userMessage.id,
-                        query: message,
-                        accepted: false,
-                      },
-                    ]);
+                    if (data.proposed_plan) {
+                      setTrackingSuggestions((prev) => [
+                        ...prev,
+                        {
+                          messageId: userMessage.id,
+                          query: message,
+                          accepted: false,
+                          suggestedPrompt: data.proposed_plan.suggested_prompt,
+                          imageUrl: data.proposed_plan.image_url,
+                        },
+                      ]);
+                    } else {
+                      // Fallback logic if needed, or just don't add suggestion
+                      setTrackingSuggestions((prev) => [
+                        ...prev,
+                        {
+                          messageId: userMessage.id,
+                          query: message,
+                          accepted: false,
+                          suggestedPrompt: undefined
+                        },
+                      ]);
+                    }
                   } catch (error) {
                     const errorMessage: Message = {
                       id: (Date.now() + 1).toString(),
@@ -720,10 +736,10 @@ https://research.example.org/paper`;
                       prevChats.map((chat) =>
                         chat.id === newChatId
                           ? {
-                              ...chat,
-                              messages: [...chat.messages, errorMessage],
-                              updatedAt: new Date(),
-                            }
+                            ...chat,
+                            messages: [...chat.messages, errorMessage],
+                            updatedAt: new Date(),
+                          }
                           : chat,
                       ),
                     );
@@ -735,7 +751,7 @@ https://research.example.org/paper`;
                     theme: theme,
                     frequency: "毎日 9:00",
                   });
-                  
+
                   // ブラッシュアップチャットの初期対話を設定
                   const initialRefinementMessages: Message[] = [
                     {
@@ -775,7 +791,7 @@ https://research.example.org/paper`;
                       timestamp: new Date(Date.now() - 1000),
                     },
                   ];
-                  
+
                   setRefinementMessages(initialRefinementMessages);
                   setIsTrackingDetailOpen(true);
                   setCurrentView("chat");
@@ -940,23 +956,21 @@ https://research.example.org/paper`;
               {/* Main container - フレックスレイアウトで左右に分割 */}
               <div className="flex-1 flex overflow-hidden">
                 {/* Chat Area - トラッキング詳細が開いているときは左側に配置 */}
-                <div className={`flex flex-col transition-all duration-300 ${
-                  isTrackingDetailOpen ? 'w-[35%]' : 'w-full'
-                }`}>
+                <div className={`flex flex-col transition-all duration-300 ${isTrackingDetailOpen ? 'w-[35%]' : 'w-full'
+                  }`}>
                   {/* トラッキング詳細が開いている場合は専用チャット画面を表示 */}
                   {isTrackingDetailOpen ? (
-                    <TrackingRefinementChat 
+                    <TrackingRefinementChat
                       refinementMessages={refinementMessages}
                       onSendMessage={handleRefinementMessage}
                       currentMode={currentMode}
                       onModeChange={setCurrentMode}
                     />
                   ) : isDefaultModeDetailOpen ? (
-                    <div className={`flex-1 overflow-y-auto flex flex-col items-center ${
-                      theme === 'dark'
-                        ? 'bg-gradient-to-br from-[#1a1f2e] via-[#252a3a] to-[#2a1f2e]'
-                        : 'bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]'
-                    }`}>
+                    <div className={`flex-1 overflow-y-auto flex flex-col items-center ${theme === 'dark'
+                      ? 'bg-gradient-to-br from-[#1a1f2e] via-[#252a3a] to-[#2a1f2e]'
+                      : 'bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]'
+                      }`}>
                       <DefaultModeTrackingDetail
                         query={
                           trackingSuggestions.find((s) => s.accepted)?.query ||
@@ -970,11 +984,11 @@ https://research.example.org/paper`;
                               prevChats.map((chat) =>
                                 chat.id === currentChatId
                                   ? {
-                                      ...chat,
-                                      isTracking: true,
-                                      trackingActive: true,
-                                      trackingFrequency: activeTracking?.frequency || "毎日 9:00",
-                                    }
+                                    ...chat,
+                                    isTracking: true,
+                                    trackingActive: true,
+                                    trackingFrequency: activeTracking?.frequency || "毎日 9:00",
+                                  }
                                   : chat,
                               ),
                             );
@@ -987,22 +1001,20 @@ https://research.example.org/paper`;
                     </div>
                   ) : (
                     <>
-                      <div className={`flex-1 overflow-y-auto flex flex-col items-center pb-4 ${
-                        theme === 'dark'
-                          ? 'bg-gradient-to-br from-[#1a1f2e] via-[#252a3a] to-[#2a1f2e]'
-                          : 'bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]'
-                      }`}>
+                      <div className={`flex-1 overflow-y-auto flex flex-col items-center pb-4 ${theme === 'dark'
+                        ? 'bg-gradient-to-br from-[#1a1f2e] via-[#252a3a] to-[#2a1f2e]'
+                        : 'bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]'
+                        }`}>
                         {currentChat &&
-                        currentChat.messages.length > 0 ? (
-                          <div className={`w-full mx-auto px-6 py-6 pb-32 transition-all duration-300 ${
-                            isTrackingDetailOpen ? 'max-w-full' : 'max-w-3xl'
-                          }`}>
+                          currentChat.messages.length > 0 ? (
+                          <div className={`w-full mx-auto px-6 py-6 pb-32 transition-all duration-300 ${isTrackingDetailOpen ? 'max-w-full' : 'max-w-3xl'
+                            }`}>
                             {(() => {
                               // メッセージを追跡開始前と後に分割
-                              const messagesBeforeTracking = activeTracking?.startTime 
+                              const messagesBeforeTracking = activeTracking?.startTime
                                 ? currentChat.messages.filter(msg => msg.timestamp < activeTracking.startTime!)
                                 : currentChat.messages;
-                              
+
                               const messagesAfterTracking = activeTracking?.startTime
                                 ? currentChat.messages.filter(msg => msg.timestamp >= activeTracking.startTime!)
                                 : [];
@@ -1023,63 +1035,89 @@ https://research.example.org/paper`;
                                             {trackingSuggestions.find(
                                               (s) =>
                                                 s.messageId ===
-                                                  messagesBeforeTracking[index - 1].id && !s.accepted,
+                                                messagesBeforeTracking[index - 1].id && !s.accepted,
                                             ) && (
-                                              <>
-                                                {/* SimpleTrackingSetup */}
-                                                <div className="max-w-4xl mx-auto mt-6 mb-4" ref={trackingSuggestionCardRef}>
-                                                  <SimpleTrackingSetup
-                                                    userPrompt={
-                                                      trackingSuggestions.find(
-                                                        (s) =>
-                                                          s.messageId ===
-                                                          messagesBeforeTracking[index - 1].id,
-                                                      )?.query || ""
-                                                    }
-                                                    recommendedPrompt="「Apple Intelligenceの2024〜2025年における、主要な機能アップデート、日本語対応の進捗状況、対応デバイスの拡大、プライバシー技術の革新、および市場での評価について、信頼性の高いソースから継続的に追跡し、重要な変化があれば通知してください。」"
-                                                    onExecuteTracking={() => {
-                                                      const trackingStartTime = new Date();
-                                                      setActiveTracking({
-                                                        theme: "Apple Intelligence",
-                                                        frequency: "毎日 9:00",
-                                                        startTime: trackingStartTime,
-                                                      });
-                                                      setTrackingSuggestions(
-                                                        (prev) =>
-                                                          prev.map((s) =>
-                                                            s.messageId === messagesBeforeTracking[index - 1].id
-                                                              ? { ...s, accepted: true }
-                                                              : s,
-                                                          ),
-                                                      );
-                                                      
-                                                      // 現在のチャットをサイドバーの「追跡中」に追加
-                                                      if (currentChatId) {
-                                                        setChats((prevChats) =>
-                                                          prevChats.map((chat) =>
-                                                            chat.id === currentChatId
-                                                              ? {
+                                                <>
+                                                  {/* SimpleTrackingSetup */}
+                                                  <div className="max-w-4xl mx-auto mt-6 mb-4" ref={trackingSuggestionCardRef}>
+                                                    <SimpleTrackingSetup
+                                                      userPrompt={
+                                                        trackingSuggestions.find(
+                                                          (s) =>
+                                                            s.messageId ===
+                                                            messagesBeforeTracking[index - 1].id,
+                                                        )?.query || ""
+                                                      }
+                                                      recommendedPrompt={
+                                                        trackingSuggestions.find(
+                                                          (s) =>
+                                                            s.messageId ===
+                                                            messagesBeforeTracking[index - 1].id,
+                                                        )?.suggestedPrompt ||
+                                                        "「Apple Intelligenceの2024〜2025年における、主要な機能アップデート、日本語対応の進捗状況、対応デバイスの拡大、プライバシー技術の革新、および市場での評価について、信頼性の高いソースから継続的に追跡し、重要な変化があれば通知してください。」"
+                                                      }
+                                                      onExecuteTracking={() => {
+                                                        const suggestion = trackingSuggestions.find(
+                                                          (s) =>
+                                                            s.messageId ===
+                                                            messagesBeforeTracking[index - 1].id,
+                                                        );
+                                                        const trackingStartTime = new Date();
+                                                        const theme = suggestion?.query || "Apple Intelligence"; // Fallback
+
+                                                        setActiveTracking({
+                                                          theme: theme,
+                                                          frequency: "毎日 9:00",
+                                                          startTime: trackingStartTime,
+                                                        });
+                                                        setTrackingSuggestions(
+                                                          (prev) =>
+                                                            prev.map((s) =>
+                                                              s.messageId === messagesBeforeTracking[index - 1].id
+                                                                ? { ...s, accepted: true }
+                                                                : s,
+                                                            ),
+                                                        );
+
+                                                        // 現在のチャットをサイドバーの「追跡中」に追加
+                                                        if (currentChatId) {
+                                                          // Backend update
+                                                          if (isAuthenticated) {
+                                                            chatsApi.updateChat(currentChatId, {
+                                                              isTracking: true,
+                                                              trackingActive: true,
+                                                              trackingFrequency: "毎日 9:00",
+                                                              thumbnail: suggestion?.imageUrl
+                                                            }).catch(err => console.error("Failed to update chat tracking status", err));
+                                                          }
+
+                                                          setChats((prevChats) =>
+                                                            prevChats.map((chat) =>
+                                                              chat.id === currentChatId
+                                                                ? {
                                                                   ...chat,
                                                                   isTracking: true,
                                                                   trackingActive: true,
                                                                   trackingFrequency: "毎日 9:00",
+                                                                  // Also update local state if Chat interface has thumbnail? 
+                                                                  // Need to verify Chat interface. But backend persistence is key.
                                                                 }
-                                                              : chat,
-                                                          ),
-                                                        );
-                                                      }
-                                                      
-                                                      console.log("追跡実行");
-                                                    }}
-                                                    onOpenDetailSettings={() => {
-                                                      // 詳細設定を開く
-                                                      setIsSidebarOpen(false);
-                                                      setIsTrackingDetailOpen(true);
-                                                    }}
-                                                  />
-                                                </div>
-                                              </>
-                                            )}
+                                                                : chat,
+                                                            ),
+                                                          );
+                                                        }
+
+                                                        console.log("追跡実行");
+                                                      }}
+                                                      onOpenDetailSettings={() => {
+                                                        // 詳細設定を開く
+                                                        setIsSidebarOpen(false);
+                                                        setIsTrackingDetailOpen(true);
+                                                      }}
+                                                    />
+                                                  </div>
+                                                </>
+                                              )}
                                           </>
                                         )}
                                     </div>
@@ -1134,7 +1172,7 @@ https://research.example.org/paper`;
                                 </>
                               );
                             })()}
-                            
+
                             {/* スクロール用の参照ポイント */}
                             <div ref={chatMessagesEndRef} />
                           </div>

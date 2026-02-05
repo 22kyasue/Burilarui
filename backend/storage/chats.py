@@ -44,7 +44,9 @@ class ChatStorage(JSONFileStorage):
             'update_count': data.get('update_count', 0),
             'tracking_frequency': data.get('tracking_frequency'),
             'notification_enabled': data.get('notification_enabled', False),
+            'notification_enabled': data.get('notification_enabled', False),
             'notification_granularity': data.get('notification_granularity', 'update'),
+            'thumbnail': data.get('thumbnail'),
         }
         return self.create(chat_data)
 

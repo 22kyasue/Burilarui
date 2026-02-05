@@ -20,5 +20,109 @@
     "id": "1770210370873",
     "created_at": "2026-02-04T22:06:10.873283",
     "updated_at": "2026-02-04T22:06:10.873283"
+  },
+  {
+    "user_id": "1770290658512",
+    "title": "Latest SpaceX Starship launch",
+    "messages": [
+      {
+        "content": "Latest SpaceX Starship launch",
+        "id": "1770292784277",
+        "role": "user",
+        "timestamp": "2026-02-05T11:59:44.277Z"
+      },
+      {
+        "content": "Error: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+        "id": "1770292798315",
+        "role": "assistant",
+        "timestamp": "2026-02-05T11:59:58.314Z"
+      },
+      {
+        "content": "Latest SpaceX Starship launch",
+        "id": "1770292847102",
+        "role": "user",
+        "timestamp": "2026-02-05T12:00:47.102Z"
+      },
+      {
+        "content": "Apple Intelligence updates",
+        "id": "1770293019413",
+        "role": "user",
+        "timestamp": "2026-02-05T12:03:39.413Z"
+      },
+      {
+        "id": "1770293248472",
+        "content": "SpaceX Starship updates",
+        "role": "user",
+        "timestamp": "2026-02-05T12:07:28.472Z"
+      }
+    ],
+    "pinned": false,
+    "is_tracking": false,
+    "tracking_active": false,
+    "update_count": 0,
+    "tracking_frequency": null,
+    "notification_enabled": false,
+    "notification_granularity": "update",
+    "id": "1770292784289",
+    "created_at": "2026-02-05T20:59:44.289251",
+    "updated_at": "2026-02-05T22:53:08.539892"
+  },
+  {
+    "user_id": "1770290658512",
+    "title": "SpaceX Starship updates",
+    "messages": [
+      {
+        "content": "SpaceX Starship updates",
+        "id": "1770293310062",
+        "role": "user",
+        "timestamp": "2026-02-05T12:08:30.062Z"
+      },
+      {
+        "id": "1770293322421",
+        "content": "**Recent SpaceX Starship updates include FAA approval for up to 44 launches and 88 landings per year at Kennedy Space Center's LC-39A, ongoing preparation for Starship Flight 12 with Version 3 prototypes Ship 39 and Booster 19, and active testing of Block 3 vehicles at Starbase.**[2][5][4]\n\n### FAA Approval at Kennedy Space Center\nThe US Federal Aviation Administration issued a Record of Decision on January 30, 2026, approving Starship-Super Heavy operations at LC-39A, enabling 44 launches annually (44 Starship upper stage landings and 44 Super Heavy booster landings).[2]\n\n### Starship Flight 12 and Version 3 Preparations\n- Ship 39, the first **Version 3 Starship upper-stage prototype**, and Booster 19 are slated for **Flight 12**, marking the debut of the v3 full stack.[5][1]\n- Testing at Starbase's Massey Outpost includes an eighth round of cryogenic testing on Ship 39.1 Block 3 test tank, with structural testing campaigns concluding and new hardware arriving for infrastructure like the Air Separation Plant.[4]\n- Booster hardware is rolling to the launch site, hinting at a potential debut aligned with a June 2026 timeline for ship-to-ship propellant transfer, alongside plans to expand to five active launch pads.[1]\n- Recent activities include removing the blue compression cap and ship aft simulator ring from a tank, with its status (usable or scrapped) unclear.[1]\n\n### Broader Development Context\nSpaceX anticipates **Version 4** as a stretched design following Version 3 success, with next major milestones including long-duration flight tests and in-space propellant transfer for the Human Landing System (HLS).[1][3]\nPrevious flights provide background: Flight 11 used Ship 38 (final v2 Ship) and Booster 17 (final v2 Booster, unflown); Flight 10 used Booster 16 and Ship 37.[5]\n\n**Sources:**\n- [1] https://www.youtube.com/watch?v=5N6Aau2sjQ4\n- [2] https://gulfnews.com/world/americas/fully-reusable-rockets-starship-gets-green-light-for-44-launches-88-landings-per-year-1.500431064\n- [3] https://www.spacex.com/updates\n- [4] https://www.youtube.com/watch?v=JNqwV4XQqzg\n- [5] https://nextspaceflight.com/starship/\n\n**Sources:**\n[1] https://www.youtube.com/watch?v=5N6Aau2sjQ4\n[2] https://gulfnews.com/world/americas/fully-reusable-rockets-starship-gets-green-light-for-44-launches-88-landings-per-year-1.500431064\n[3] https://www.spacex.com/updates\n[4] https://www.youtube.com/watch?v=JNqwV4XQqzg\n[5] https://nextspaceflight.com/starship/\n",
+        "role": "assistant",
+        "timestamp": "2026-02-05T12:08:42.420Z",
+        "sources": 6
+      }
+    ],
+    "pinned": false,
+    "is_tracking": false,
+    "tracking_active": false,
+    "update_count": 0,
+    "tracking_frequency": null,
+    "notification_enabled": false,
+    "notification_granularity": "update",
+    "id": "1770293310079",
+    "created_at": "2026-02-05T21:08:30.079185",
+    "updated_at": "2026-02-05T21:08:42.427493"
+  },
+  {
+    "user_id": "1770290658512",
+    "title": "Latest news about Python",
+    "messages": [
+      {
+        "content": "Latest news about Python",
+        "id": "1770294151505",
+        "role": "user",
+        "timestamp": "2026-02-05T12:22:31.505Z"
+      },
+      {
+        "id": "1770294153651",
+        "content": "Ambiguous reference to 'Python' (programming language vs. snake) without context, and vague timeframe 'latest' in fast-evolving tech news.\n\n**Clarification needed:**\n- Do you mean the Python programming language or the animal?\n- Are you looking for news on releases, trends, or specific topics like AI?",
+        "role": "assistant",
+        "timestamp": "2026-02-05T12:22:33.650Z",
+        "sources": 0
+      }
+    ],
+    "pinned": false,
+    "is_tracking": false,
+    "tracking_active": false,
+    "update_count": 0,
+    "tracking_frequency": null,
+    "notification_enabled": false,
+    "notification_granularity": "update",
+    "id": "1770294151514",
+    "created_at": "2026-02-05T21:22:31.514628",
+    "updated_at": "2026-02-05T22:53:10.482517"
   }
 ]

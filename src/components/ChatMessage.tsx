@@ -24,76 +24,79 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
 
   // ソースバッジを解析してレンダリングする関数
   const renderContentWithSourceBadges = (content: string) => {
-    // [provider:+number] または [provider] のパターンを検出
-    const parts = content.split(/(\[\w\s]+(?::\+\d+)?\])/g);
-    
-    return parts.map((part, index) => {
-      // ソースバッジのパターンにマッチするか確認
-      const match = part.match(/\[([\w\s]+)(?::\+(\d+))?\]/);
-      
-      if (match) {
-        const provider = match[1].toLowerCase();
-        const count = match[2];
-        
-        return (
-          <span
-            key={index}
-            className="inline-flex items-center gap-1 ml-1 px-2 py-0.5 rounded-md text-xs font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 transition-colors"
-          >
-            <span className="capitalize">{provider}</span>
-            {count && <span className="text-gray-400">+{count}</span>}
-          </span>
-        );
-      }
-      
-      return part;
-    });
+    if (!content || typeof content !== 'string') return content;
+
+    try {
+      // [provider:+number] または [provider] のパターンを検出
+      if (!content.includes('[')) return content;
+
+      const parts = content.split(/(\[\w\s]+(?::\+\d+)?\])/g);
+
+      return parts.map((part, index) => {
+        // ソースバッジのパターンにマッチするか確認
+        const match = part.match(/\[([\w\s]+)(?::\+(\d+))?\]/);
+
+        if (match) {
+          const provider = match[1].toLowerCase();
+          const count = match[2];
+
+          return (
+            <span
+              key={index}
+              className="inline-flex items-center gap-1 ml-1 px-2 py-0.5 rounded-md text-xs font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 transition-colors"
+            >
+              <span className="capitalize">{provider}</span>
+              {count && <span className="text-gray-400">+{count}</span>}
+            </span>
+          );
+        }
+
+        return part;
+      });
+    } catch (e) {
+      console.error('Error in renderContentWithSourceBadges:', e);
+      return content;
+    }
   };
 
   // マークダウンのカスタムコンポーネント
   const components = {
-    h2: ({node, ...props}: any) => (
-      <h2 className={`text-lg font-semibold mt-6 mb-3 first:mt-0 ${
-        theme === 'dark' ? 'text-gray-200' : 'text-gray-800'
-      }`} {...props} />
+    h2: ({ node, ...props }: any) => (
+      <h2 className={`text-lg font-semibold mt-6 mb-3 first:mt-0 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'
+        }`} {...props} />
     ),
-    p: ({node, children, ...props}: any) => {
+    p: ({ node, children, ...props }: any) => {
       // 段落内のテキストをソースバッジ付きでレンダリング
-      const content = typeof children === 'string' ? children : '';
       if (typeof children === 'string' && children.includes('[')) {
         return (
-          <p className={`leading-relaxed mb-3 ${
-            theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
-          }`} {...props}>
+          <p className={`leading-relaxed mb-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
+            }`} {...props}>
             {renderContentWithSourceBadges(children)}
           </p>
         );
       }
-      return <p className={`leading-relaxed mb-3 ${
-        theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
-      }`} {...props}>{children}</p>;
+      return <p className={`leading-relaxed mb-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
+        }`} {...props}>{children}</p>;
     },
-    ul: ({node, ...props}: any) => (
+    ul: ({ node, ...props }: any) => (
       <ul className="space-y-2 mb-4" {...props} />
     ),
-    li: ({node, children, ...props}: any) => {
+    li: ({ node, children, ...props }: any) => {
       // リスト項目内のテキストをソースバッジ付きでレンダリング
-      const content = typeof children === 'string' ? children : '';
       if (typeof children === 'string' && children.includes('[')) {
         return (
-          <li className={`flex items-start gap-2 ${
-            theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
-          }`} {...props}>
+          <li className={`flex items-start gap-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
+            }`} {...props}>
             <span className={`mt-1.5 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>•</span>
             <span className="flex-1">{renderContentWithSourceBadges(children)}</span>
           </li>
         );
       }
-      
+
       // 複数の子要素がある場合（太字など）
       return (
-        <li className="flex items-start gap-2 text-gray-800" {...props}>
-          <span className="text-gray-600 mt-1.5">•</span>
+        <li className={`flex items-start gap-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-800'}`} {...props}>
+          <span className={`mt-1.5 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>•</span>
           <span className="flex-1 inline-flex flex-wrap items-center gap-1">
             {Array.isArray(children) ? children.map((child, index) => {
               if (typeof child === 'string' && child.includes('[')) {
@@ -105,7 +108,7 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
         </li>
       );
     },
-    strong: ({node, ...props}: any) => (
+    strong: ({ node, ...props }: any) => (
       <strong className="font-semibold text-gray-900" {...props} />
     ),
   };
@@ -184,31 +187,31 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
           <Sparkles className="w-5 h-5 text-white" />
         </div>
       )}
-      
+
       <div className={`flex-1 max-w-3xl ${isUser ? 'flex justify-end' : ''}`}>
         <div
-          className={`rounded-2xl ${
-            isUser
-              ? theme === 'dark' 
-                ? 'bg-gradient-to-r from-indigo-900/40 to-purple-900/40 text-gray-200 border border-indigo-700/50 px-4 py-3 backdrop-blur-sm' 
-                : 'bg-gradient-to-r from-indigo-100 to-purple-100 text-gray-800 border border-indigo-200/50 px-4 py-3'
-              : showWhiteBackground 
-                ? theme === 'dark' 
-                  ? 'bg-gray-800/90 backdrop-blur-sm border border-gray-700 shadow-sm px-6 py-5' 
-                  : 'bg-white/90 backdrop-blur-sm border border-gray-200 shadow-sm px-6 py-5'
-                : theme === 'dark' 
-                  ? 'bg-transparent text-gray-200' 
-                  : 'bg-transparent text-gray-800'
-          }`}
+          className={`rounded-2xl ${isUser
+            ? theme === 'dark'
+              ? 'bg-gradient-to-r from-indigo-900/40 to-purple-900/40 text-gray-200 border border-indigo-700/50 px-4 py-3 backdrop-blur-sm'
+              : 'bg-gradient-to-r from-indigo-100 to-purple-100 text-gray-800 border border-indigo-200/50 px-4 py-3'
+            : showWhiteBackground
+              ? theme === 'dark'
+                ? 'bg-gray-800/90 backdrop-blur-sm border border-gray-700 shadow-sm px-6 py-5'
+                : 'bg-white/90 backdrop-blur-sm border border-gray-200 shadow-sm px-6 py-5'
+              : theme === 'dark'
+                ? 'bg-transparent text-gray-200'
+                : 'bg-transparent text-gray-800'
+            }`}
         >
           {/* アシスタントメッセージの場合、アクションボタンとソース表示を追加 */}
           {!isUser && (
             <>
               {/* メッセージ内容 */}
               <div className="prose prose-sm max-w-none mb-4">
-                <ReactMarkdown className={`whitespace-pre-wrap leading-relaxed ${
-                  theme === 'dark' ? 'text-gray-200' : 'text-gray-800'
-                }`} components={components}>{message.content}</ReactMarkdown>
+                <div className={`whitespace-pre-wrap leading-relaxed ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'
+                  }`}>
+                  <ReactMarkdown components={components}>{message.content}</ReactMarkdown>
+                </div>
               </div>
 
               {/* 画像表示 */}
@@ -228,13 +231,12 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
               {/* ソースボタン - アクションボタンの上に配置 */}
               {message.sources && (
                 <div className="flex justify-end mb-3">
-                  <button 
+                  <button
                     onClick={() => setShowSources(!showSources)}
-                    className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-2 text-sm font-medium shadow-sm backdrop-blur-sm ${
-                      theme === 'dark' 
-                        ? 'bg-gray-700/80 hover:bg-gray-600/80 text-white border border-gray-600/50' 
-                        : 'bg-gray-800/90 hover:bg-gray-700/90 text-white'
-                    }`}
+                    className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-2 text-sm font-medium shadow-sm backdrop-blur-sm ${theme === 'dark'
+                      ? 'bg-gray-700/80 hover:bg-gray-600/80 text-white border border-gray-600/50'
+                      : 'bg-gray-800/90 hover:bg-gray-700/90 text-white'
+                      }`}
                   >
                     <Layers className="w-4 h-4" />
                     {message.sources} sources
@@ -244,55 +246,45 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
 
               {/* アクションボタン */}
               <div className="flex items-center gap-2">
-                <button 
-                  className={`p-2 rounded-lg transition-colors group ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}
+                <button
+                  className={`p-2 rounded-lg transition-colors group ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}
                   title="共有"
                 >
-                  <Share2 className={`w-4 h-4 ${
-                    theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
-                  }`} />
+                  <Share2 className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
+                    }`} />
                 </button>
-                <button 
-                  className={`p-2 rounded-lg transition-colors group ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}
+                <button
+                  className={`p-2 rounded-lg transition-colors group ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}
                   title="アップロード"
                 >
-                  <Download className={`w-4 h-4 rotate-180 ${
-                    theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
-                  }`} />
+                  <Download className={`w-4 h-4 rotate-180 ${theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
+                    }`} />
                 </button>
-                <button 
-                  className={`p-2 rounded-lg transition-colors group ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}
+                <button
+                  className={`p-2 rounded-lg transition-colors group ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}
                   title="ダウンロード"
                 >
-                  <Download className={`w-4 h-4 ${
-                    theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
-                  }`} />
+                  <Download className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
+                    }`} />
                 </button>
-                <button 
-                  className={`p-2 rounded-lg transition-colors group ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}
+                <button
+                  className={`p-2 rounded-lg transition-colors group ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}
                   title="コピー"
                 >
-                  <Copy className={`w-4 h-4 ${
-                    theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
-                  }`} />
+                  <Copy className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
+                    }`} />
                 </button>
-                <button 
-                  className={`p-2 rounded-lg transition-colors group ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}
+                <button
+                  className={`p-2 rounded-lg transition-colors group ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}
                   title="リフレッシュ"
                 >
-                  <RefreshCw className={`w-4 h-4 ${
-                    theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
-                  }`} />
+                  <RefreshCw className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-600 group-hover:text-gray-800'
+                    }`} />
                 </button>
               </div>
 
@@ -300,17 +292,15 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
               {showSources && message.sources && (
                 <>
                   {/* オーバーレイ */}
-                  <div 
-                    className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300 ${
-                      isAnimating ? 'opacity-100' : 'opacity-0'
-                    }`}
+                  <div
+                    className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300 ${isAnimating ? 'opacity-100' : 'opacity-0'
+                      }`}
                     onClick={handleClose}
                   />
-                  
+
                   {/* サイドパネル */}
-                  <div className={`fixed top-0 right-0 h-full w-full max-w-md bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ease-out ${
-                    isAnimating ? 'translate-x-0' : 'translate-x-full'
-                  }`}>
+                  <div className={`fixed top-0 right-0 h-full w-full max-w-md bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ease-out ${isAnimating ? 'translate-x-0' : 'translate-x-full'
+                    }`}>
                     {/* ヘッダー */}
                     <div className="flex items-center justify-between p-4 border-b border-gray-700">
                       <div className="flex items-center gap-2">
@@ -340,9 +330,9 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
                               {/* プロバイダーアイコン */}
                               <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0 mt-0.5">
                                 <span className="text-xs font-medium text-gray-300">
-                                  {source.provider === 'apple' ? '🍎' : 
-                                   source.provider === '9to5mac' ? '📱' : 
-                                   '📰'}
+                                  {source.provider === 'apple' ? '🍎' :
+                                    source.provider === '9to5mac' ? '📱' :
+                                      '📰'}
                                 </span>
                               </div>
 

@@ -1,13 +1,13 @@
-import { 
-  History, 
-  User, 
-  Puzzle, 
-  Clock, 
-  Link, 
-  Palette, 
-  CreditCard, 
-  MessageSquare, 
-  HelpCircle, 
+import {
+  History,
+  User,
+  Puzzle,
+  Clock,
+  Link,
+  Palette,
+  CreditCard,
+  MessageSquare,
+  HelpCircle,
   ChevronRight,
   Shield,
   Info,
@@ -56,7 +56,7 @@ export function SettingsModal({ isOpen, onClose, onViewIntegrations, onViewTrack
       hasArrow: true,
       hasDot: false,
       hasSubmenu: true,
-      action: () => {} // 空のアクション
+      action: () => { } // 空のアクション
     },
     {
       id: 'plan',

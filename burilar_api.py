@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import requests
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 import threading
 
 # Initialize Flask app - serve static files from build folder
@@ -23,36 +23,51 @@ app.register_blueprint(chats_bp)
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY", "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")  # Set via environment variable or replace placeholder
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
 
-def call_perplexity(messages: List[Dict], model: str = "sonar"):
+from typing import Dict, List, Optional, Union, Literal, overload
+
+@overload
+def call_perplexity(messages: List[Dict], model: str = "sonar", return_images: Literal[False] = False) -> str: ...
+
+@overload
+def call_perplexity(messages: List[Dict], model: str = "sonar", return_images: Literal[True] = True) -> Dict: ...
+
+@overload
+def call_perplexity(messages: List[Dict], model: str = "sonar", return_images: bool = False) -> Union[str, Dict]: ...
+
+def call_perplexity(messages: List[Dict], model: str = "sonar", return_images: bool = False) -> Union[str, Dict]:
     """Make a request to Perplexity API."""
     headers = {
         "Authorization": f"Bearer {PERPLEXITY_API_KEY}",
         "Content-Type": "application/json"
     }
-    
+
     payload = {
         "model": model,
         "messages": messages,
         "temperature": 0.2,
         "max_tokens": 4000,
-        "return_citations": True,  # Request citation information
-        "return_images": False
+        "return_citations": True,
+        "return_images": return_images or False
     }
-    
+
     try:
         response = requests.post(PERPLEXITY_API_URL, json=payload, headers=headers)
         response.raise_for_status()
         result = response.json()
-        
+
         # Extract the main content
         content = result['choices'][0]['message']['content']
-        
+        images = result['choices'][0]['message'].get('images', [])
+
         # Try to append citations if available
         if 'citations' in result and result['citations']:
             content += "\n\n**Sources:**\n"
             for i, citation in enumerate(result['citations'], 1):
                 content += f"[{i}] {citation}\n"
-        
+
+        if return_images:
+            return {"content": content, "images": images}
+
         return content
     except requests.exceptions.HTTPError as e:
         # Print the full error response for debugging
@@ -83,6 +98,9 @@ class TrackingPlan:
         self.status = status  # "pending", "tracking", "completed", "needs_clarification"
         self.original_query = ""
         self.clarification_info = None
+        self.clarification_info = None
+        self.suggested_prompt = ""
+        self.image_url = ""
 
     def to_dict(self) -> Dict:
         return {
@@ -100,7 +118,12 @@ class TrackingPlan:
             'updates': self.updates,
             'status': self.status,
             'original_query': self.original_query,
-            'clarification_info': self.clarification_info
+            'status': self.status,
+            'original_query': self.original_query,
+            'clarification_info': self.clarification_info,
+            'clarification_info': self.clarification_info,
+            'suggested_prompt': getattr(self, 'suggested_prompt', ""),
+            'image_url': getattr(self, 'image_url', "")
         }
 
 class BurilarTracker:
@@ -174,6 +197,27 @@ Respond with ONLY the JSON object."""
         ]
         
         return call_perplexity(messages, model="sonar")
+
+    def search_with_ai_enhanced(self, query: str) -> Dict:
+        """Perform a web search using Perplexity AI, returning images if available."""
+        messages = [
+            {
+                "role": "system",
+                "content": "You are a helpful research assistant. Provide comprehensive and accurate information based on current web sources. IMPORTANT: Always include the actual source URLs at the end of your response in a 'Sources:' section, listing each source with its full URL."
+            },
+            {
+                "role": "user",
+                "content": f"{query}\n\nPlease include all source URLs at the end of your response in a clear 'Sources:' section."
+            }
+        ]
+
+        # Use return_images=True to get images
+        result = call_perplexity(messages, model="sonar", return_images=True)
+
+        if isinstance(result, dict):
+            return result
+        # Fallback if error occurred
+        return {"content": result, "images": []}
     
     def assess_topic_status(self, search_result: str) -> Dict:
         """Determine if a topic is 'Completed' or 'In Progress'."""
@@ -238,18 +282,30 @@ Respond with ONLY "Completed" or "In Progress" on the first line, followed by ON
     
     def generate_tracking_plan(self, user_prompt: str, search_result: str) -> TrackingPlan:
         """Generate a tracking plan proposal based on the user's prompt."""
-        plan_prompt = f"""Based on this user query and search result, create a tracking plan in JSON format:
+        plan_prompt = f"""Based on this user query and search result, create a detailed tracking plan in JSON format.
 
 User Query: {user_prompt}
 Search Result: {search_result}
 
 Generate a JSON object with:
-- topic: A concise description of what to track
+- topic: A concise description of what to track (max 50 chars)
 - objective: What significant developments to watch for
 - frequency_hours: Recommended search frequency (4, 12, or 24 hours)
 - keywords: List of 3-5 important keywords to detect in updates
+- suggested_prompt: A comprehensive, high-quality prompt for an AI agent to track this topic. It MUST include:
+    1. Specific timeframe (e.g., "during 2024-2025")
+    2. Specific viewpoints to monitor (list key aspects)
+    3. Clear action conditions (when to notify)
+    Format it as a single coherent paragraph starting with "Regarding [Topic]...".
 
-Example: {{"topic": "Investigation of XYZ case", "objective": "Detect arrest, trial start, or verdict", "frequency_hours": 12, "keywords": ["arrest", "charged", "trial", "verdict", "suspect identified"]}}
+Example JSON:
+{{
+  "topic": "Apple Intelligence Updates",
+  "objective": "Track new features and regional availability",
+  "frequency_hours": 24,
+  "keywords": ["Apple Intelligence", "iOS 18", "Siri", "Japanese support"],
+  "suggested_prompt": "Regarding Apple Intelligence's development in 2024-2025, please continuously track major feature updates, progress on Japanese language support, expansion of compatible devices, innovations in privacy technology, and market reception. Consult reliable technical sources and notify me immediately if there are significant changes or new beta releases."
+}}
 
 Respond with ONLY the JSON object, no additional text."""
         
@@ -268,20 +324,25 @@ Respond with ONLY the JSON object, no additional text."""
             else:
                 plan_data = json.loads(response_text)
                 
-            return TrackingPlan(
+                
+            plan = TrackingPlan(
                 topic=plan_data['topic'],
                 objective=plan_data['objective'],
                 frequency_hours=plan_data['frequency_hours'],
                 keywords=plan_data['keywords']
             )
+            plan.suggested_prompt = plan_data.get('suggested_prompt', f"Please track {user_prompt} and notify me of updates.")
+            return plan
         except Exception as e:
             print(f"Error generating tracking plan: {str(e)}")
-            return TrackingPlan(
-                topic=user_prompt,
+            plan = TrackingPlan(
+                topic=user_prompt[:50],
                 objective="Track for significant updates",
-                frequency_hours=12,
-                keywords=["update", "news", "announced", "confirmed", "reported"]
+                frequency_hours=24,
+                keywords=["update", "news", "announced"]
             )
+            plan.suggested_prompt = f"Please track {user_prompt} continuously and notify me of any significant updates regarding this topic."
+            return plan
     
     def detect_differences(self, old_result: str, new_result: str, keywords: List[str]) -> Optional[str]:
         """Compare search results and detect meaningful differences."""
@@ -385,6 +446,9 @@ If there are no significant changes, respond with only "NO_CHANGE".
                         plan.updates = plan_dict.get('updates', [])
                         plan.original_query = plan_dict.get('original_query', '')
                         plan.clarification_info = plan_dict.get('clarification_info')
+                        plan.clarification_info = plan_dict.get('clarification_info')
+                        plan.suggested_prompt = plan_dict.get('suggested_prompt', '')
+                        plan.image_url = plan_dict.get('image_url', '')
 
                         if plan_dict['last_search_time']:
                             plan.last_search_time = datetime.fromisoformat(plan_dict['last_search_time'])
@@ -461,7 +525,9 @@ def initial_search():
         })
 
     # Perform initial search
-    search_result = tracker.search_with_ai(query)
+    search_enhanced = tracker.search_with_ai_enhanced(query)
+    search_result = search_enhanced['content']
+    images = search_enhanced.get('images', [])
 
     # Assess status
     status_info = tracker.assess_topic_status(search_result)
@@ -479,6 +545,8 @@ def initial_search():
         plan = tracker.generate_tracking_plan(query, search_result)
         plan.user_id = user_id
         plan.last_search_result = search_result
+        if images:
+             plan.image_url = images[0]
         plan.status = "pending"  # Waiting for user to start tracking
         plan.original_query = query
         response['proposed_plan'] = {
@@ -486,7 +554,9 @@ def initial_search():
             'objective': plan.objective,
             'frequency_hours': plan.frequency_hours,
             'keywords': plan.keywords,
-            'plan_id': plan.id
+            'plan_id': plan.id,
+            'suggested_prompt': plan.suggested_prompt,
+            'image_url': plan.image_url
         }
     else:
         # Status is "completed" - save as a completed search

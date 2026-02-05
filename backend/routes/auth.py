@@ -108,6 +108,9 @@ def login():
 
     email = data.get('email', '').strip()
     password = data.get('password', '')
+    
+    print(f"DEBUG: Login attempt for email: {email}")
+    print(f"DEBUG: Request headers: {request.headers}")
 
     if not email or not password:
         return jsonify({
@@ -174,11 +177,61 @@ def get_me():
     })
 
 
-@auth_bp.route('/logout', methods=['POST'])
-@auth_required
-def logout():
-    """Logout current session."""
-    # For JWT-based auth, we don't need to do anything server-side
-    # The client just needs to delete the token
-    # In a more complete implementation, we might maintain a token blacklist
-    return '', 204
+
+@auth_bp.route('/google', methods=['POST'])
+def google_login():
+    """Login with Google OAuth."""
+    data = request.json or {}
+    token = data.get('token')
+    
+    print(f"DEBUG: Google login attempt with token: {token[:10]}..." if token else "DEBUG: Google login attempt without token")
+
+    if not token:
+        return jsonify({
+            'error': {
+                'code': 'VALIDATION_ERROR',
+                'message': 'トークンが必要です'
+            }
+        }), 400
+
+    # In a real app, verify the token with Google
+    # For MVP, we'll decode it if it's a JWT or just trust it for dev/demo
+    # Here we'll simulate a successful login for any non-empty token
+    
+    # Mock user data from "Google"
+    email = "google_user@example.com"
+    name = "Google User"
+    
+    # Check if user exists
+    user = user_storage.get_by_email(email)
+    
+    if not user:
+        # Register new user
+        try:
+            user = user_storage.create({
+                'email': email,
+                'password_hash': 'google_oauth_placeholder',
+                'name': name,
+                'plan': 'free',
+                'auth_probider': 'google'
+            })
+        except ValueError:
+            # Should not happen given get_by_email check, but handle race condition
+            user = user_storage.get_by_email(email)
+    
+    # Generate token
+    token_data = create_access_token(user['id'], user['email'])
+
+    return jsonify({
+        'user': {
+            'id': user['id'],
+            'email': user['email'],
+            'name': user['name'],
+            'avatar': user.get('avatar'),
+            'plan': user.get('plan', 'free'),
+        },
+        'accessToken': token_data['access_token'],
+        'refreshToken': '',
+        'expiresAt': token_data['expires_at'],
+    })
+
