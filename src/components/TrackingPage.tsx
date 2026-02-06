@@ -47,6 +47,10 @@ interface TrackingPageProps {
       content: string;
       timestamp: Date;
     }>;
+    updates?: Array<{
+      timestamp: string;
+      update: string;
+    }>;
   }>;
 }
 
@@ -148,7 +152,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
       const aiMessage = {
         id: `msg-${Date.now()}-ai`,
         role: 'ai' as const,
-        content: expandedPromptDetails 
+        content: expandedPromptDetails
           ? generateAIResponseForPrompt(question, expandedPromptDetails)
           : generateAIResponse(question, selectedUpdate!),
         timestamp: new Date(),
@@ -174,15 +178,15 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     }
 
     const lowerQuestion = userQuestion.toLowerCase();
-    
+
     if (lowerQuestion.includes('いつ') || lowerQuestion.includes('when') || lowerQuestion.includes('時期')) {
       return `${selectedUpdateData.title}は${formatFullDateTime(selectedUpdateData.timestamp)}に発表されました。${selectedUpdateData.content.substring(0, 150)}...`;
     }
-    
+
     if (lowerQuestion.includes('なぜ') || lowerQuestion.includes('why') || lowerQuestion.includes('理由')) {
       return `${selectedUpdateData.title}の背景には、業界全体の動向や市場の変化があります。詳細については上記の情報セクションをご覧ください。`;
     }
-    
+
     if (lowerQuestion.includes('どのように') || lowerQuestion.includes('how') || lowerQuestion.includes('方法')) {
       return `${selectedUpdateData.title}に関する具体的な実装方法や手順については、参考文献セクションのリンクをご確認ください。詳細なドキュメントが用意されています。`;
     }
@@ -204,15 +208,15 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     }
 
     const lowerQuestion = userQuestion.toLowerCase();
-    
+
     if (lowerQuestion.includes('いつ') || lowerQuestion.includes('when') || lowerQuestion.includes('時期')) {
       return `${selectedPromptData.title}は${formatFullDateTime(selectedPromptData.updatedAt)}に更新されました。${selectedPromptData.description.substring(0, 150)}...`;
     }
-    
+
     if (lowerQuestion.includes('なぜ') || lowerQuestion.includes('why') || lowerQuestion.includes('理由')) {
       return `${selectedPromptData.title}の背景には、業界全体の動向や市場の変化があります。詳細については上記の情報セクションをご覧ください。`;
     }
-    
+
     if (lowerQuestion.includes('どのように') || lowerQuestion.includes('how') || lowerQuestion.includes('方法')) {
       return `${selectedPromptData.title}に関する具体的な実装方法や手順については、参考文献セクションのリンクをご確認ください。詳細なドキュメントが用意されています。`;
     }
@@ -223,16 +227,16 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
   // プロンプト改善提案を生成
   const generatePromptSuggestions = (currentPrompt: string): Array<{ type: string; suggestion: string; reason: string }> => {
     const suggestions = [];
-    
+
     // 具体性のチェック
     if (currentPrompt.length < 50) {
       suggestions.push({
         type: '具体性の向上',
-        suggestion: 'より具体的な��脈や条件を追加してください。例：「〇〇について、△△の観点から、□□の目的で」のように詳細化します。',
+        suggestion: 'より具体的な文脈や条件を追加してください。例：「〇〇について、△△の観点から、□□の目的で」のように詳細化します。',
         reason: '具体的なプロンプトは、より関連性の高い情報を収集できます。'
       });
     }
-    
+
     // 時間軸のチェック
     if (!currentPrompt.includes('最新') && !currentPrompt.includes('トレンド') && !currentPrompt.includes('動向')) {
       suggestions.push({
@@ -241,7 +245,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
         reason: '時間軸を明確にすることで、より新鮮で関連性の高い情報を追跡できます。'
       });
     }
-    
+
     // ソースの質のチェック
     if (!currentPrompt.includes('公式') && !currentPrompt.includes('信頼') && !currentPrompt.includes('一次情報')) {
       suggestions.push({
@@ -250,7 +254,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
         reason: '情報源を指定することで、より信頼性の高い情報を優先的に収集できます。'
       });
     }
-    
+
     // 目的の明確化
     if (!currentPrompt.includes('比較') && !currentPrompt.includes('分析') && !currentPrompt.includes('評価') && !currentPrompt.includes('理解')) {
       suggestions.push({
@@ -279,7 +283,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     .map(chat => {
       const firstUserMessage = chat.messages?.find(msg => msg.role === 'user');
       const promptContent = firstUserMessage ? firstUserMessage.content : chat.title;
-      
+
       return {
         id: chat.id,
         title: chat.title,
@@ -293,56 +297,56 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
       };
     });
 
-  const trackingPrompts: TrackingPrompt[] = trackingChatsFromData.length > 0 
-    ? trackingChatsFromData 
+  const trackingPrompts: TrackingPrompt[] = trackingChatsFromData.length > 0
+    ? trackingChatsFromData
     : [
-    {
-      id: '1',
-      title: 'ユニリーバのマーケティング戦略調査',
-      isActive: true,
-      isPinned: true,
-      latestUpdate: 'ユニリーバのスポーツスポンサーシップと消費者参加型プログラムに関する最新情報が更新されました。',
-      description: 'ユニリーバブランドの社会的取り組みとマーケティング戦略の包括的調査',
-      updatedAt: new Date(Date.now() - 1000 * 60 * 15),
-      promptContent: 'FIFAワールドカップやUEFA EUROなどのスポーツスポンサーシップにおいて、Rexona（レクソーナ）やDove（ダヴ）などのブランドがどのような消費者参加型イベントやメッセージ発信（自信、ジェンダー平等など）を行っているか調査する。\n日本国内の消費者参加型エコプログラム「UMILE（ユーマイル）」について、現在のキャンペーン内容、対象店舗、回収ボックスの設置場所、消費者がどのように参加できるか詳しく調べる。\nダヴ（Dove）の「リアルビューティー」キャンペーンや「自己肯定感向上プロジェクト（Dove Self-Esteem Project）」について、日本国内の学校教育やワークショップでの実施事例、一般向けの教材提供などを調査する。\nラックス（LUX）が展開する「Social Damage Care」や採用バイアスに関するキャンペーンなど、ジェンダー平等や固定観念の打破を目指す具体的な活動内容を調べる。',
-      updates: [
-        {
-          id: 'u1',
-          title: 'Luxの「Social Damage Care」プロジェクトの最新展開',
-          content: 'Lux（ラックス）の「Social Damage Care（社会的ダメージケア）」プロジェクトが、採用活動における性別欄・顔写真の撤廃を実現し、さらに競合他社や異業種（三井化学など）へ波及させるムーブメントを創出しました。単に「髪のダメージ」を修復するという製品機能を超えて、「履歴書の性別欄」という日本社会の根深い慣習にメスを入れ、他社を巻き込んだ社会変革のアクションとして機能しています。',
-          timestamp: new Date(Date.now() - 1000 * 60 * 15),
-          sources: [
-            { id: 's1', url: 'https://www.unilever.co.jp/news/press-releases/2023/lux-social-damage-care/', title: 'ユニリーバ・ジャパン: Lux Social Damage Care プロジェクト' },
-            { id: 's2', url: 'https://www.advertimes.com/20230315/article405792/', title: 'AdverTimes: ラックスが挑む「社会的ダメージ」の解消' },
-          ],
-        },
-        {
-          id: 'u2',
-          title: 'UMILE（ユーマイル）エコプログラムの拡大',
-          content: '日本国内の消費者参加型エコプログラム「UMILE（ユーマイル）」が、花王との連携により対象店舗を大幅に拡大しました。競合を超えた「共創（Co-creation）」により、消費者は全国の提携店舗で使用済み容器を回収ボックスに投入でき、サーキュラーエコノミーの実現に参加できるようになっています。',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-          sources: [
-            { id: 's3', url: 'https://www.unilever.co.jp/planet-and-society/umile/', title: 'ユニリーバ・ジャパン: UMILE プログラム公式サイト' },
-            { id: 's4', url: 'https://www.kao.com/jp/corporate/news/sustainability/2023/20230420-001/', title: '花王: UMILEプログラムへの参画について' },
-          ],
-        },
-        {
-          id: 'u3',
-          title: 'Doveの「自己肯定感向上プロジェクト」日本展開',
-          content: 'ダヴ（Dove）の「リアルビューティー」キャンペーンと「自己肯定感向上プロジェクト（Dove Self-Esteem Project）」が、日本国内の学校教育やワークショップでの実施事例を増やしています。一般向けの教材も無料で提供され、若年層の自己肯定感の向上と��ディアリテラシーの育成に貢献しています。',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5),
-          sources: [
-            { id: 's5', url: 'https://www.dove.com/jp/dove-self-esteem-project.html', title: 'Dove: 自己肯定感プロジェクト' },
-            { id: 's6', url: 'https://www.unilever.co.jp/brands/personal-care/dove/', title: '��ニリーバ・���ャパン: Dove ブランドサイト' },
-          ],
-        },
-      ],
-    },
-  ];
+      {
+        id: '1',
+        title: 'ユニリーバのマーケティング戦略調査',
+        isActive: true,
+        isPinned: true,
+        latestUpdate: 'ユニリーバのスポーツスポンサーシップと消費者参加型プログラムに関する最新情報が更新されました。',
+        description: 'ユニリーバブランドの社会的取り組みとマーケティング戦略の包括的調査',
+        updatedAt: new Date(Date.now() - 1000 * 60 * 15),
+        promptContent: 'FIFAワールドカップやUEFA EUROなどのスポーツスポンサーシップにおいて、Rexona（レクソーナ）やDove（ダヴ）などのブランドがどのような消費者参加型イベントやメッセージ発信（自信、ジェンダー平等など）を行っているか調査する。\n日本国内の消費者参加型エコプログラム「UMILE（ユーマイル）」について、現在のキャンペーン内容、対象店舗、回収ボックスの設置場所、消費者がどのように参加できるか詳しく調べる。\nダヴ（Dove）の「リアルビューティー」キャンペーンや「自己肯定感向上プロジェクト（Dove Self-Esteem Project）」について、日本国内の学校教育やワークショップでの実施事例、一般向けの教材提供などを調査する。\nラックス（LUX）が展開する「Social Damage Care」や採用バイアスに関するキャンペーンなど、ジェンダー平等や固定観念の打破を目指す具体的な活動内容を調べる。',
+        updates: [
+          {
+            id: 'u1',
+            title: 'Luxの「Social Damage Care」プロジェクトの最新展開',
+            content: 'Lux（ラックス）の「Social Damage Care（社会的ダメージケア）」プロジェクトが、採用活動における性別欄・顔写真の撤廃を実現し、さらに競合他社や異業種（三井化学など）へ波及させるムーブメントを創出しました。単に「髪のダメージ」を修復するという製品機能を超えて、「履歴書の性別欄」という日本社会の根深い慣習にメスを入れ、他社を巻き込んだ社会変革のアクションとして機能しています。',
+            timestamp: new Date(Date.now() - 1000 * 60 * 15),
+            sources: [
+              { id: 's1', url: 'https://www.unilever.co.jp/news/press-releases/2023/lux-social-damage-care/', title: 'ユニリーバ・ジャパン: Lux Social Damage Care プロジェクト' },
+              { id: 's2', url: 'https://www.advertimes.com/20230315/article405792/', title: 'AdverTimes: ラックスが挑む「社会的ダメージ」の解消' },
+            ],
+          },
+          {
+            id: 'u2',
+            title: 'UMILE（ユーマイル）エコプログラムの拡大',
+            content: '日本国内の消費者参加型エコプログラム「UMILE（ユーマイル）」が、花王との連携により対象店舗を大幅に拡大しました。競合を超えた「共創（Co-creation）」により、消費者は全国の提携店舗で使用済み容器を回収ボックスに投入でき、サーキュラーエコノミーの実現に参加できるようになっています。',
+            timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
+            sources: [
+              { id: 's3', url: 'https://www.unilever.co.jp/planet-and-society/umile/', title: 'ユニリーバ・ジャパン: UMILE プログラム公式サイト' },
+              { id: 's4', url: 'https://www.kao.com/jp/corporate/news/sustainability/2023/20230420-001/', title: '花王: UMILEプログラムへの参画について' },
+            ],
+          },
+          {
+            id: 'u3',
+            title: 'Doveの「自己肯定感向上プロジェクト」日本展開',
+            content: 'ダヴ（Dove）の「リアルビューティー」キャンペーンと「自己肯定感向上プロジェクト（Dove Self-Esteem Project）」が、日本国内の学校教育やワークショップでの実施事例を増やしています。一般向けの教材も無料で提供され、若年層の自己肯定感の向上とメディアリテラシーの育成に貢献しています。',
+            timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5),
+            sources: [
+              { id: 's5', url: 'https://www.dove.com/jp/dove-self-esteem-project.html', title: 'Dove: 自己肯定感プロジェクト' },
+              { id: 's6', url: 'https://www.unilever.co.jp/brands/personal-care/dove/', title: 'ユニリーバ・ジャパン: Dove ブランドサイト' },
+            ],
+          },
+        ],
+      },
+    ];
 
   function generateLatestUpdate(chat: any): string {
     const updates = [
-      `${chat.title}に関する最新情報が追加されました。新しい機能��改善点についての詳細が更新されています。`,
+      `${chat.title}に関する最新情報が追加されました。新しい機能や改善点についての詳細が更新されています。`,
       `${chat.title}のトピックに関連する重要なアップデートが公開されました。`,
       `${chat.title}について、最新の研究結果や実装例が追加されました。`,
     ];
@@ -352,16 +356,31 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
   function generateDescription(chat: any): string {
     const descriptions = [
       'このトピックに関する包括的な情報と最新のトレンドを追跡しています。',
-      '継続的に更新される情報源ら最新データを収集中です。',
+      '継続的に更新される情報源から最新データを収集中です。',
       '関連する技術やベストプラクティスの変化を監視しています。',
     ];
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   }
 
   function generateUpdates(chat: any): Update[] {
+    // もしchat.updatesが存在するなら、それを利用する
+    if (chat.updates && chat.updates.length > 0) {
+      return chat.updates.map((update: any, index: number) => ({
+        id: `u${chat.id}-${index}`,
+        title: update.update ? update.update.substring(0, 30) + (update.update.length > 30 ? '...' : '') : `${chat.title}に関する更新 #${index + 1}`,
+        content: update.update || '内容がありません',
+        timestamp: update.timestamp ? new Date(update.timestamp) : new Date(),
+        sources: [
+          // ダミーのソースを一部使用（本番ではupdate.sourcesなどがあればそれを使う）
+          { id: `s${chat.id}-${index}-1`, url: '#', title: 'Source 1' },
+          { id: `s${chat.id}-${index}-2`, url: '#', title: 'Source 2' },
+        ],
+      }));
+    }
+
     const updateCount = chat.updateCount || 1;
     const updates: Update[] = [];
-    
+
     // Perplexity風のダミーsources
     const dummySources = [
       { id: 'ds1', url: 'https://example.com/article1', title: 'Example Article on Recent Developments' },
@@ -370,7 +389,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
       { id: 'ds4', url: 'https://news.example.net/article', title: 'News Report: Breaking Updates' },
       { id: 'ds5', url: 'https://docs.example.io/guide', title: 'Technical Documentation and Best Practices' },
     ];
-    
+
     for (let i = 0; i < Math.min(updateCount, 5); i++) {
       updates.push({
         id: `u${chat.id}-${i}`,
@@ -380,7 +399,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
         sources: dummySources.slice(0, 2 + (i % 2)), // 2-3個のソースをランダムに割り当て
       });
     }
-    
+
     return updates;
   }
 
@@ -410,16 +429,17 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
       updateId: string;
       updateTitle: string;
       timestamp: Date;
+      sources?: Array<{ id: string; url: string; title: string }>;
     };
   }
 
   const generateAnswerWithHighlights = (prompt: TrackingPrompt): AnswerSegment[] => {
     const answer = generateBestAnswer(prompt).full;
     const segments: AnswerSegment[] = [];
-    
+
     // 仮実装：特定のキーワードやフレーズをハイライト対象として検出
     // 実際のAPI実装時は、APIレスポンスにハイライト情報が含まれる想定
-    
+
     if (prompt.id === '1') {
       // ユニリーバのケース：特定の文をハイライト
       const parts = answer.split('\n\n');
@@ -427,7 +447,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
         text: parts[0] + '\n\n',
         isHighlight: false,
       });
-      
+
       if (parts[1]) {
         // 2段落目を最新アップデート情報としてハイライト
         const latestUpdate = prompt.updates[0];
@@ -438,6 +458,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
             updateId: latestUpdate.id,
             updateTitle: latestUpdate.title,
             timestamp: latestUpdate.timestamp,
+            sources: latestUpdate.sources,
           },
         });
       }
@@ -459,12 +480,13 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
               updateId: latestUpdate.id,
               updateTitle: latestUpdate.title,
               timestamp: latestUpdate.timestamp,
+              sources: latestUpdate.sources,
             } : undefined,
           });
         }
       });
     }
-    
+
     return segments;
   };
 
@@ -474,7 +496,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     const minutes = Math.floor(diff / (1000 * 60));
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    
+
     if (minutes < 60) return `${minutes}分前`;
     if (hours < 72) return `${hours}時間前`;
     return `${days}日前`;
@@ -484,16 +506,16 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const year = date.getFullYear();
-    
+
     let hours = date.getHours();
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12 || 12;
-    
+
     return `${month}/${day}/${year}, ${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
   };
 
-  const displayPrompts = promptId 
+  const displayPrompts = promptId
     ? trackingPrompts.filter(p => p.id === promptId)
     : trackingPrompts;
 
@@ -526,24 +548,22 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
   }, 0);
 
   return (
-    <div className={`h-screen overflow-y-auto transition-colors ${
-      theme === 'dark'
-        ? 'bg-gradient-to-br from-[#1a1f2e] via-[#252a3a] to-[#2a1f2e]'
-        : 'bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]'
-    }`}>
-      {/* Header */}
-      <div className={`border-b backdrop-blur-md sticky top-0 z-10 shadow-sm transition-colors ${
-        theme === 'dark'
-          ? 'border-gray-700/50 bg-gray-800/80'
-          : 'border-gray-200/50 bg-white/80'
+    <div className={`h-screen overflow-y-auto transition-colors ${theme === 'dark'
+      ? 'bg-gradient-to-br from-[#1a1f2e] via-[#252a3a] to-[#2a1f2e]'
+      : 'bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]'
       }`}>
+      {/* Header */}
+      <div className={`border-b backdrop-blur-md sticky top-0 z-10 shadow-sm transition-colors ${theme === 'dark'
+        ? 'border-gray-700/50 bg-gray-800/80'
+        : 'border-gray-200/50 bg-white/80'
+        }`}>
         <div className="max-w-5xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">{pageTitle}</h1>
               <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>{pageSubtitle}</p>
             </div>
-            
+
             {/* 未読カウント */}
             <div className="flex items-center gap-4">
               {totalUnreadCount > 0 && (
@@ -570,7 +590,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
             prompt: typeof trackingPrompts[0];
             updateNumber: number;
           }> = [];
-          
+
           displayPrompts.forEach(prompt => {
             prompt.updates.forEach((update, index) => {
               if (!viewedUpdates.has(update.id)) {
@@ -616,11 +636,10 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                         element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }, 100);
                     }}
-                    className={`group relative rounded-2xl border-2 p-5 cursor-pointer transition-all duration-300 animate-slideIn overflow-visible ${
-                      theme === 'dark'
-                        ? 'bg-gray-800 border-indigo-500/50'
-                        : 'bg-white border-indigo-200'
-                    }`}
+                    className={`group relative rounded-2xl border-2 p-5 cursor-pointer transition-all duration-300 animate-slideIn overflow-visible ${theme === 'dark'
+                      ? 'bg-gray-800 border-indigo-500/50'
+                      : 'bg-white border-indigo-200'
+                      }`}
                     style={{
                       animationDelay: `${unreadUpdates.indexOf({ update, prompt, updateNumber }) * 0.1}s`
                     }}
@@ -637,11 +656,10 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                           <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-bold rounded-lg uppercase tracking-wide animate-pulse shadow-sm">
                             NEW
                           </span>
-                          <span className={`px-2 py-1 text-xs rounded-lg font-medium ${
-                            theme === 'dark' 
-                              ? 'bg-gray-700 text-gray-300' 
-                              : 'bg-gray-100 text-gray-700'
-                          }`}>
+                          <span className={`px-2 py-1 text-xs rounded-lg font-medium ${theme === 'dark'
+                            ? 'bg-gray-700 text-gray-300'
+                            : 'bg-gray-100 text-gray-700'
+                            }`}>
                             Update #{updateNumber}
                           </span>
                         </div>
@@ -650,18 +668,16 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
 
                       {/* プロンプトタイトル */}
                       <div className="flex items-center gap-2 mb-2">
-                        <div className={`w-2 h-2 rounded-full ${
-                          prompt.status === 'active' ? 'bg-emerald-500' : 'bg-red-500'
-                        }`} />
+                        <div className={`w-2 h-2 rounded-full ${prompt.status === 'active' ? 'bg-emerald-500' : 'bg-red-500'
+                          }`} />
                         <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                           プロンプト: <span className={`font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>{prompt.title}</span>
                         </p>
                       </div>
 
                       {/* アップデート内容 */}
-                      <p className={`text-base leading-relaxed mb-3 line-clamp-2 ${
-                        theme === 'dark' ? 'text-gray-300' : 'text-gray-900'
-                      }`}>
+                      <p className={`text-base leading-relaxed mb-3 line-clamp-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-900'
+                        }`}>
                         {update.content}
                       </p>
 
@@ -673,14 +689,13 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </button>
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setViewedUpdates(prev => new Set([...prev, update.id]));
                           }}
-                          className={`text-xs transition-colors font-medium ${
-                            theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-700 hover:text-gray-900'
-                          }`}
+                          className={`text-xs transition-colors font-medium ${theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-700 hover:text-gray-900'
+                            }`}
                         >
                           既読にする
                         </button>
@@ -702,19 +717,16 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
 
               {/* 区切り線 */}
               <div className="flex items-center gap-4 mt-8 mb-6">
-                <div className={`flex-1 h-px ${
-                  theme === 'dark'
-                    ? 'bg-gradient-to-r from-transparent via-gray-600 to-transparent'
-                    : 'bg-gradient-to-r from-transparent via-gray-300 to-transparent'
-                }`} />
-                <span className={`text-xs uppercase tracking-wider font-semibold ${
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
-                }`}>すべてのプロンプト</span>
-                <div className={`flex-1 h-px ${
-                  theme === 'dark'
-                    ? 'bg-gradient-to-r from-transparent via-gray-600 to-transparent'
-                    : 'bg-gradient-to-r from-transparent via-gray-300 to-transparent'
-                }`} />
+                <div className={`flex-1 h-px ${theme === 'dark'
+                  ? 'bg-gradient-to-r from-transparent via-gray-600 to-transparent'
+                  : 'bg-gradient-to-r from-transparent via-gray-300 to-transparent'
+                  }`} />
+                <span className={`text-xs uppercase tracking-wider font-semibold ${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
+                  }`}>すべてのプロンプト</span>
+                <div className={`flex-1 h-px ${theme === 'dark'
+                  ? 'bg-gradient-to-r from-transparent via-gray-600 to-transparent'
+                  : 'bg-gradient-to-r from-transparent via-gray-300 to-transparent'
+                  }`} />
               </div>
             </div>
           );
@@ -727,16 +739,14 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
               <div
                 key={prompt.id}
                 id={`prompt-${prompt.id}`}
-                className={`rounded-2xl border overflow-hidden shadow-md transition-all ${
-                  theme === 'dark'
-                    ? 'bg-gray-800 border-gray-700'
-                    : 'bg-white border-gray-200'
-                }`}
+                className={`rounded-2xl border overflow-hidden shadow-md transition-all ${theme === 'dark'
+                  ? 'bg-gray-800 border-gray-700'
+                  : 'bg-white border-gray-200'
+                  }`}
               >
                 {/* Card Header */}
-                <div className={`p-6 border-b ${
-                  theme === 'dark' ? 'border-gray-700' : 'border-gray-100'
-                }`}>
+                <div className={`p-6 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-100'
+                  }`}>
                   {/* Tracking Frequency Selector */}
                   <div className="mb-4">
                     <button
@@ -770,205 +780,197 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                         </svg>
                       </div>
                     </button>
-                    
+
                     {showFrequencyOptions[prompt.id] && (
                       <div className="space-y-3">
                         <div className="grid grid-cols-3 gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 1 }));
-                            setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
-                          }}
-                          className={`p-3 rounded-xl border transition-all font-medium ${
-                            trackingFrequency[prompt.id] === 1 && !showCustomInput[prompt.id]
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 1 }));
+                              setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
+                            }}
+                            className={`p-3 rounded-xl border transition-all font-medium ${trackingFrequency[prompt.id] === 1 && !showCustomInput[prompt.id]
                               ? theme === 'dark'
                                 ? 'bg-indigo-500/20 border-indigo-400 text-indigo-300'
                                 : 'bg-indigo-50 border-indigo-500 text-indigo-700'
                               : theme === 'dark'
                                 ? 'bg-gray-700/50 border-gray-600 text-gray-200'
                                 : 'bg-gray-50 border-gray-200 text-gray-700'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <p className="text-sm">1h</p>
-                          </div>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 6 }));
-                            setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
-                          }}
-                          className={`p-3 rounded-xl border transition-all font-medium ${
-                            trackingFrequency[prompt.id] === 6 && !showCustomInput[prompt.id]
+                              }`}
+                          >
+                            <div className="text-center">
+                              <p className="text-sm">1h</p>
+                            </div>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 6 }));
+                              setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
+                            }}
+                            className={`p-3 rounded-xl border transition-all font-medium ${trackingFrequency[prompt.id] === 6 && !showCustomInput[prompt.id]
                               ? theme === 'dark'
                                 ? 'bg-indigo-500/20 border-indigo-400 text-indigo-300'
                                 : 'bg-indigo-50 border-indigo-500 text-indigo-700'
                               : theme === 'dark'
                                 ? 'bg-gray-700/50 border-gray-600 text-gray-200'
                                 : 'bg-gray-50 border-gray-200 text-gray-700'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <p className="text-sm">6h</p>
-                          </div>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 12 }));
-                            setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
-                          }}
-                          className={`p-3 rounded-xl border transition-all font-medium ${
-                            trackingFrequency[prompt.id] === 12 && !showCustomInput[prompt.id]
+                              }`}
+                          >
+                            <div className="text-center">
+                              <p className="text-sm">6h</p>
+                            </div>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 12 }));
+                              setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
+                            }}
+                            className={`p-3 rounded-xl border transition-all font-medium ${trackingFrequency[prompt.id] === 12 && !showCustomInput[prompt.id]
                               ? theme === 'dark'
                                 ? 'bg-indigo-500/20 border-indigo-400 text-indigo-300'
                                 : 'bg-indigo-50 border-indigo-500 text-indigo-700'
                               : theme === 'dark'
                                 ? 'bg-gray-700/50 border-gray-600 text-gray-200'
                                 : 'bg-gray-50 border-gray-200 text-gray-700'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <p className="text-sm">12h</p>
-                          </div>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 24 }));
-                            setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
-                          }}
-                          className={`p-3 rounded-xl border transition-all font-medium ${
-                            trackingFrequency[prompt.id] === 24 && !showCustomInput[prompt.id]
+                              }`}
+                          >
+                            <div className="text-center">
+                              <p className="text-sm">12h</p>
+                            </div>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 24 }));
+                              setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
+                            }}
+                            className={`p-3 rounded-xl border transition-all font-medium ${trackingFrequency[prompt.id] === 24 && !showCustomInput[prompt.id]
                               ? theme === 'dark'
                                 ? 'bg-indigo-500/20 border-indigo-400 text-indigo-300'
                                 : 'bg-indigo-50 border-indigo-500 text-indigo-700'
                               : theme === 'dark'
                                 ? 'bg-gray-700/50 border-gray-600 text-gray-200'
                                 : 'bg-gray-50 border-gray-200 text-gray-700'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <p className="text-sm">1d</p>
-                          </div>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 72 }));
-                            setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
-                          }}
-                          className={`p-3 rounded-xl border transition-all font-medium ${
-                            trackingFrequency[prompt.id] === 72 && !showCustomInput[prompt.id]
+                              }`}
+                          >
+                            <div className="text-center">
+                              <p className="text-sm">1d</p>
+                            </div>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 72 }));
+                              setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
+                            }}
+                            className={`p-3 rounded-xl border transition-all font-medium ${trackingFrequency[prompt.id] === 72 && !showCustomInput[prompt.id]
                               ? theme === 'dark'
                                 ? 'bg-indigo-500/20 border-indigo-400 text-indigo-300'
                                 : 'bg-indigo-50 border-indigo-500 text-indigo-700'
                               : theme === 'dark'
                                 ? 'bg-gray-700/50 border-gray-600 text-gray-200'
                                 : 'bg-gray-50 border-gray-200 text-gray-700'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <p className="text-sm">3d</p>
-                          </div>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 168 }));
-                            setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
-                          }}
-                          className={`p-3 rounded-xl border transition-all font-medium ${
-                            trackingFrequency[prompt.id] === 168 && !showCustomInput[prompt.id]
+                              }`}
+                          >
+                            <div className="text-center">
+                              <p className="text-sm">3d</p>
+                            </div>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTrackingFrequency(prev => ({ ...prev, [prompt.id]: 168 }));
+                              setShowCustomInput(prev => ({ ...prev, [prompt.id]: false }));
+                            }}
+                            className={`p-3 rounded-xl border transition-all font-medium ${trackingFrequency[prompt.id] === 168 && !showCustomInput[prompt.id]
                               ? theme === 'dark'
                                 ? 'bg-indigo-500/20 border-indigo-400 text-indigo-300'
                                 : 'bg-indigo-50 border-indigo-500 text-indigo-700'
                               : theme === 'dark'
                                 ? 'bg-gray-700/50 border-gray-600 text-gray-200'
                                 : 'bg-gray-50 border-gray-200 text-gray-700'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <p className="text-sm">1w</p>
-                          </div>
-                        </button>
-                      </div>
+                              }`}
+                          >
+                            <div className="text-center">
+                              <p className="text-sm">1w</p>
+                            </div>
+                          </button>
+                        </div>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowCustomInput(prev => ({ ...prev, [prompt.id]: !prev[prompt.id] }));
-                        }}
-                        className={`w-full px-4 py-3 rounded-xl border text-left transition-all font-medium ${
-                          showCustomInput[prompt.id]
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowCustomInput(prev => ({ ...prev, [prompt.id]: !prev[prompt.id] }));
+                          }}
+                          className={`w-full px-4 py-3 rounded-xl border text-left transition-all font-medium ${showCustomInput[prompt.id]
                             ? theme === 'dark'
                               ? 'bg-indigo-500/20 border-indigo-400 text-indigo-300'
                               : 'bg-indigo-50 border-indigo-500 text-indigo-700'
                             : theme === 'dark'
                               ? 'bg-gray-700/50 border-gray-600 text-gray-200'
                               : 'bg-gray-50 border-gray-200 text-gray-700'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm">カスタム</span>
-                          {showCustomInput[prompt.id] && <Check className="w-4 h-4 text-blue-400" />}
-                        </div>
-                      </button>
+                            }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">カスタム</span>
+                            {showCustomInput[prompt.id] && <Check className="w-4 h-4 text-blue-400" />}
+                          </div>
+                        </button>
 
-                      {showCustomInput[prompt.id] && (
-                        <div className="pt-2 space-y-3">
-                          <div className="flex items-center gap-3">
-                            <div className="flex-1">
-                              <label className={`text-xs mb-1 block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>時間数を入力</label>
+                        {showCustomInput[prompt.id] && (
+                          <div className="pt-2 space-y-3">
+                            <div className="flex items-center gap-3">
+                              <div className="flex-1">
+                                <label className={`text-xs mb-1 block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>時間数を入力</label>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max="168"
+                                  value={trackingFrequency[prompt.id] || 24}
+                                  onChange={(e) => {
+                                    const value = Math.max(1, Math.min(168, Number(e.target.value) || 1));
+                                    setTrackingFrequency(prev => ({ ...prev, [prompt.id]: value }));
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className={`w-full text-sm rounded-xl px-3 py-2 border focus:outline-none focus:border-indigo-400 focus:ring-2 ${theme === 'dark'
+                                    ? 'bg-gray-700 text-gray-100 border-gray-600 focus:ring-indigo-500/30'
+                                    : 'bg-white text-gray-900 border-gray-300 focus:ring-indigo-100'
+                                    }`}
+                                  placeholder="1-168"
+                                />
+                              </div>
+                              <div className="flex items-center gap-2 mt-5">
+                                <span className={`text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>時間毎</span>
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className={`text-xs mb-2 block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>スライダーで調整</label>
                               <input
-                                type="number"
+                                type="range"
                                 min="1"
                                 max="168"
                                 value={trackingFrequency[prompt.id] || 24}
-                                onChange={(e) => {
-                                  const value = Math.max(1, Math.min(168, Number(e.target.value) || 1));
-                                  setTrackingFrequency(prev => ({ ...prev, [prompt.id]: value }));
-                                }}
+                                onChange={(e) => setTrackingFrequency(prev => ({ ...prev, [prompt.id]: Number(e.target.value) }))}
                                 onClick={(e) => e.stopPropagation()}
-                                className={`w-full text-sm rounded-xl px-3 py-2 border focus:outline-none focus:border-indigo-400 focus:ring-2 ${
-                                  theme === 'dark'
-                                    ? 'bg-gray-700 text-gray-100 border-gray-600 focus:ring-indigo-500/30'
-                                    : 'bg-white text-gray-900 border-gray-300 focus:ring-indigo-100'
-                                }`}
-                                placeholder="1-168"
+                                className="w-full h-2 bg-[#3d3d3d] rounded-lg appearance-none cursor-pointer"
+                                style={{
+                                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((trackingFrequency[prompt.id] || 24) / 168) * 100}%, #3d3d3d ${((trackingFrequency[prompt.id] || 24) / 168) * 100}%, #3d3d3d 100%)`
+                                }}
                               />
-                            </div>
-                            <div className="flex items-center gap-2 mt-5">
-                              <span className={`text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>時間毎</span>
-                            </div>
-                          </div>
-                          
-                          <div>
-                            <label className={`text-xs mb-2 block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>スライダーで調整</label>
-                            <input
-                              type="range"
-                              min="1"
-                              max="168"
-                              value={trackingFrequency[prompt.id] || 24}
-                              onChange={(e) => setTrackingFrequency(prev => ({ ...prev, [prompt.id]: Number(e.target.value) }))}
-                              onClick={(e) => e.stopPropagation()}
-                              className="w-full h-2 bg-[#3d3d3d] rounded-lg appearance-none cursor-pointer"
-                              style={{
-                                background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((trackingFrequency[prompt.id] || 24) / 168) * 100}%, #3d3d3d ${((trackingFrequency[prompt.id] || 24) / 168) * 100}%, #3d3d3d 100%)`
-                              }}
-                            />
-                            <div className={`flex justify-between mt-2 text-xs ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                              <span>1h</span>
-                              <span>24h</span>
-                              <span>72h</span>
-                              <span>168h</span>
+                              <div className={`flex justify-between mt-2 text-xs ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                                <span>1h</span>
+                                <span>24h</span>
+                                <span>72h</span>
+                                <span>168h</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
                     )}
                   </div>
 
@@ -992,23 +994,20 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="overflow-hidden relative group max-w-md">
-                        <h2 
-                          className={`text-lg mb-1 font-semibold whitespace-nowrap ${
-                            theme === 'dark' ? 'text-gray-100' : 'text-gray-900'
-                          } ${
-                            prompt.title.length > 25 ? 'animate-scroll-text' : ''
-                          }`}
+                        <h2
+                          className={`text-lg mb-1 font-semibold whitespace-nowrap ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'
+                            } ${prompt.title.length > 25 ? 'animate-scroll-text' : ''
+                            }`}
                         >
                           {prompt.title}
                         </h2>
                       </div>
                       <div className="flex items-center gap-2 text-xs">
                         <span
-                          className={`px-2 py-0.5 rounded-lg font-medium ${
-                            prompt.isActive
-                              ? 'bg-emerald-100 text-emerald-700'
-                              : 'bg-red-100 text-red-700'
-                          }`}
+                          className={`px-2 py-0.5 rounded-lg font-medium ${prompt.isActive
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : 'bg-red-100 text-red-700'
+                            }`}
                         >
                           {prompt.isActive ? 'アクティブ' : '中断中'}
                         </span>
@@ -1021,35 +1020,30 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                   </div>
 
                   {/* 追跡中���プロンプト */}
-                  <div 
+                  <div
                     onClick={() => handleEditPrompt(prompt.id, prompt.promptContent || prompt.title)}
-                    className={`rounded-xl cursor-pointer transition-all duration-300 mb-4 overflow-hidden ${
-                      theme === 'dark' ? 'bg-gray-700/50' : 'bg-gray-50'
-                    } ${
-                      editingPromptId === prompt.id
+                    className={`rounded-xl cursor-pointer transition-all duration-300 mb-4 overflow-hidden ${theme === 'dark' ? 'bg-gray-700/50' : 'bg-gray-50'
+                      } ${editingPromptId === prompt.id
                         ? 'border-2 border-indigo-500 ring-2 ring-indigo-200'
                         : 'border-2 border-transparent'
-                    }`}
+                      }`}
                   >
-                    <div className={`flex items-center justify-between pb-3 pt-3 px-3 border-b ${
-                      theme === 'dark' ? 'bg-gray-700/50 border-gray-600' : 'bg-gray-50 border-gray-100'
-                    }`}>
+                    <div className={`flex items-center justify-between pb-3 pt-3 px-3 border-b ${theme === 'dark' ? 'bg-gray-700/50 border-gray-600' : 'bg-gray-50 border-gray-100'
+                      }`}>
                       <p className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>追跡中のプロンプト:</p>
                       <div className="text-xs text-indigo-600 flex items-center gap-1 font-medium">
                         <Edit2 className="w-3 h-3" />
                         <span>編集</span>
                       </div>
                     </div>
-                    
+
                     <div className="px-3 pt-3 pb-3">
-                      <p className={`text-sm leading-relaxed whitespace-pre-line transition-all duration-200 ${
-                        theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
-                      } ${
-                        expandedPrompts.has(prompt.id) ? '' : 'line-clamp-3'
-                      }`}>
+                      <p className={`text-sm leading-relaxed whitespace-pre-line transition-all duration-200 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                        } ${expandedPrompts.has(prompt.id) ? '' : 'line-clamp-3'
+                        }`}>
                         {prompt.promptContent || prompt.title}
                       </p>
-                      
+
                       {(prompt.promptContent || prompt.title).split('\n').length > 3 && (
                         <button
                           onClick={(e) => {
@@ -1065,21 +1059,18 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                   </div>
 
                   {/* Best Answer Section */}
-                  <div 
+                  <div
                     onClick={() => togglePromptDetails(prompt.id)}
-                    className={`rounded-xl cursor-pointer transition-all duration-300 mb-4 ${
-                      theme === 'dark' ? 'bg-gray-700/50' : 'bg-gray-50'
-                    } ${
-                      expandedPromptDetails === prompt.id
+                    className={`rounded-xl cursor-pointer transition-all duration-300 mb-4 ${theme === 'dark' ? 'bg-gray-700/50' : 'bg-gray-50'
+                      } ${expandedPromptDetails === prompt.id
                         ? theme === 'dark'
                           ? 'border-2 border-purple-400 ring-2 ring-purple-500/30 bg-purple-900/30'
                           : 'border-2 border-purple-400 ring-2 ring-purple-100 bg-purple-50/30'
                         : 'border-2 border-transparent'
-                    }`}
+                      }`}
                   >
-                    <p className={`text-sm leading-relaxed whitespace-pre-line px-3 pt-3 pb-3 ${
-                      theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
-                    }`}>
+                    <p className={`text-sm leading-relaxed whitespace-pre-line px-3 pt-3 pb-3 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                      }`}>
                       {generateBestAnswer(prompt).summary}
                     </p>
                   </div>
@@ -1102,7 +1093,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                     {(() => {
                       // すべてのアップデートを表示
                       const filteredUpdates = prompt.updates;
-                      
+
                       if (filteredUpdates.length === 0) {
                         return (
                           <div className="text-center py-8">
@@ -1114,39 +1105,35 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                           </div>
                         );
                       }
-                      
+
                       return filteredUpdates.map((update, index) => {
                         const updateNumber = prompt.updates.length - prompt.updates.indexOf(update);
                         const isUnread = !viewedUpdates.has(update.id);
                         const isLatest = prompt.updates[0].id === update.id;
-                        
+
                         return (
                           <div
                             key={update.id}
-                            className={`rounded-lg overflow-hidden transition-all duration-300 $${
-                              selectedUpdate === update.id
-                                ? 'bg-[#252525] border-2 border-indigo-500 ring-2 ring-indigo-200' 
-                                : isUnread 
-                                  ? 'bg-blue-500/5 border border-blue-500/30'
-                                  : 'bg-[#1f1f1f] border border-transparent'
-                            } ${
-                              isLatest ? 'border-2 border-blue-500/30' : ''
-                            }`}
+                            className={`rounded-lg overflow-hidden transition-all duration-300 $${selectedUpdate === update.id
+                              ? 'bg-[#252525] border-2 border-indigo-500 ring-2 ring-indigo-200'
+                              : isUnread
+                                ? 'bg-blue-500/5 border border-blue-500/30'
+                                : 'bg-[#1f1f1f] border border-transparent'
+                              } ${isLatest ? 'border-2 border-blue-500/30' : ''
+                              }`}
                           >
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 toggleUpdateExpand(update.id);
                               }}
-                              className={`w-full flex items-start gap-3 transition-colors text-left ${
-                                isLatest ? 'p-4' : 'p-3'
-                              }`}
+                              className={`w-full flex items-start gap-3 transition-colors text-left ${isLatest ? 'p-4' : 'p-3'
+                                }`}
                             >
                               <div className="flex-shrink-0 mt-2">
                                 {isUnread ? (
-                                  <Circle className={`fill-blue-400 text-blue-400 ${
-                                    isLatest ? 'w-3 h-3' : 'w-2.5 h-2.5'
-                                  }`} />
+                                  <Circle className={`fill-blue-400 text-blue-400 ${isLatest ? 'w-3 h-3' : 'w-2.5 h-2.5'
+                                    }`} />
                                 ) : (
                                   <div className={`${isLatest ? 'w-3 h-3' : 'w-2.5 h-2.5'}`} />
                                 )}
@@ -1164,19 +1151,16 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                     </span>
                                   )}
                                 </div>
-                                <p className={`mb-1 font-medium ${isLatest ? 'text-sm' : 'text-xs'} ${
-                                  theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
-                                }`}>
+                                <p className={`mb-1 font-medium ${isLatest ? 'text-sm' : 'text-xs'} ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                                  }`}>
                                   Update #{updateNumber}
                                 </p>
-                                <p className={`${isLatest ? 'text-base' : 'text-sm'} ${
-                                  theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
-                                }`}>
+                                <p className={`${isLatest ? 'text-base' : 'text-sm'} ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                                  }`}>
                                   {update.content}
                                 </p>
-                                <p className={`mt-1 ${isLatest ? 'text-sm' : 'text-xs'} ${
-                                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                                }`}>
+                                <p className={`mt-1 ${isLatest ? 'text-sm' : 'text-xs'} ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                                  }`}>
                                   {formatDateTime(update.timestamp)}
                                 </p>
                               </div>
@@ -1310,19 +1294,19 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                           break;
                         }
                       }
-                      
+
                       if (selectedUpdateData) {
                         return (
                           <div className="space-y-6">
                             <h4 className="text-lg text-gray-900 font-semibold">
                               Update #{updateNumber} ({selectedUpdateData.title})
                             </h4>
-                            
+
                             <div className="flex items-center gap-2 text-gray-700 text-xs">
                               <Clock className="w-3 h-3" />
                               <span>{formatFullDateTime(selectedUpdateData.timestamp)}</span>
                             </div>
-                            
+
                             <div className="space-y-3">
                               <h5 className="text-sm text-gray-900 font-semibold">情報:</h5>
                               <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
@@ -1331,7 +1315,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                 </p>
                               </div>
                             </div>
-                            
+
                             <div className="space-y-3">
                               <h5 className="text-sm text-gray-900 font-semibold">文献:</h5>
                               <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
@@ -1343,9 +1327,9 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                           <span className="text-gray-800 flex-shrink-0 font-medium">[{index + 1}]</span>
                                           <div className="flex-1">
                                             <p className="text-gray-900 mb-1 font-medium">{source.title}</p>
-                                            <a 
-                                              href={source.url} 
-                                              target="_blank" 
+                                            <a
+                                              href={source.url}
+                                              target="_blank"
                                               rel="noopener noreferrer"
                                               className="text-indigo-600 hover:text-indigo-700 hover:underline transition-colors break-all text-xs"
                                             >
@@ -1369,12 +1353,10 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                   <div className="space-y-4 mb-4 max-h-[300px] overflow-y-auto scroll-container">
                                     {chatMessages.map((message) => (
                                       <div key={message.id} className="flex items-start gap-3">
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${
-                                          message.role === 'user' ? 'bg-indigo-100' : 'bg-emerald-100'
-                                        }`}>
-                                          <span className={`text-xs font-semibold ${
-                                            message.role === 'user' ? 'text-indigo-700' : 'text-emerald-700'
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${message.role === 'user' ? 'bg-indigo-100' : 'bg-emerald-100'
                                           }`}>
+                                          <span className={`text-xs font-semibold ${message.role === 'user' ? 'text-indigo-700' : 'text-emerald-700'
+                                            }`}>
                                             {message.role === 'user' ? 'U' : 'AI'}
                                           </span>
                                         </div>
@@ -1433,7 +1415,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                       <h3 className="text-lg text-gray-900 font-semibold">現段階のプロンプトに対する回答</h3>
                     </div>
                   </div>
-                  
+
                   <div className="bg-gray-50 p-6 overflow-y-auto scroll-container">
                     {(() => {
                       const expandedPrompt = displayPrompts.find(p => p.id === expandedPromptDetails);
@@ -1452,7 +1434,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                         </span>
                                       );
                                     }
-                                    
+
                                     const segmentId = `segment-${idx}`;
                                     return (
                                       <span
@@ -1465,10 +1447,10 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                           {segment.text}
                                           <Sparkles className="w-3 h-3 text-yellow-400 inline-block ml-1 -mt-1" />
                                         </span>
-                                        
+
                                         {/* ツールチップ */}
                                         {hoveredSegment === segmentId && segment.updateInfo && (
-                                          <div className="absolute bottom-full left-0 mb-2 z-10 w-72 bg-white border border-amber-300 rounded-xl shadow-xl p-3 animate-in fade-in duration-200">
+                                          <div className="absolute top-full left-0 mt-2 z-10 w-72 bg-white border border-amber-300 rounded-xl shadow-xl p-3 animate-in fade-in duration-200">
                                             <div className="flex items-start gap-2">
                                               <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-sm">
                                                 <Sparkles className="w-3 h-3 text-white" />
@@ -1481,9 +1463,45 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                                 <p className="text-xs text-gray-900 leading-relaxed">
                                                   {segment.updateInfo.updateTitle}
                                                 </p>
-                                                <div className="flex items-center gap-1 mt-2 text-xs text-gray-600">
+                                                {segment.updateInfo.sources && segment.updateInfo.sources.length > 0 && (
+                                                  <div className="mt-3 flex flex-wrap gap-2">
+                                                    {segment.updateInfo.sources.slice(0, 2).map((source) => {
+                                                      const getHostname = (url: string) => {
+                                                        try {
+                                                          return new URL(url).hostname;
+                                                        } catch {
+                                                          return 'example.com';
+                                                        }
+                                                      };
+                                                      const hostname = getHostname(source.url);
+
+                                                      return (
+                                                        <a
+                                                          key={source.id}
+                                                          href={source.url}
+                                                          target="_blank"
+                                                          rel="noopener noreferrer"
+                                                          className="flex items-center gap-1.5 px-2 py-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded text-[10px] text-gray-600 hover:text-gray-900 transition-colors max-w-full truncate"
+                                                        >
+                                                          <div className="w-3 h-3 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
+                                                            <img
+                                                              src={`https://www.google.com/s2/favicons?domain=${hostname}`}
+                                                              alt=""
+                                                              className="w-2 h-2"
+                                                              onError={(e) => {
+                                                                (e.target as HTMLImageElement).style.display = 'none';
+                                                              }}
+                                                            />
+                                                          </div>
+                                                          <span className="truncate max-w-[120px]">{source.title || hostname}</span>
+                                                        </a>
+                                                      );
+                                                    })}
+                                                  </div>
+                                                )}
+                                                <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
                                                   <Info className="w-3 h-3" />
-                                                  <span>この情報は最新のアップデートから追加���れました</span>
+                                                  <span>この情報は最新のアップデートから追加されました</span>
                                                 </div>
                                               </div>
                                             </div>
@@ -1507,9 +1525,9 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                           <span className="text-gray-900 flex-shrink-0 font-medium">[{idx * 2 + sourceIdx + 1}]</span>
                                           <div className="flex-1">
                                             <p className="text-gray-900 mb-1 font-medium">{source.title}</p>
-                                            <a 
-                                              href={source.url} 
-                                              target="_blank" 
+                                            <a
+                                              href={source.url}
+                                              target="_blank"
                                               rel="noopener noreferrer"
                                               className="text-indigo-600 hover:text-indigo-700 hover:underline transition-colors break-all text-xs"
                                             >
@@ -1534,12 +1552,10 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                                   <div className="space-y-4 mb-4 max-h-[300px] overflow-y-auto scroll-container">
                                     {chatMessages.map((message) => (
                                       <div key={message.id} className="flex items-start gap-3">
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${
-                                          message.role === 'user' ? 'bg-indigo-100' : 'bg-emerald-100'
-                                        }`}>
-                                          <span className={`text-xs font-semibold ${
-                                            message.role === 'user' ? 'text-indigo-700' : 'text-emerald-700'
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${message.role === 'user' ? 'bg-indigo-100' : 'bg-emerald-100'
                                           }`}>
+                                          <span className={`text-xs font-semibold ${message.role === 'user' ? 'text-indigo-700' : 'text-emerald-700'
+                                            }`}>
                                             {message.role === 'user' ? 'U' : 'AI'}
                                           </span>
                                         </div>

@@ -25,7 +25,7 @@ import { IntegrationScreen } from "./components/IntegrationScreen";
 import { TrackingSettingsScreen } from "./components/TrackingSettingsScreen";
 import { LoginModal } from "./components/LoginModal";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { Menu, Sparkles, Bell } from "lucide-react";
+import { Menu, Sparkles, Bell, Lock, ArrowRight } from "lucide-react";
 import * as chatsApi from "./api/chats";
 
 interface Message {
@@ -49,9 +49,31 @@ interface Chat {
   trackingFrequency?: string;
   notificationEnabled?: boolean;
   notificationGranularity?: "update" | "prompt";
+  updates?: Array<{
+    timestamp: string;
+    update: string;
+  }>;
 }
 
 function AppContent() {
+  // Site Access State
+  const [accessPassword, setAccessPassword] = useState('');
+  const [isAccessGranted, setIsAccessGranted] = useState(() => {
+    // Check if access is already granted in this browser
+    return localStorage.getItem('burilar_access_granted') === 'true';
+  });
+  const [accessError, setAccessError] = useState(false);
+
+  const handleAccessSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (accessPassword === 'kenseiyasue123') {
+      localStorage.setItem('burilar_access_granted', 'true');
+      setIsAccessGranted(true);
+      setAccessError(false);
+    } else {
+      setAccessError(true);
+    }
+  };
   const { user, isAuthenticated, isLoading: authLoading, login, register, loginWithGoogle, loginWithApple, logout, error: authError, clearError } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -170,6 +192,7 @@ function AppContent() {
               trackingActive: plan.active,
               updateCount: plan.updates?.length || 0,
               trackingFrequency: `${plan.frequency_hours}時間ごと`,
+              updates: plan.updates || [],
             }));
 
             setChats(transformedChats);
@@ -497,6 +520,62 @@ https://research.example.org/paper`;
           className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-br from-pink-200 to-rose-200 rounded-full opacity-30 blur-2xl animate-pulse"
           style={{ animationDelay: "2s" }}
         ></div>
+      </div>
+    );
+  }
+
+  // Site Access Gate
+  if (!isAccessGranted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+        <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-2xl shadow-xl">
+          <div className="text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
+              <Lock className="h-8 w-8 text-indigo-600" />
+            </div>
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              パスワードを入力
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              このサイトにアクセスするにはパスワードが必要です
+            </p>
+          </div>
+          <form className="mt-8 space-y-6" onSubmit={handleAccessSubmit}>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                className="relative block w-full appearance-none rounded-xl border border-gray-300 px-3 py-4 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm transition-colors"
+                placeholder="パスワード"
+                value={accessPassword}
+                onChange={(e) => setAccessPassword(e.target.value)}
+              />
+            </div>
+
+            {accessError && (
+              <div className="text-center text-sm text-red-600 font-medium">
+                パスワードが正しくありません
+              </div>
+            )}
+
+            <div>
+              <button
+                type="submit"
+                className="group relative flex w-full justify-center rounded-xl bg-indigo-600 px-4 py-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-lg shadow-indigo-200"
+              >
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  <ArrowRight className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
+                </span>
+                アクセスする
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }

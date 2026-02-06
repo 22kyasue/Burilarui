@@ -15,7 +15,10 @@
     "status": "completed",
     "original_query": "WBC\u306e\u30e1\u30f3\u30c4\u306f\uff1f",
     "clarification_info": null,
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328715",
+    "unread_count": 0
   },
   "1770126689729": {
     "id": "1770126689729",
@@ -33,7 +36,10 @@
     "status": "completed",
     "original_query": "WBC\u306e\u30e1\u30f3\u30c4\u306f\uff1f",
     "clarification_info": null,
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328721",
+    "unread_count": 0
   },
   "1770126710936": {
     "id": "1770126710936",
@@ -57,7 +63,10 @@
         "Is this related to a particular topic, tool, or concept?"
       ]
     },
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328724",
+    "unread_count": 0
   },
   "1770126905319": {
     "id": "1770126905319",
@@ -81,7 +90,10 @@
     "status": "pending",
     "original_query": "WBC\u306e\u30e1\u30f3\u30c4\u306f\u6c7a\u307e\u3063\u305f\uff1f",
     "clarification_info": null,
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328726",
+    "unread_count": 0
   },
   "1770127416824": {
     "id": "1770127416824",
@@ -99,7 +111,10 @@
     "status": "completed",
     "original_query": "What is AI?",
     "clarification_info": null,
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328727",
+    "unread_count": 0
   },
   "1770291533941": {
     "id": "1770291533941",
@@ -124,7 +139,10 @@
         "Could you provide more context or a real query example?"
       ]
     },
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328729",
+    "unread_count": 0
   },
   "1770291599992": {
     "id": "1770291599992",
@@ -148,7 +166,10 @@
         "Which programming language or environment are you referring to?"
       ]
     },
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328730",
+    "unread_count": 0
   },
   "1770291839046": {
     "id": "1770291839046",
@@ -172,7 +193,10 @@
         "Are you asking for an explanation, code example, analysis, or information on a specific topic?"
       ]
     },
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328731",
+    "unread_count": 0
   },
   "1770291924879": {
     "id": "1770291924879",
@@ -196,7 +220,10 @@
         "Is this related to a particular version, episode, or context for 'crash test 2'?"
       ]
     },
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328732",
+    "unread_count": 0
   },
   "1770293197874": {
     "id": "1770293197874",
@@ -220,7 +247,10 @@
     "status": "pending",
     "original_query": "SpaceX Starship launch updates",
     "clarification_info": null,
-    "suggested_prompt": "Regarding SpaceX Starship Flight 12's preparation during February-March 2026, please continuously monitor the maiden flight status of Starship V3 vehicles, including Booster 19 and Ship 39 assembly and testing progress, official launch date announcements from SpaceX or Elon Musk, FCC licensing updates, pad readiness at Starbase's Orbital Launch Pad 2, Raptor V3 engine performance data, and any delays or technical anomalies. Notify immediately if SpaceX confirms a specific launch date, announces a delay beyond March 2026, reports critical hardware issues, or provides updates on booster catch attempt plans."
+    "suggested_prompt": "Regarding SpaceX Starship Flight 12's preparation during February-March 2026, please continuously monitor the maiden flight status of Starship V3 vehicles, including Booster 19 and Ship 39 assembly and testing progress, official launch date announcements from SpaceX or Elon Musk, FCC licensing updates, pad readiness at Starbase's Orbital Launch Pad 2, Raptor V3 engine performance data, and any delays or technical anomalies. Notify immediately if SpaceX confirms a specific launch date, announces a delay beyond March 2026, reports critical hardware issues, or provides updates on booster catch attempt plans.",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328733",
+    "unread_count": 0
   },
   "1770293322416": {
     "id": "1770293322416",
@@ -244,7 +274,10 @@
     "status": "pending",
     "original_query": "SpaceX Starship updates",
     "clarification_info": null,
-    "suggested_prompt": "Regarding SpaceX Starship updates during 2026-2027, please continuously track preparations and launch timeline for Flight 12 with Version 3 prototypes Ship 39 and Booster 19 including cryogenic testing and rollout activities at Starbase, FAA approvals and infrastructure progress at Kennedy Space Center's LC-39A and SLC-37 such as SQD arm installation and launch pad expansions, developments toward ship-to-ship propellant transfer and Version 4 stretched design, and any delays or milestones like Super Heavy booster catches or Raptor V3 engine performance. Consult reliable sources like SpaceX updates, NASASpaceflight, NextSpaceflight, and Elon Musk's X posts, and notify me immediately if there are launch date changes, successful tests, regulatory decisions, or significant hardware movements."
+    "suggested_prompt": "Regarding SpaceX Starship updates during 2026-2027, please continuously track preparations and launch timeline for Flight 12 with Version 3 prototypes Ship 39 and Booster 19 including cryogenic testing and rollout activities at Starbase, FAA approvals and infrastructure progress at Kennedy Space Center's LC-39A and SLC-37 such as SQD arm installation and launch pad expansions, developments toward ship-to-ship propellant transfer and Version 4 stretched design, and any delays or milestones like Super Heavy booster catches or Raptor V3 engine performance. Consult reliable sources like SpaceX updates, NASASpaceflight, NextSpaceflight, and Elon Musk's X posts, and notify me immediately if there are launch date changes, successful tests, regulatory decisions, or significant hardware movements.",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328735",
+    "unread_count": 0
   },
   "1770294153646": {
     "id": "1770294153646",
@@ -268,6 +301,80 @@
         "Are you looking for news on releases, trends, or specific topics like AI?"
       ]
     },
-    "suggested_prompt": ""
+    "suggested_prompt": "",
+    "image_url": "",
+    "last_viewed_at": "2026-02-06T14:59:32.328736",
+    "unread_count": 0
+  },
+  "sample_apple_intelligence_jp": {
+    "id": "sample_apple_intelligence_jp",
+    "user_id": null,
+    "topic": "Apple Intelligence\u306e\u65e5\u672c\u5c55\u958b\u3068\u6a5f\u80fd\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8",
+    "objective": "Track Japan release date, features, and device support",
+    "frequency_hours": 24,
+    "keywords": [
+      "Apple Intelligence",
+      "\u65e5\u672c",
+      "\u65e5\u672c\u8a9e",
+      "iOS 18.1",
+      "iPhone 16"
+    ],
+    "last_search_result": "# Apple Intelligence\u306e\u65e5\u672c\u5c55\u958b\u72b6\u6cc1\n\nApple Intelligence\u306e\u65e5\u672c\u8a9e\u5bfe\u5fdc\u306f\u30012025\u5e744\u6708\u306eiOS 18.4\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8\u3067\u63d0\u4f9b\u958b\u59cb\u3055\u308c\u308b\u4e88\u5b9a\u3067\u3059\u3002\u5f53\u521d\u306f2025\u5e74\u4e2d\u306e\u4e88\u5b9a\u3067\u3057\u305f\u304c\u3001\u5177\u4f53\u7684\u306a\u6642\u671f\u304c\u660e\u3089\u304b\u306b\u306a\u308a\u307e\u3057\u305f\u3002\n\n## \u4e3b\u306a\u6a5f\u80fd\n- \u4f5c\u6587\u30c4\u30fc\u30eb\uff08\u6821\u6b63\u3001\u8981\u7d04\u3001\u66f8\u304d\u63db\u3048\uff09\n- Genmoji\uff08\u30b8\u30a7\u30cd\u30ec\u30fc\u30c6\u30a3\u30d6\u7d75\u6587\u5b57\uff09\n- \u5199\u771f\u306e\u30af\u30ea\u30fc\u30f3\u30a2\u30c3\u30d7\u6a5f\u80fd\n- Siri\u306e\u5927\u5e45\u306a\u5f37\u5316\uff08\u753b\u9762\u8a8d\u8b58\u3001\u30a2\u30d7\u30ea\u9593\u64cd\u4f5c\uff09\n\n## \u5bfe\u5fdc\u30c7\u30d0\u30a4\u30b9\n- iPhone 16\u5168\u30e2\u30c7\u30eb\n- iPhone 15 Pro / Pro Max\n- M1\u4ee5\u964d\u3092\u642d\u8f09\u3057\u305fiPad\u3068Mac\n\n\u65e5\u672c\u8a9e\u5bfe\u5fdc\u306e\u9045\u308c\u306f\u3001\u8a00\u8a9e\u30e2\u30c7\u30eb\u306e\u8abf\u6574\u3068\u898f\u5236\u5bfe\u5fdc\u304c\u8981\u56e0\u3068\u3055\u308c\u3066\u3044\u307e\u3059\u3002",
+    "last_search_time": "2026-02-06T14:39:24.681830",
+    "next_search_time": "2026-02-07T14:39:24.681830",
+    "active": true,
+    "created_at": "2026-02-01T14:39:24.681830",
+    "updates": [
+      {
+        "timestamp": "2026-02-03T14:39:24.681830",
+        "update": "\u3010\u901f\u5831\u3011iOS 18.2\u30d9\u30fc\u30bf\u7248\u3067\u82f1\u8a9e\u4ee5\u5916\u306e\u8a00\u8a9e\u30b5\u30dd\u30fc\u30c8\u306e\u75d5\u8de1\u304c\u767a\u898b\u3055\u308c\u307e\u3057\u305f\u3002\u65e5\u672c\u8a9e\u5bfe\u5fdc\u306e\u6e96\u5099\u304c\u7740\u5b9f\u306b\u9032\u3093\u3067\u3044\u308b\u3053\u3068\u304c\u793a\u5506\u3055\u308c\u3066\u3044\u307e\u3059\u3002",
+        "sources": [
+          {
+            "id": "s1",
+            "url": "https://9to5mac.com/2024/10/23/ios-18-2-apple-intelligence-languages/",
+            "title": "9to5Mac: iOS 18.2 beta reveals new Apple Intelligence language support"
+          },
+          {
+            "id": "s2",
+            "url": "https://www.macrumors.com/2024/10/24/ios-18-2-apple-intelligence-more-languages/",
+            "title": "MacRumors: Apple Intelligence Expanding to More Languages Soon"
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-02-05T14:39:24.681830",
+        "update": "\u8457\u540d\u30a2\u30ca\u30ea\u30b9\u30c8\u306b\u3088\u308b\u3068\u3001Apple\u306f\u65e5\u672c\u8a9e\u3092\u542b\u3080\u30a2\u30b8\u30a2\u8a00\u8a9e\u306e\u30b5\u30dd\u30fc\u30c8\u3092\u52a0\u901f\u3055\u305b\u3066\u304a\u308a\u30012025\u5e74\u6625\u306e\u30ea\u30ea\u30fc\u30b9\u306b\u5411\u3051\u3066\u958b\u767a\u30ea\u30bd\u30fc\u30b9\u3092\u96c6\u4e2d\u3055\u305b\u3066\u3044\u308b\u3068\u306e\u3053\u3068\u3067\u3059\u3002",
+        "sources": [
+          {
+            "id": "s3",
+            "url": "https://www.bloomberg.com/news/articles/2024-10-25/apple-intelligence-asia-expansion",
+            "title": "Bloomberg: Apple Accelerates AI Rollout in Asia"
+          },
+          {
+            "id": "s4",
+            "url": "https://nikkei.com/technology/apple-intelligence-japan",
+            "title": "Nikkei Asia: Apple's AI push in Japan"
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-02-06T14:39:24.681830",
+        "update": "\u6700\u65b0\u306e\u30ec\u30dd\u30fc\u30c8\u3067\u306f\u3001\u65e5\u672c\u56fd\u5185\u3067\u306eApple Intelligence\u6a5f\u80fd\u306e\u4e00\u90e8\uff08\u7279\u306bChatGPT\u7d71\u5408\uff09\u304c\u3001\u898f\u5236\u5f53\u5c40\u3068\u306e\u5354\u8b70\u306b\u3088\u308a\u8abf\u6574\u4e2d\u3067\u3042\u308b\u53ef\u80fd\u6027\u304c\u5831\u3058\u3089\u308c\u3066\u3044\u307e\u3059\u3002",
+        "sources": [
+          {
+            "id": "s5",
+            "url": "https://www.reuters.com/technology/apple-talks-japan-regulators-ai-2024-10-27/",
+            "title": "Reuters: Apple in talks with Japan regulators over AI features"
+          }
+        ]
+      }
+    ],
+    "status": "tracking",
+    "original_query": "Apple Intelligence\u306e\u65e5\u672c\u3067\u306e\u63d0\u4f9b\u958b\u59cb\u6642\u671f\u3068\u5bfe\u5fdc\u6a5f\u80fd\u306b\u3064\u3044\u3066\u6559\u3048\u3066",
+    "clarification_info": null,
+    "suggested_prompt": "Apple Intelligence\u306e\u65e5\u672c\u5c55\u958b\u306b\u95a2\u3057\u3066\u3001\u65e5\u672c\u8a9e\u5bfe\u5fdc\u306e\u5177\u4f53\u7684\u306a\u958b\u59cb\u6642\u671f\u3001\u5bfe\u5fdc\u3059\u308b\u6a5f\u80fd\u306e\u7bc4\u56f2\u3001\u304a\u3088\u3073\u5bfe\u5fdc\u30c7\u30d0\u30a4\u30b9\u306e\u6700\u65b0\u60c5\u5831\u3092\u7d99\u7d9a\u7684\u306b\u8ffd\u8de1\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+    "image_url": "https://www.apple.com/newsroom/images/2024/09/apple-intelligence-is-available-today/article/Apple-Intelligence-available-today-hero_big.jpg.large.jpg",
+    "last_viewed_at": "2026-02-06T15:05:01.588222",
+    "unread_count": 0
   }
 }
