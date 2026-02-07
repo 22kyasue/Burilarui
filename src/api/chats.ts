@@ -9,7 +9,6 @@ import type {
   Message,
   CreateChatRequest,
   SendMessageRequest,
-  SendMessageResponse,
   UpdateChatRequest,
 } from '../types/chat';
 
@@ -88,11 +87,12 @@ export async function createChat(data: CreateChatRequest & { messages?: Message[
 export async function sendMessage(
   chatId: string,
   data: SendMessageRequest
-): Promise<SendMessageResponse> {
-  return api.post<SendMessageResponse>(
+): Promise<Chat> {
+  const response = await api.post<ChatApiResponse>(
     `${CHATS_ENDPOINT}/${chatId}/messages`,
     data
   );
+  return toChat(response);
 }
 
 /**

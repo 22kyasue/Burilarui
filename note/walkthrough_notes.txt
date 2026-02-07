@@ -1,0 +1,64 @@
+# Refactoring Walkthrough & Verification
+
+We have successfully refactored the monolithic `App.tsx` component to improve maintainability, verify site access logic, and organize chat/tracking features.
+
+## Changes Overview
+
+### 1. New Custom Hooks
+Instead of managing all state in `App.tsx`, we now use:
+- **`useChat`**: Manages chat lists, message history, chat creation, and API interactions.
+- **`useTracking`**: Manages tracking domains, active tracking state, and suggestion UI.
+
+### 2. New Components
+- **`AuthGuard`**: Encapsulates the site access protection logic (password: `kenseiyasue123`).
+- **`AppContent`**: A cleaner main component that focuses on layout and view switching, delegating logic to hooks.
+
+### 3. Type Safety
+- Unified `Chat` and `Message` interfaces in `src/types/chat.ts`.
+- Resolved type mismatches in `HomePage` and `TrackingSettingsScreen`.
+
+## Verification Results
+
+### End-to-End Test: Auth & Chat Persistence
+**Status: PASSED**
+We performed a full E2E test using an automated browser agent.
+
+1.  **Site Access**: Validated password protection.
+2.  **Registration**: Successfully registered a new user `E2E Retry User`.
+3.  **Chat Creation**: Sent "Message A1" and received an AI response.
+4.  **Persistence**: Reloaded the page; chat history remained.
+5.  **Re-Login**: Logged out and back in; chat history was still accessible.
+
+**Media:**
+![E2E Test Recording](file:///Users/kenseiyasue/.gemini/antigravity/brain/deb6f581-b67d-4deb-9ee2-53bbf44b15a0/e2e_auth_chat_test_retry_1770390339018.webp)
+
+![Login Success](file:///Users/kenseiyasue/.gemini/antigravity/brain/deb6f581-b67d-4deb-9ee2-53bbf44b15a0/.system_generated/click_feedback/click_feedback_1770390627588.png)
+*Successful re-login with persistent data*
+
+## Manual Verification Guide
+
+If you wish to verify manually:
+
+### 1. Site Access Protection
+- [ ] Open the application.
+- [ ] Ensure you are prompted for a password if not already authenticated.
+- [ ] Enter `kenseiyasue123` to access the site.
+
+### 2. Chat Functionality
+- [ ] on the Home Page, type a message or select a suggestion.
+- [ ] Verify a new chat is created and you are redirected to the Chat View.
+- [ ] Send a follow-up message.
+- [ ] Verify the chat appears in the Sidebar.
+
+### 3. Tracking Functionality
+- [ ] Click "New Notebook" or use a Tracking Suggestion.
+- [ ] Verify the Tracking Detail panel opens.
+- [ ] "Execute" a tracking plan.
+- [ ] Verify the chat becomes a "Tracking Notebook" (icon change or status badge).
+
+### 4. Navigation
+- [ ] Switch between "Home", "Chat", and "Tracking List" via the Sidebar.
+- [ ] access "Settings" and "Notifications".
+
+## Next Steps for Development
+- **Enhance Layout**: Further break down `App.tsx` by extracting the `MainContent` render logic into sub-components (e.g., `AppRouter` or `ViewSwitcher`).

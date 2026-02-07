@@ -1,10 +1,10 @@
-import { User, Settings, CreditCard, LogOut, ChevronDown } from 'lucide-react';
+import { User, CreditCard, LogOut, ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
+
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
@@ -82,11 +82,10 @@ export function UserDropdown({
 
       <DropdownMenuContent
         align="end"
-        className={`w-64 ${
-          theme === 'dark'
+        className={`w-64 ${theme === 'dark'
             ? 'bg-[#2d2d2d] border-[#3d3d3d] text-gray-200'
             : 'bg-white border-gray-200 text-gray-900'
-        }`}
+          }`}
       >
         {/* User Info Section */}
         <div className="px-3 py-3">
@@ -103,14 +102,12 @@ export function UserDropdown({
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-medium truncate ${
-                theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
-              }`}>
+              <p className={`text-sm font-medium truncate ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                }`}>
                 {user.name}
               </p>
-              <p className={`text-xs truncate ${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              }`}>
+              <p className={`text-xs truncate ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                }`}>
                 {user.email}
               </p>
             </div>
@@ -127,22 +124,20 @@ export function UserDropdown({
         <DropdownMenuGroup>
           <DropdownMenuItem
             onClick={onProfileSettings}
-            className={`cursor-pointer ${
-              theme === 'dark'
+            className={`cursor-pointer ${theme === 'dark'
                 ? 'hover:bg-[#3d3d3d] focus:bg-[#3d3d3d]'
                 : 'hover:bg-gray-100 focus:bg-gray-100'
-            }`}
+              }`}
           >
             <User className="w-4 h-4 mr-2" />
             <span>プロフィール設定</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={onPlanManagement}
-            className={`cursor-pointer ${
-              theme === 'dark'
+            className={`cursor-pointer ${theme === 'dark'
                 ? 'hover:bg-[#3d3d3d] focus:bg-[#3d3d3d]'
                 : 'hover:bg-gray-100 focus:bg-gray-100'
-            }`}
+              }`}
           >
             <CreditCard className="w-4 h-4 mr-2" />
             <span>プラン管理</span>
@@ -153,11 +148,10 @@ export function UserDropdown({
 
         <DropdownMenuItem
           onClick={onLogout}
-          className={`cursor-pointer text-red-500 focus:text-red-500 ${
-            theme === 'dark'
+          className={`cursor-pointer text-red-500 focus:text-red-500 ${theme === 'dark'
               ? 'hover:bg-red-500/10 focus:bg-red-500/10'
               : 'hover:bg-red-50 focus:bg-red-50'
-          }`}
+            }`}
         >
           <LogOut className="w-4 h-4 mr-2" />
           <span>ログアウト</span>

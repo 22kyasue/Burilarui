@@ -11,6 +11,13 @@ export interface Message {
   timestamp: Date;
   sources?: number;
   images?: string[];
+  attachments?: {
+    id: string;
+    name: string;
+    type: string;
+    url?: string;
+    size?: number;
+  }[];
 }
 
 // Chat/Conversation with optional tracking features
@@ -26,6 +33,8 @@ export interface Chat {
   trackingFrequency?: string;
   notificationEnabled?: boolean;
   notificationGranularity?: 'update' | 'prompt';
+  thumbnail?: string;
+  updates?: any[];
 }
 
 // Request to create a new chat
@@ -62,6 +71,8 @@ export interface UpdateChatRequest {
   trackingFrequency?: string;
   notificationEnabled?: boolean;
   notificationGranularity?: 'update' | 'prompt';
+  isTracking?: boolean;
+  thumbnail?: string;
 }
 
 // Chat list item (lighter version for lists)

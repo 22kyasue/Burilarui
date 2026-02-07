@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 
 interface TrackingDetailProps {
@@ -14,12 +14,9 @@ interface TrackingDetailProps {
 }
 
 export function TrackingDetail({
-  isOpen,
+  isOpen: _isOpen,
   onClose,
-  theme,
-  frequency,
   query,
-  mode = "pro",
 }: TrackingDetailProps) {
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
   const notificationSettingsRef = useRef<HTMLDivElement>(null);
@@ -30,7 +27,7 @@ export function TrackingDetail({
   const [isExecuting, setIsExecuting] = useState(false);
   const [isComposing, setIsComposing] = useState(false);
   const [trackingStatus, setTrackingStatus] = useState<"active" | "paused">("paused");
-  
+
   // プロンプト編集の状態管理
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState(
@@ -45,12 +42,12 @@ export function TrackingDetail({
         // 追跡設定のタイトルがコンテナの上部に来るようにスクロール
         const container = scrollContainerRef.current;
         const titleElement = trackingSettingsTitleRef.current;
-        
+
         if (container && titleElement) {
           const containerRect = container.getBoundingClientRect();
           const titleRect = titleElement.getBoundingClientRect();
           const scrollOffset = titleRect.top - containerRect.top + container.scrollTop - 24; // 24pxのパディングを考慮
-          
+
           container.scrollTo({
             top: scrollOffset,
             behavior: 'smooth'
@@ -82,15 +79,15 @@ export function TrackingDetail({
     }
   };
 
-  if (!isOpen) return null;
+
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 100 }}
+      initial={{ opacity: 0, x: "100%" }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 100 }}
+      exit={{ opacity: 0, x: "100%" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="w-[65%] h-full p-4 flex flex-col"
+      className="absolute right-0 top-0 w-[65%] h-full p-4 flex flex-col z-20"
     >
       {/* 枠で囲まれたコンテナ */}
       <div className="flex-1 min-h-0 bg-white rounded-2xl border-2 border-gray-300 shadow-lg flex flex-col">
@@ -107,27 +104,24 @@ export function TrackingDetail({
               <X className="w-6 h-6" />
             </button>
           </div>
-          
+
           {/* ステータス切り替えボタン */}
           <div className="flex items-center gap-3 mt-3">
             <button
               onClick={() => setTrackingStatus(trackingStatus === "active" ? "paused" : "active")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all shadow-sm ${
-                trackingStatus === "active"
-                  ? "bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400"
-                  : "bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-400"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all shadow-sm ${trackingStatus === "active"
+                ? "bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400"
+                : "bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-400"
+                }`}
             >
-              <div className={`w-2.5 h-2.5 rounded-full ${
-                trackingStatus === "active" ? "bg-green-500" : "bg-red-500"
-              }`}></div>
-              <span className={`text-sm font-medium ${
-                trackingStatus === "active" ? "text-green-700" : "text-red-700"
-              }`}>
+              <div className={`w-2.5 h-2.5 rounded-full ${trackingStatus === "active" ? "bg-green-500" : "bg-red-500"
+                }`}></div>
+              <span className={`text-sm font-medium ${trackingStatus === "active" ? "text-green-700" : "text-red-700"
+                }`}>
                 {trackingStatus === "active" ? "アクティブ" : "中断中"}
               </span>
             </button>
-            
+
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200">
               <span className="text-xs font-medium text-purple-700">必ビジ追中</span>
             </div>
@@ -144,7 +138,7 @@ export function TrackingDetail({
                   <span className="text-lg">✨</span>
                   <h3 className="text-gray-900 font-semibold">AIが推奨する構成（参考）</h3>
                 </div>
-                
+
                 {/* プロンプト操作ボタンをタイトル行の右端に配置 */}
                 <div className="flex items-center gap-2">
                   <button
@@ -163,7 +157,7 @@ export function TrackingDetail({
                   </button>
                 </div>
               </div>
-              
+
               {/* 理想的な追跡プロンプトの完成イメージ */}
               {isEditingPrompt ? (
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-4 border border-indigo-100">
@@ -287,7 +281,7 @@ export function TrackingDetail({
                 <span className="text-purple-600">🔗</span>
                 参照する情報ソース（任意）
               </h3>
-              
+
               <p className="text-xs text-gray-500 mb-4">
                 指定しない場合は、信頼性の高い複数ソースから自動で調査します
               </p>
@@ -357,8 +351,8 @@ export function TrackingDetail({
                   initial={{ opacity: 0, height: 0, marginTop: 0 }}
                   animate={{ opacity: 1, height: "auto", marginTop: 0 }}
                   exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                  transition={{ 
-                    duration: 0.4, 
+                  transition={{
+                    duration: 0.4,
                     ease: [0.4, 0, 0.2, 1],
                     opacity: { duration: 0.3 }
                   }}
@@ -639,7 +633,7 @@ export function TrackingDetail({
               onClick={() => {
                 setIsExecuting(true);
                 console.log("トラッキングを実行");
-                
+
                 // アニメーション効果
                 setTimeout(() => {
                   // 1.5秒後にパネルを閉じる
@@ -648,17 +642,16 @@ export function TrackingDetail({
                 }, 1500);
               }}
               disabled={isExecuting}
-              className={`flex-1 px-6 py-3.5 rounded-xl text-white font-medium transition-all shadow-md hover:shadow-lg cursor-pointer relative overflow-hidden ${
-                isExecuting
-                  ? 'bg-gradient-to-r from-green-400 to-emerald-400'
-                  : 'bg-gradient-to-r from-indigo-400 to-purple-400 hover:from-indigo-500 hover:to-purple-500'
-              }`}
+              className={`flex-1 px-6 py-3.5 rounded-xl text-white font-medium transition-all shadow-md hover:shadow-lg cursor-pointer relative overflow-hidden ${isExecuting
+                ? 'bg-gradient-to-r from-green-400 to-emerald-400'
+                : 'bg-gradient-to-r from-indigo-400 to-purple-400 hover:from-indigo-500 hover:to-purple-500'
+                }`}
               whileTap={!isExecuting ? { scale: 0.95 } : {}}
               animate={
                 isExecuting
                   ? {
-                      scale: [1, 1.02, 1],
-                    }
+                    scale: [1, 1.02, 1],
+                  }
                   : {}
               }
               transition={{ duration: 0.3 }}
@@ -672,7 +665,7 @@ export function TrackingDetail({
                   transition={{ duration: 1.5, ease: 'easeInOut' }}
                 />
               )}
-              
+
               {/* ボタンテキストとアイコン */}
               <span className="relative flex items-center justify-center gap-2">
                 {isExecuting ? (

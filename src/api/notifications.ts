@@ -5,7 +5,7 @@
 
 import { api } from './client';
 import type {
-  Notification,
+
   NotificationListResponse,
   NotificationSettingsResponse,
   GlobalNotificationSettings,

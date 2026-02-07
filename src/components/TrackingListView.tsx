@@ -1,57 +1,36 @@
-import { ArrowLeft, Pin, Circle, Code2, Search, Grid3x3, List, ChevronDown, Plus, Calendar, Settings, Menu, X } from 'lucide-react';
+import { Pin, Circle, Search, Grid3x3, List, ChevronDown, Plus, Calendar, X } from 'lucide-react';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from "framer-motion";
 
-interface Chat {
-  id: string;
-  title: string;
-  messages: Array<{
-    id: string;
-    content: string;
-    role: 'user' | 'assistant';
-    timestamp: Date;
-  }>;
-  updatedAt: Date;
-  pinned?: boolean;
-  isTracking?: boolean;
-  trackingActive?: boolean;
-  updateCount?: number;
-}
+import { Chat } from '../types/chat';
 
 interface TrackingListViewProps {
-  onBack: () => void;
   chats: Chat[];
   onSelectChat: (chatId: string) => void;
-  onViewNotificationSettings?: () => void;
-  isSidebarOpen?: boolean;
-  onToggleSidebar?: () => void;
   onNewChat?: () => void;
 }
 
 // サムネイル画像マッピング
 const thumbnailImages: Record<string, string> = {
   'React開発のベストプラクティス': 'https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9ncmFtbWluZyUyMGNvZGUlMjBzY3JlZW58ZW58MXx8fHwxNzY2OTY4MzU3fDA&ixlib=rb-4.1.0&q=80&w=1080',
-  'AIモデルの最新トレンド': 'https://images.unsplash.com/photo-1562976540-1502c2145186?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21wdXRlciUyMGNpcmN1aXQlMjBib2FyZHxlbnwxfHx8fDE3NjcwMTcyNzV8MA&ixlib=rb-4.1.0&q=80&w=1080',
-  'ユニリーバのマーケティング戦略調査': 'https://images.unsplash.com/photo-1709715357520-5e1047a2b691?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMG1lZXRpbmclMjB0ZWFtfGVufDF8fHx8MTc2Njk5MTc4Mnww&ixlib=rb-4.1.0&q=80&w=1080',
+  'AIモデルの最新トレンド': 'https://images.unsplash.com/photo-1562976540-1502c2145186?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxjb21wdXRlciUyMGNpcmN1aXQlMjBib2FyZHxlbnwxfHx8fDE3NjcwMTcyNzV8MA&ixlib=rb-4.1.0&q=80&w=1080',
+  'ユニリーバのマーケティング戦略調査': 'https://images.unsplash.com/photo-1709715357520-5e1047a2b691?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxidXNpbmVzcyUyMG1lZXRpbmclMjB0ZWFtfGVufDF8fHx8MTc2Njk5MTc4Mnww&ixlib=rb-4.1.0&q=80&w=1080',
   'カリスマ宣言師': 'https://images.unsplash.com/photo-1639493115941-a70fcef4f715?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGdyYWRpZW50JTIwY29sb3JmdWx8ZW58MXx8fHwxNzY3MDMyNzI0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-  'Badminton Doubles: Teamwork and Effective Strategies': 'https://images.unsplash.com/photo-1613918431551-b2ef2720387c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiYWRtaW50b24lMjBjb3VydCUyMHNwb3J0fGVufDF8fHx8MTc2NzAzNjg5Mnww&ixlib=rb-4.1.0&q=80&w=1080',
-  '広告代理店向け自己PR戦略概要案': 'https://images.unsplash.com/photo-1623679072629-3aaa0192a391?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjB3b3Jrc3BhY2UlMjBkZXNrfGVufDF8fHx8MTc2Njk1NTE3OHww&ixlib=rb-4.1.0&q=80&w=1080',
+  'Badminton Doubles: Teamwork and Effective Strategies': 'https://images.unsplash.com/photo-1613918431551-b2ef2720387c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxiYWRtaW50b24lMjBjb3VydCUyMHNwb3J0fGVufDF8fHx8MTc2NzAzNjg5Mnww&ixlib=rb-4.1.0&q=80&w=1080',
+  '広告代理店向け自己PR戦略概要案': 'https://images.unsplash.com/photo-1623679072629-3aaa0192a391?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxvZmZpY2UlMjB3b3Jrc3BhY2UlMjBkZXNrfGVufDF8fHx8MTc2Njk1NTE3OHww&ixlib=rb-4.1.0&q=80&w=1080',
 };
 
-export function TrackingListView({ 
-  onBack, 
-  chats, 
+export function TrackingListView({
+  chats,
   onSelectChat,
-  onViewNotificationSettings,
-  isSidebarOpen,
-  onToggleSidebar,
+
   onNewChat
 }: TrackingListViewProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeTab, setActiveTab] = useState<'tracking' | 'all'>('tracking');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   const trackingChats = chats.filter((chat) => chat.isTracking);
   const displayChats = activeTab === 'tracking' ? trackingChats : chats;
 
@@ -74,11 +53,10 @@ export function TrackingListView({
           <div className="flex gap-6">
             <button
               onClick={() => setActiveTab('tracking')}
-              className={`pb-2 px-1 transition-colors relative ${
-                activeTab === 'tracking'
-                  ? 'text-indigo-600'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`pb-2 px-1 transition-colors relative ${activeTab === 'tracking'
+                ? 'text-indigo-600'
+                : 'text-gray-600 hover:text-gray-900'
+                }`}
             >
               追跡中のプロンプト
               {activeTab === 'tracking' && (
@@ -87,11 +65,10 @@ export function TrackingListView({
             </button>
             <button
               onClick={() => setActiveTab('all')}
-              className={`pb-2 px-1 transition-colors relative ${
-                activeTab === 'all'
-                  ? 'text-indigo-600'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`pb-2 px-1 transition-colors relative ${activeTab === 'all'
+                ? 'text-indigo-600'
+                : 'text-gray-600 hover:text-gray-900'
+                }`}
             >
               全てのプロンプト
               {activeTab === 'all' && (
@@ -105,21 +82,19 @@ export function TrackingListView({
             <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === 'grid'
-                    ? 'bg-white shadow-sm'
-                    : 'hover:bg-gray-200'
-                }`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'grid'
+                  ? 'bg-white shadow-sm'
+                  : 'hover:bg-gray-200'
+                  }`}
               >
                 <Grid3x3 className="w-4 h-4 text-gray-700" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-white shadow-sm'
-                    : 'hover:bg-gray-200'
-                }`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'list'
+                  ? 'bg-white shadow-sm'
+                  : 'hover:bg-gray-200'
+                  }`}
               >
                 <List className="w-4 h-4 text-gray-700" />
               </button>
@@ -165,7 +140,7 @@ export function TrackingListView({
                   </motion.div>
                 )}
               </AnimatePresence>
-              
+
               {/* Search Button */}
               {!isSearchOpen && (
                 <button
@@ -210,7 +185,7 @@ export function TrackingListView({
                     {/* Status Indicator - Top Left (outside card) */}
                     {chat.trackingActive !== undefined && (
                       <div className="absolute -top-2 -left-2 z-10">
-                        <div 
+                        <div
                           className="w-4 h-4 rounded-full shadow-lg border-2 border-white"
                           style={{ backgroundColor: chat.trackingActive ? '#10b981' : '#ef4444' }}
                         />
@@ -220,11 +195,11 @@ export function TrackingListView({
                     {/* Image */}
                     <div className="relative h-40 bg-gradient-to-br from-indigo-100 to-purple-100 overflow-hidden rounded-t-2xl">
                       <img
-                        src={thumbnailImages[chat.title] || 'https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?w=400'}
+                        src={chat.thumbnail || thumbnailImages[chat.title] || 'https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?w=400'}
                         alt={chat.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      
+
                       {/* Badge - Top Left */}
                       <div className="absolute top-3 left-3">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-indigo-600 shadow-sm">
@@ -273,13 +248,13 @@ export function TrackingListView({
                       <div className="flex items-start gap-3 flex-1 min-w-0">
                         <div className="flex-shrink-0 mt-1">
                           {chat.pinned ? (
-                            <Pin 
-                              className="w-4 h-4" 
+                            <Pin
+                              className="w-4 h-4"
                               style={{ color: chat.trackingActive ? '#10b981' : '#ef4444' }}
                               fill={chat.trackingActive ? '#10b981' : '#ef4444'}
                             />
                           ) : (
-                            <Circle 
+                            <Circle
                               className="w-2.5 h-2.5 mt-1"
                               fill={chat.trackingActive ? '#10b981' : '#ef4444'}
                               stroke="none"

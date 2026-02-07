@@ -4,6 +4,7 @@ Handles chat/conversation CRUD operations.
 """
 
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 from backend.storage import chat_storage
 from backend.middleware.auth import auth_required, get_current_user
 
@@ -177,11 +178,15 @@ def delete_chat(chat_id):
 @chats_bp.route('/<chat_id>/messages', methods=['POST'])
 @auth_required
 def add_message(chat_id):
-    """Add a message to a chat."""
+    """Add a message to a chat and generate AI response."""
+    from backend.utils.ai import call_perplexity
+    import time
+    
     user = get_current_user()
     data = request.json or {}
 
-    message = {
+    # 1. Add User Message
+    user_message = {
         'id': data.get('id'),
         'content': data.get('content', ''),
         'role': data.get('role', 'user'),
@@ -190,7 +195,7 @@ def add_message(chat_id):
         'images': data.get('images'),
     }
 
-    chat = chat_storage.add_message(user['id'], chat_id, message)
+    chat = chat_storage.add_message(user['id'], chat_id, user_message)
 
     if not chat:
         return jsonify({
@@ -200,6 +205,43 @@ def add_message(chat_id):
             }
         }), 404
 
+    # 2. Trigger AI Response if it was a user message
+    if user_message['role'] == 'user':
+        # Construct messages context
+        messages = [
+            {
+                "role": "system",
+                "content": "You are a helpful AI assistant. Provide concise and accurate answers in Japanese."
+            }
+        ]
+        
+        # Add history (last 10 messages to keep context but avoid token limits)
+        for msg in chat['messages'][-10:]:
+            messages.append({
+                "role": msg['role'],
+                "content": msg['content']
+            })
+            
+        try:
+            # Call Perplexity
+            ai_content = call_perplexity(messages, model="sonar")
+            
+            # Create Assistant Message
+            assistant_message = {
+                'id': str(int(time.time() * 1000)),
+                'content': ai_content if isinstance(ai_content, str) else ai_content.get('content', ''),
+                'role': 'assistant',
+                'timestamp': datetime.now().isoformat(),
+                'sources': 0  # To be improved with citation parsing
+            }
+            
+            # Save Assistant Message
+            chat = chat_storage.add_message(user['id'], chat_id, assistant_message)
+            
+        except Exception as e:
+            print(f"Error generating AI response: {str(e)}")
+            # Optionally add an error message to the chat or just log it
+            
     return jsonify({
         'id': chat['id'],
         'title': chat.get('title', 'New Chat'),

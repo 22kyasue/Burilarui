@@ -13,7 +13,7 @@ import type {
   Subscription,
   UsageStats,
   UsageResponse,
-  BillingHistoryItem,
+
   BillingHistoryResponse,
   PaymentMethod,
   PaymentMethodsResponse,

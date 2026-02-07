@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Sparkles, Check, X, ChevronDown, Edit2 } from 'lucide-react';
+import { Sparkles, Check, Edit2 } from 'lucide-react';
 
 interface TrackingSuggestion {
   theme: string;
@@ -11,17 +11,17 @@ interface TrackingSuggestion {
 interface TrackingSuggestionCardProps {
   originalQuery: string;
   onAccept: (suggestion: TrackingSuggestion) => void;
-  onDismiss: () => void;
+
   mode?: "default" | "pro";
 }
 
-export function TrackingSuggestionCard({ originalQuery, onAccept, onDismiss, mode = "pro" }: TrackingSuggestionCardProps) {
+export function TrackingSuggestionCard({ originalQuery, onAccept, mode = "pro" }: TrackingSuggestionCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const isDefaultMode = mode === "default";
-  
+
   // デフォルトモード用の推奨プロンプト（固定）
   const recommendedPrompt = "Apple Intelligenceの2024〜2025年の動向についてキャッチアップしたい。最新の動向を教えてください。";
-  
+
   const [suggestion, setSuggestion] = useState<TrackingSuggestion>({
     theme: isDefaultMode ? originalQuery : generateTheme(originalQuery),
     frequency: '毎日 9:00',
@@ -99,7 +99,7 @@ export function TrackingSuggestionCard({ originalQuery, onAccept, onDismiss, mod
                     placeholder="追跡したい内容を入力してください"
                   />
                 </div>
-                
+
                 {/* 推奨プロンプト */}
                 <div>
                   <label className="text-xs text-indigo-600 mb-2 block font-medium flex items-center gap-1">

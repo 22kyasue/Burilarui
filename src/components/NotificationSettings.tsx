@@ -1,4 +1,4 @@
-import { ArrowLeft, Bell, Mail, Smartphone, Monitor, Clock, Check, Pin, Activity, Pause, RefreshCw, Menu } from 'lucide-react';
+import { Bell, Mail, Smartphone, Monitor, Clock, Check, Pin, Activity, Pause, RefreshCw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 interface Chat {
@@ -15,8 +15,7 @@ interface Chat {
 interface NotificationSettingsProps {
   onBack: () => void;
   chats: Chat[];
-  isSidebarOpen?: boolean;
-  onToggleSidebar?: () => void;
+
 }
 
 // プロンプトの通知設定の型
@@ -32,15 +31,7 @@ interface PromptNotificationSettings {
   notificationDetail: 'summary' | 'detailed' | 'full';
 }
 
-// 追跡中のプロンプトの型
-interface TrackedPrompt {
-  id: string;
-  title: string;
-  status: 'active' | 'paused';
-  isPinned: boolean;
-  lastUpdated: string;
-  settings?: PromptNotificationSettings;
-}
+
 
 // デフォルト設定
 const defaultSettings: PromptNotificationSettings = {
@@ -55,7 +46,7 @@ const defaultSettings: PromptNotificationSettings = {
   notificationDetail: 'summary',
 };
 
-export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSidebar }: NotificationSettingsProps) {
+export function NotificationSettings({ onBack, chats }: NotificationSettingsProps) {
   // 追跡中のプロンプトをchatsから取得
   const trackedPrompts = chats
     .filter(chat => chat.isTracking)
@@ -66,7 +57,7 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
       const minutes = Math.floor(diff / 60000);
       const hours = Math.floor(minutes / 60);
       const days = Math.floor(hours / 24);
-      
+
       let lastUpdated: string;
       if (minutes < 60) {
         lastUpdated = `${minutes}分前`;
@@ -88,15 +79,15 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
 
   // 選択されたプロンプト（nullの場合はスタンダード設定）
   const [selectedPromptId, setSelectedPromptId] = useState<string | null>(null);
-  
+
   // 各プロンプトの設定を管理
   const [promptSettings, setPromptSettings] = useState<Record<string, PromptNotificationSettings>>({});
-  
+
   // スタンダード設定を管理
   const [standardSettings, setStandardSettings] = useState<PromptNotificationSettings>(defaultSettings);
 
   // Loading state
-  const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+
 
   // Load global settings from API on mount
   useEffect(() => {
@@ -122,7 +113,7 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
       } catch (error) {
         console.error('Failed to load global settings:', error);
       } finally {
-        setIsLoadingSettings(false);
+        // setIsLoadingSettings(false);
       }
     };
 
@@ -205,14 +196,14 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
 
   const currentSettings = getCurrentSettings();
   const [showCustomInput, setShowCustomInput] = useState(false);
-  const [showFrequencyOptions, setShowFrequencyOptions] = useState(false);
+
 
   // バリデーション
   const hasNotificationMethod = currentSettings.emailNotifications || currentSettings.pushNotifications || currentSettings.inAppNotifications;
   const hasNotificationTiming = currentSettings.notifyOnNewUpdate || currentSettings.notifyOnDailyDigest || currentSettings.notifyOnWeeklyDigest;
   const hasSearchFrequency = currentSettings.searchFrequency > 0 && currentSettings.searchFrequency <= 168;
   const hasNotificationDetail = currentSettings.notificationDetail !== null;
-  
+
   const canSave = hasNotificationMethod && hasNotificationTiming && hasSearchFrequency && hasNotificationDetail;
 
   const [isSaving, setIsSaving] = useState(false);
@@ -280,16 +271,15 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
               <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50">
                 <h2 className="text-sm text-gray-700 font-semibold">通知設定の管理</h2>
               </div>
-              
+
               <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
                 {/* スタンダード設定 */}
                 <button
                   onClick={() => setSelectedPromptId(null)}
-                  className={`w-full p-4 text-left border-b border-gray-100 transition-colors ${
-                    selectedPromptId === null
-                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-l-4 border-l-indigo-500'
-                      : 'hover:bg-gray-50'
-                  }`}
+                  className={`w-full p-4 text-left border-b border-gray-100 transition-colors ${selectedPromptId === null
+                    ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-l-4 border-l-indigo-500'
+                    : 'hover:bg-gray-50'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-md">
@@ -306,29 +296,27 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                 <div className="p-3 bg-gradient-to-r from-indigo-50/50 to-purple-50/50">
                   <p className="text-xs text-gray-600 px-1 font-semibold">追跡中のプロンプト</p>
                 </div>
-                
+
                 {trackedPrompts.map((prompt) => (
                   <button
                     key={prompt.id}
                     onClick={() => setSelectedPromptId(prompt.id)}
-                    className={`w-full p-4 text-left border-b border-gray-100 transition-colors ${
-                      selectedPromptId === prompt.id
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-l-4 border-l-indigo-500'
-                        : 'hover:bg-gray-50'
-                    }`}
+                    className={`w-full p-4 text-left border-b border-gray-100 transition-colors ${selectedPromptId === prompt.id
+                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-l-4 border-l-indigo-500'
+                      : 'hover:bg-gray-50'
+                      }`}
                   >
                     <div className="flex items-start gap-3">
                       {/* ステータスアイコン */}
-                      <div className={`mt-1 flex-shrink-0 ${
-                        getPromptStatus(prompt.id) === 'active' ? 'text-emerald-500' : 'text-red-500'
-                      }`}>
+                      <div className={`mt-1 flex-shrink-0 ${getPromptStatus(prompt.id) === 'active' ? 'text-emerald-500' : 'text-red-500'
+                        }`}>
                         {getPromptStatus(prompt.id) === 'active' ? (
                           <Activity className="w-4 h-4" />
                         ) : (
                           <Pause className="w-4 h-4" />
                         )}
                       </div>
-                      
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm text-gray-900 line-clamp-2 font-medium">{prompt.title}</p>
@@ -337,9 +325,8 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                           )}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-xs font-medium ${
-                            getPromptStatus(prompt.id) === 'active' ? 'text-emerald-600' : 'text-red-600'
-                          }`}>
+                          <span className={`text-xs font-medium ${getPromptStatus(prompt.id) === 'active' ? 'text-emerald-600' : 'text-red-600'
+                            }`}>
                             {getPromptStatus(prompt.id) === 'active' ? 'アクティブ' : '中断中'}
                           </span>
                           <span className="text-xs text-gray-400">•</span>
@@ -394,9 +381,8 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                           if (!prompt) return null;
                           return (
                             <>
-                              <div className={`mt-1 flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
-                                getPromptStatus(prompt.id) === 'active' ? 'bg-gradient-to-br from-emerald-400 to-green-500' : 'bg-gradient-to-br from-red-400 to-rose-500'
-                              }`}>
+                              <div className={`mt-1 flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${getPromptStatus(prompt.id) === 'active' ? 'bg-gradient-to-br from-emerald-400 to-green-500' : 'bg-gradient-to-br from-red-400 to-rose-500'
+                                }`}>
                                 {getPromptStatus(prompt.id) === 'active' ? (
                                   <Activity className="w-6 h-6 text-white" />
                                 ) : (
@@ -406,9 +392,8 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                               <div className="flex-1">
                                 <h2 className="text-lg text-gray-900 font-semibold">{prompt.title}</h2>
                                 <div className="flex items-center gap-2 mt-1">
-                                  <span className={`text-xs font-medium ${
-                                    getPromptStatus(prompt.id) === 'active' ? 'text-emerald-600' : 'text-red-600'
-                                  }`}>
+                                  <span className={`text-xs font-medium ${getPromptStatus(prompt.id) === 'active' ? 'text-emerald-600' : 'text-red-600'
+                                    }`}>
                                     {getPromptStatus(prompt.id) === 'active' ? 'アクティブ' : '中断中'}
                                   </span>
                                   {prompt.isPinned && (
@@ -426,7 +411,7 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                       </>
                     )}
                   </div>
-                  
+
                   {/* ステータス切り替えボタン（プロンプト選択時のみ表示） */}
                   {selectedPromptId !== null && (() => {
                     const prompt = trackedPrompts.find(p => p.id === selectedPromptId);
@@ -435,18 +420,15 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                     return (
                       <button
                         onClick={() => togglePromptStatus(prompt.id)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all shadow-sm border-2 ${
-                          status === 'active'
-                            ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-400 hover:from-green-100 hover:to-emerald-100'
-                            : 'bg-gradient-to-r from-red-50 to-orange-50 border-red-400 hover:from-red-100 hover:to-orange-100'
-                        }`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all shadow-sm border-2 ${status === 'active'
+                          ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-400 hover:from-green-100 hover:to-emerald-100'
+                          : 'bg-gradient-to-r from-red-50 to-orange-50 border-red-400 hover:from-red-100 hover:to-orange-100'
+                          }`}
                       >
-                        <div className={`w-2.5 h-2.5 rounded-full ${
-                          status === 'active' ? 'bg-green-500' : 'bg-red-500'
-                        }`}></div>
-                        <span className={`text-sm font-medium whitespace-nowrap ${
-                          status === 'active' ? 'text-green-700' : 'text-red-700'
-                        }`}>
+                        <div className={`w-2.5 h-2.5 rounded-full ${status === 'active' ? 'bg-green-500' : 'bg-red-500'
+                          }`}></div>
+                        <span className={`text-sm font-medium whitespace-nowrap ${status === 'active' ? 'text-green-700' : 'text-red-700'
+                          }`}>
                           {status === 'active' ? 'アクティブ' : '中断中'}
                         </span>
                       </button>
@@ -469,11 +451,10 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                         updateCurrentSettings({ searchFrequency: 1 });
                         setShowCustomInput(false);
                       }}
-                      className={`p-3 rounded-xl border transition-all font-medium ${
-                        currentSettings.searchFrequency === 1 && !showCustomInput
-                          ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                      }`}
+                      className={`p-3 rounded-xl border transition-all font-medium ${currentSettings.searchFrequency === 1 && !showCustomInput
+                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        }`}
                     >
                       <div className="text-center">
                         <p className="text-sm">1h</p>
@@ -484,11 +465,10 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                         updateCurrentSettings({ searchFrequency: 6 });
                         setShowCustomInput(false);
                       }}
-                      className={`p-3 rounded-xl border transition-all font-medium ${
-                        currentSettings.searchFrequency === 6 && !showCustomInput
-                          ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                      }`}
+                      className={`p-3 rounded-xl border transition-all font-medium ${currentSettings.searchFrequency === 6 && !showCustomInput
+                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        }`}
                     >
                       <div className="text-center">
                         <p className="text-sm">6h</p>
@@ -499,11 +479,10 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                         updateCurrentSettings({ searchFrequency: 12 });
                         setShowCustomInput(false);
                       }}
-                      className={`p-3 rounded-xl border transition-all font-medium ${
-                        currentSettings.searchFrequency === 12 && !showCustomInput
-                          ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                      }`}
+                      className={`p-3 rounded-xl border transition-all font-medium ${currentSettings.searchFrequency === 12 && !showCustomInput
+                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        }`}
                     >
                       <div className="text-center">
                         <p className="text-sm">12h</p>
@@ -514,11 +493,10 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                         updateCurrentSettings({ searchFrequency: 24 });
                         setShowCustomInput(false);
                       }}
-                      className={`p-3 rounded-xl border transition-all font-medium ${
-                        currentSettings.searchFrequency === 24 && !showCustomInput
-                          ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                      }`}
+                      className={`p-3 rounded-xl border transition-all font-medium ${currentSettings.searchFrequency === 24 && !showCustomInput
+                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        }`}
                     >
                       <div className="text-center">
                         <p className="text-sm">1d</p>
@@ -529,11 +507,10 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                         updateCurrentSettings({ searchFrequency: 72 });
                         setShowCustomInput(false);
                       }}
-                      className={`p-3 rounded-xl border transition-all font-medium ${
-                        currentSettings.searchFrequency === 72 && !showCustomInput
-                          ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                      }`}
+                      className={`p-3 rounded-xl border transition-all font-medium ${currentSettings.searchFrequency === 72 && !showCustomInput
+                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        }`}
                     >
                       <div className="text-center">
                         <p className="text-sm">3d</p>
@@ -544,11 +521,10 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                         updateCurrentSettings({ searchFrequency: 168 });
                         setShowCustomInput(false);
                       }}
-                      className={`p-3 rounded-xl border transition-all font-medium ${
-                        currentSettings.searchFrequency === 168 && !showCustomInput
-                          ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                      }`}
+                      className={`p-3 rounded-xl border transition-all font-medium ${currentSettings.searchFrequency === 168 && !showCustomInput
+                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        }`}
                     >
                       <div className="text-center">
                         <p className="text-sm">1w</p>
@@ -558,11 +534,10 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
 
                   <button
                     onClick={() => setShowCustomInput(!showCustomInput)}
-                    className={`w-full px-4 py-3 rounded-xl border text-left transition-all font-medium ${
-                      showCustomInput
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
-                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                    }`}
+                    className={`w-full px-4 py-3 rounded-xl border text-left transition-all font-medium ${showCustomInput
+                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300 text-gray-900'
+                      : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                      }`}
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm">カスタム設定</span>
@@ -581,7 +556,7 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                           <span className="text-sm text-gray-600">時間毎</span>
                         </div>
                       </div>
-                      
+
                       <div>
                         <input
                           type="range"
@@ -601,7 +576,7 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                           <span>168h</span>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-3">
                         <label className="text-sm text-gray-700 whitespace-nowrap font-medium">
                           または直接入力:
@@ -618,14 +593,14 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                           <span className="text-sm text-gray-600">時間</span>
                         </div>
                       </div>
-                      
+
                       <div className="pt-2 border-t border-gray-200">
                         <p className="text-xs text-gray-600">
-                          💡 {currentSettings.searchFrequency === 1 ? '1時間' : 
-                             currentSettings.searchFrequency < 24 ? `${currentSettings.searchFrequency}時間` :
-                             currentSettings.searchFrequency === 24 ? '1日' :
-                             currentSettings.searchFrequency < 168 ? `約${Math.floor(currentSettings.searchFrequency / 24)}日` :
-                             `約${Math.floor(currentSettings.searchFrequency / 168)}週間`}に1回の検索頻度です
+                          💡 {currentSettings.searchFrequency === 1 ? '1時間' :
+                            currentSettings.searchFrequency < 24 ? `${currentSettings.searchFrequency}時間` :
+                              currentSettings.searchFrequency === 24 ? '1日' :
+                                currentSettings.searchFrequency < 168 ? `約${Math.floor(currentSettings.searchFrequency / 24)}日` :
+                                  `約${Math.floor(currentSettings.searchFrequency / 168)}週間`}に1回の検索頻度です
                         </p>
                       </div>
                     </div>
@@ -634,9 +609,8 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
               </div>
 
               {/* 通知形式設定 */}
-              <div className={`bg-white rounded-2xl border p-6 shadow-sm ${
-                !hasNotificationMethod ? 'border-red-300' : 'border-gray-200'
-              }`}>
+              <div className={`bg-white rounded-2xl border p-6 shadow-sm ${!hasNotificationMethod ? 'border-red-300' : 'border-gray-200'
+                }`}>
                 <div className="flex items-start gap-3 mb-6">
                   <Bell className="w-5 h-5 text-indigo-600 mt-0.5" />
                   <div className="flex-1">
@@ -657,11 +631,10 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                 <div className="space-y-4">
                   <div
                     onClick={() => updateCurrentSettings({ emailNotifications: !currentSettings.emailNotifications })}
-                    className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${
-                      currentSettings.emailNotifications
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
-                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${currentSettings.emailNotifications
+                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <Mail className={`w-5 h-5 ${currentSettings.emailNotifications ? 'text-indigo-600' : 'text-gray-500'}`} />
@@ -675,25 +648,22 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                       </div>
                     </div>
                     <div
-                      className={`w-12 h-6 rounded-full transition-colors relative ${
-                        currentSettings.emailNotifications ? 'bg-indigo-500' : 'bg-gray-300'
-                      }`}
+                      className={`w-12 h-6 rounded-full transition-colors relative ${currentSettings.emailNotifications ? 'bg-indigo-500' : 'bg-gray-300'
+                        }`}
                     >
                       <div
-                        className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${
-                          currentSettings.emailNotifications ? 'transform translate-x-6' : ''
-                        }`}
+                        className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${currentSettings.emailNotifications ? 'transform translate-x-6' : ''
+                          }`}
                       />
                     </div>
                   </div>
 
                   <div
                     onClick={() => updateCurrentSettings({ pushNotifications: !currentSettings.pushNotifications })}
-                    className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${
-                      currentSettings.pushNotifications
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
-                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${currentSettings.pushNotifications
+                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <Smartphone className={`w-5 h-5 ${currentSettings.pushNotifications ? 'text-indigo-600' : 'text-gray-500'}`} />
@@ -707,25 +677,22 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                       </div>
                     </div>
                     <div
-                      className={`w-12 h-6 rounded-full transition-colors relative ${
-                        currentSettings.pushNotifications ? 'bg-indigo-500' : 'bg-gray-300'
-                      }`}
+                      className={`w-12 h-6 rounded-full transition-colors relative ${currentSettings.pushNotifications ? 'bg-indigo-500' : 'bg-gray-300'
+                        }`}
                     >
                       <div
-                        className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${
-                          currentSettings.pushNotifications ? 'transform translate-x-6' : ''
-                        }`}
+                        className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${currentSettings.pushNotifications ? 'transform translate-x-6' : ''
+                          }`}
                       />
                     </div>
                   </div>
 
                   <div
                     onClick={() => updateCurrentSettings({ inAppNotifications: !currentSettings.inAppNotifications })}
-                    className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${
-                      currentSettings.inAppNotifications
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
-                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${currentSettings.inAppNotifications
+                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <Monitor className={`w-5 h-5 ${currentSettings.inAppNotifications ? 'text-indigo-600' : 'text-gray-500'}`} />
@@ -739,14 +706,12 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                       </div>
                     </div>
                     <div
-                      className={`w-12 h-6 rounded-full transition-colors relative ${
-                        currentSettings.inAppNotifications ? 'bg-indigo-500' : 'bg-gray-300'
-                      }`}
+                      className={`w-12 h-6 rounded-full transition-colors relative ${currentSettings.inAppNotifications ? 'bg-indigo-500' : 'bg-gray-300'
+                        }`}
                     >
                       <div
-                        className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${
-                          currentSettings.inAppNotifications ? 'transform translate-x-6' : ''
-                        }`}
+                        className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${currentSettings.inAppNotifications ? 'transform translate-x-6' : ''
+                          }`}
                       />
                     </div>
                   </div>
@@ -754,9 +719,8 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
               </div>
 
               {/* 通知タイミング */}
-              <div className={`bg-white rounded-2xl border p-6 shadow-sm ${
-                !hasNotificationTiming ? 'border-red-300' : 'border-gray-200'
-              }`}>
+              <div className={`bg-white rounded-2xl border p-6 shadow-sm ${!hasNotificationTiming ? 'border-red-300' : 'border-gray-200'
+                }`}>
                 <div className="flex items-start gap-3 mb-6">
                   <Bell className="w-5 h-5 text-indigo-600 mt-0.5" />
                   <div className="flex-1">
@@ -844,16 +808,14 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                 <div className="space-y-3">
                   <button
                     onClick={() => updateCurrentSettings({ notificationDetail: 'summary' })}
-                    className={`w-full flex items-start justify-between p-4 rounded-xl border transition-all ${
-                      currentSettings.notificationDetail === 'summary'
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
-                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`w-full flex items-start justify-between p-4 rounded-xl border transition-all ${currentSettings.notificationDetail === 'summary'
+                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                      }`}
                   >
                     <div className="text-left">
-                      <p className={`text-sm mb-1 font-medium ${
-                        currentSettings.notificationDetail === 'summary' ? 'text-gray-900' : 'text-gray-700'
-                      }`}>要約のみ</p>
+                      <p className={`text-sm mb-1 font-medium ${currentSettings.notificationDetail === 'summary' ? 'text-gray-900' : 'text-gray-700'
+                        }`}>要約のみ</p>
                       <p className="text-xs text-gray-600">アップデートのタイトルと簡単な説明のみ</p>
                     </div>
                     {currentSettings.notificationDetail === 'summary' && (
@@ -863,16 +825,14 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
 
                   <button
                     onClick={() => updateCurrentSettings({ notificationDetail: 'detailed' })}
-                    className={`w-full flex items-start justify-between p-4 rounded-xl border transition-all ${
-                      currentSettings.notificationDetail === 'detailed'
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
-                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`w-full flex items-start justify-between p-4 rounded-xl border transition-all ${currentSettings.notificationDetail === 'detailed'
+                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                      }`}
                   >
                     <div className="text-left">
-                      <p className={`text-sm mb-1 font-medium ${
-                        currentSettings.notificationDetail === 'detailed' ? 'text-gray-900' : 'text-gray-700'
-                      }`}>詳細</p>
+                      <p className={`text-sm mb-1 font-medium ${currentSettings.notificationDetail === 'detailed' ? 'text-gray-900' : 'text-gray-700'
+                        }`}>詳細</p>
                       <p className="text-xs text-gray-600">要約に加えて、主要なポイントと参考文献を含む</p>
                     </div>
                     {currentSettings.notificationDetail === 'detailed' && (
@@ -882,16 +842,14 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
 
                   <button
                     onClick={() => updateCurrentSettings({ notificationDetail: 'full' })}
-                    className={`w-full flex items-start justify-between p-4 rounded-xl border transition-all ${
-                      currentSettings.notificationDetail === 'full'
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
-                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`w-full flex items-start justify-between p-4 rounded-xl border transition-all ${currentSettings.notificationDetail === 'full'
+                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                      }`}
                   >
                     <div className="text-left">
-                      <p className={`text-sm mb-1 font-medium ${
-                        currentSettings.notificationDetail === 'full' ? 'text-gray-900' : 'text-gray-700'
-                      }`}>完全版</p>
+                      <p className={`text-sm mb-1 font-medium ${currentSettings.notificationDetail === 'full' ? 'text-gray-900' : 'text-gray-700'
+                        }`}>完全版</p>
                       <p className="text-xs text-gray-600">すべての情報（内容全文、参考文献、分析結果）を含む</p>
                     </div>
                     {currentSettings.notificationDetail === 'full' && (
@@ -912,17 +870,16 @@ export function NotificationSettings({ onBack, chats, isSidebarOpen, onToggleSid
                 <button
                   onClick={handleSave}
                   disabled={!canSave || isSaving}
-                  className={`px-6 py-2.5 rounded-xl transition-colors font-medium ${
-                    canSave && !isSaving
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 cursor-pointer shadow-md'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-                  }`}
+                  className={`px-6 py-2.5 rounded-xl transition-colors font-medium ${canSave && !isSaving
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 cursor-pointer shadow-md'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                    }`}
                   title={!canSave ? '全ての必須項目を設定してください' : ''}
                 >
                   {isSaving ? '保存中...' : '設定を保存'}
                 </button>
               </div>
-              
+
               {!canSave && (
                 <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
                   <p className="text-sm text-red-700 mb-2 font-semibold">⚠️ 以下の項目を確認してください:</p>

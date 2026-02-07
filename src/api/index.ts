@@ -16,7 +16,7 @@ export {
   updateChat,
   togglePinChat,
   deleteChat,
-  archiveChat,
+
 } from './chats';
 
 // Tracking API

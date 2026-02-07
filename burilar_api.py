@@ -203,7 +203,7 @@ Respond with ONLY the JSON object."""
         messages = [
             {
                 "role": "system",
-                "content": "You are a helpful research assistant. Provide comprehensive and accurate information based on current web sources. IMPORTANT: Always include the actual source URLs at the end of your response in a 'Sources:' section, listing each source with its full URL."
+                "content": "You are a helpful research assistant. Provide comprehensive and accurate information based on current web sources. Respond in Japanese. IMPORTANT: Always include the actual source URLs at the end of your response in a 'Sources:' section, listing each source with its full URL."
             },
             {
                 "role": "user",

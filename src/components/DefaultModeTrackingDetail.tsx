@@ -8,11 +8,10 @@ interface DefaultModeTrackingDetailProps {
 }
 
 export function DefaultModeTrackingDetail({
-  query,
   frequency,
   onExecute,
 }: DefaultModeTrackingDetailProps) {
-  const [trackingQuery, setTrackingQuery] = useState(query);
+
   const [selectedFrequency, setSelectedFrequency] = useState(frequency);
   const [selectedCondition, setSelectedCondition] = useState("新しい情報が見つかった");
   const [selectedOutput, setSelectedOutput] = useState("要約レポート（3-5項目）");
@@ -44,7 +43,7 @@ export function DefaultModeTrackingDetail({
             <span className="text-amber-500">✨</span>
             <h3 className="text-gray-900 font-medium">AIが推奨する構成（参考）</h3>
           </div>
-          
+
           {/* 推奨プロンプト */}
           <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
             <p className="text-gray-700 text-sm leading-relaxed">

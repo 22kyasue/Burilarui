@@ -1,4 +1,4 @@
-import { User, Sparkles, Share2, Download, Copy, RefreshCw, ExternalLink, Layers, X } from 'lucide-react';
+import { User, Sparkles, Share2, Download, Copy, RefreshCw, ExternalLink, Layers, X, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 
@@ -9,6 +9,13 @@ interface Message {
   timestamp: Date;
   sources?: number;
   images?: string[];
+  attachments?: {
+    id: string;
+    name: string;
+    type: string;
+    url?: string;
+    size?: number;
+  }[];
 }
 
 interface ChatMessageProps {
@@ -229,7 +236,7 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
               )}
 
               {/* ソースボタン - アクションボタンの上に配置 */}
-              {message.sources && (
+              {message.sources && message.sources > 0 && (
                 <div className="flex justify-end mb-3">
                   <button
                     onClick={() => setShowSources(!showSources)}
@@ -369,7 +376,45 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
 
           {/* ユーザーメッセージの場合はシンプルに表示 */}
           {isUser && (
-            <p className="whitespace-pre-wrap">{message.content}</p>
+            <div>
+              <p className="whitespace-pre-wrap">{message.content}</p>
+              {message.attachments && message.attachments.length > 0 && (
+                <div className="flex flex-wrap justify-end gap-2 mt-2">
+                  {message.attachments.map((file, index) => (
+                    <div
+                      key={index}
+                      className={`relative overflow-hidden rounded-xl border ${theme === 'dark' ? 'border-indigo-700/50 bg-indigo-900/20' : 'border-indigo-200/50 bg-white/50'
+                        }`}
+                    >
+                      {file.type.startsWith('image/') && file.url ? (
+                        <img
+                          src={file.url}
+                          alt={file.name}
+                          className="h-32 w-auto object-cover"
+                        />
+                      ) : (
+                        <div className="flex items-center gap-3 p-3">
+                          <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'
+                            }`}>
+                            <FileText className="w-5 h-5" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className={`text-sm font-medium truncate max-w-[150px] ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'
+                              }`}>
+                              {file.name}
+                            </span>
+                            <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                              }`}>
+                              {file.size ? (file.size / 1024).toFixed(0) + ' KB' : ''}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

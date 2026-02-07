@@ -1,13 +1,12 @@
-import { ArrowLeft, Menu, Check, Crown, CreditCard, Calendar, TrendingUp, Zap, Bell, Download } from 'lucide-react';
+import { ArrowLeft, Check, Crown, CreditCard, Calendar, TrendingUp, Zap, Download } from 'lucide-react';
 
 interface PlanManagementProps {
   onBack: () => void;
   onChangePlan: () => void;
-  isSidebarOpen?: boolean;
-  onToggleSidebar?: () => void;
+
 }
 
-export function PlanManagement({ onBack, onChangePlan, isSidebarOpen, onToggleSidebar }: PlanManagementProps) {
+export function PlanManagement({ onBack, onChangePlan }: PlanManagementProps) {
   // 現在のプラン情報
   const currentPlan = {
     name: 'Pro',

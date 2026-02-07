@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { IntegrationCard } from './IntegrationCard';
-import { Github, Mail, Calendar, FileText, CheckSquare, FolderOpen, Music, Lightbulb, X, Menu } from 'lucide-react';
+import { Github, Mail, Calendar, FileText, CheckSquare, FolderOpen, Music, Lightbulb, X } from 'lucide-react';
 
 type Category = '仕事効率化' | 'メディア' | 'その他';
 
 interface IntegrationScreenProps {
   onClose?: () => void;
-  onBack?: () => void;
-  isSidebarOpen?: boolean;
-  onToggleSidebar?: () => void;
 }
 
-export function IntegrationScreen({ onClose, onBack, isSidebarOpen, onToggleSidebar }: IntegrationScreenProps) {
+export function IntegrationScreen({ onClose }: IntegrationScreenProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('仕事効率化');
   const [integrations, setIntegrations] = useState({
     github: false,
@@ -171,11 +168,10 @@ export function IntegrationScreen({ onClose, onBack, isSidebarOpen, onToggleSide
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
-                activeCategory === category
+              className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${activeCategory === category
                   ? 'bg-indigo-100 text-indigo-700 border border-indigo-200'
                   : 'bg-gray-100 text-gray-600 border border-transparent hover:bg-gray-200'
-              }`}
+                }`}
             >
               {category}
             </button>

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Plus, Paperclip, Triangle, Image as ImageIcon, Code, Wifi, Settings } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { Plus, Paperclip, Triangle, Image as ImageIcon, Code, Wifi } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AttachmentMenuProps {
   onFileSelect?: (files: FileList) => void;
@@ -36,22 +36,22 @@ export function AttachmentMenu({ onFileSelect }: AttachmentMenuProps) {
     },
     {
       icon: Triangle,
-      label: "ドライブから追加",
+      label: "ドライブから追加 (Coming Soon)",
       action: () => console.log("ドライブから追加"),
     },
     {
       icon: ImageIcon,
-      label: "フォト",
+      label: "フォト (Coming Soon)",
       action: () => console.log("フォト"),
     },
     {
       icon: Code,
-      label: "コードをインポート",
+      label: "コードをインポート (Coming Soon)",
       action: () => console.log("コードをインポート"),
     },
     {
       icon: Wifi,
-      label: "NotebookLM",
+      label: "NotebookLM (Coming Soon)",
       action: () => console.log("NotebookLM"),
     },
   ];

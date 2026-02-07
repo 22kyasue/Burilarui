@@ -1,5 +1,5 @@
-import { Menu, Search, Code2, Settings, Pin, Bell, Home, SquarePen, Activity, History, Podcast, MoreHorizontal, Trash2, PinOff } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { Menu, Search, Code2, Settings, Pin, SquarePen, History, Podcast, MoreHorizontal, Trash2, PinOff } from 'lucide-react';
+import { useRef, useEffect } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,7 +38,7 @@ interface SidebarProps {
   onTogglePin: (chatId: string) => void;
   onViewTracking: () => void;
   onViewNotificationSettings?: () => void;
-  onViewHome?: () => void;
+
   onViewSettings?: () => void;
   shouldScrollToHistory?: boolean;
   onScrollToHistoryComplete?: () => void;
@@ -57,7 +57,7 @@ export function Sidebar({
   onTogglePin,
   onViewTracking,
   onViewNotificationSettings,
-  onViewHome,
+
   onViewSettings,
   shouldScrollToHistory,
   onScrollToHistoryComplete,

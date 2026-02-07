@@ -1,12 +1,12 @@
-import { X, Sparkles, FileText, Zap, Target, Bell, Clock, ChevronDown } from 'lucide-react';
+import { X, Sparkles, FileText, Zap, Bell, Clock } from 'lucide-react';
 import { useState } from 'react';
 
 interface NotebookCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateNotebook: (
-    title: string, 
-    prompt: string, 
+    title: string,
+    prompt: string,
     template?: string,
     trackingFrequency?: string,
     notificationEnabled?: boolean,
@@ -21,7 +21,7 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
   const [trackingFrequency, setTrackingFrequency] = useState('daily');
   const [notificationEnabled, setNotificationEnabled] = useState(true);
   const [notificationGranularity, setNotificationGranularity] = useState<'update' | 'prompt'>('update');
-  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+
 
   if (!isOpen) return null;
 
@@ -284,11 +284,10 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
                 <button
                   key={template.id}
                   onClick={() => handleSelectTemplate(template.id)}
-                  className={`p-4 rounded-xl border-2 transition-all text-left ${
-                    selectedTemplate === template.id
+                  className={`p-4 rounded-xl border-2 transition-all text-left ${selectedTemplate === template.id
                       ? 'border-blue-500 bg-blue-500/10'
                       : 'border-[#3d3d3d] bg-[#1f1f1f] hover:border-[#4d4d4d]'
-                  }`}
+                    }`}
                 >
                   <div className="text-2xl mb-2">{template.icon}</div>
                   <h3 className="text-sm font-medium text-gray-200 mb-1">{template.title}</h3>
@@ -350,11 +349,10 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => setTrackingFrequency('realtime')}
-                className={`p-4 rounded-xl border-2 transition-all text-left ${
-                  trackingFrequency === 'realtime'
+                className={`p-4 rounded-xl border-2 transition-all text-left ${trackingFrequency === 'realtime'
                     ? 'border-green-500 bg-green-500/10'
                     : 'border-[#3d3d3d] bg-[#1f1f1f] hover:border-[#4d4d4d]'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Zap className="w-4 h-4 text-green-400" />
@@ -365,11 +363,10 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
 
               <button
                 onClick={() => setTrackingFrequency('hourly')}
-                className={`p-4 rounded-xl border-2 transition-all text-left ${
-                  trackingFrequency === 'hourly'
+                className={`p-4 rounded-xl border-2 transition-all text-left ${trackingFrequency === 'hourly'
                     ? 'border-blue-500 bg-blue-500/10'
                     : 'border-[#3d3d3d] bg-[#1f1f1f] hover:border-[#4d4d4d]'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Clock className="w-4 h-4 text-blue-400" />
@@ -380,11 +377,10 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
 
               <button
                 onClick={() => setTrackingFrequency('daily')}
-                className={`p-4 rounded-xl border-2 transition-all text-left ${
-                  trackingFrequency === 'daily'
+                className={`p-4 rounded-xl border-2 transition-all text-left ${trackingFrequency === 'daily'
                     ? 'border-blue-500 bg-blue-500/10'
                     : 'border-[#3d3d3d] bg-[#1f1f1f] hover:border-[#4d4d4d]'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Clock className="w-4 h-4 text-blue-400" />
@@ -395,11 +391,10 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
 
               <button
                 onClick={() => setTrackingFrequency('weekly')}
-                className={`p-4 rounded-xl border-2 transition-all text-left ${
-                  trackingFrequency === 'weekly'
+                className={`p-4 rounded-xl border-2 transition-all text-left ${trackingFrequency === 'weekly'
                     ? 'border-blue-500 bg-blue-500/10'
                     : 'border-[#3d3d3d] bg-[#1f1f1f] hover:border-[#4d4d4d]'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Clock className="w-4 h-4 text-blue-400" />
@@ -416,7 +411,7 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
               <Bell className="w-4 h-4" />
               通知設定
             </label>
-            
+
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
@@ -440,11 +435,10 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => setNotificationGranularity('update')}
-                      className={`p-3 rounded-lg border transition-all text-left ${
-                        notificationGranularity === 'update'
+                      className={`p-3 rounded-lg border transition-all text-left ${notificationGranularity === 'update'
                           ? 'border-blue-500 bg-blue-500/10'
                           : 'border-[#3d3d3d] bg-[#1f1f1f] hover:border-[#4d4d4d]'
-                      }`}
+                        }`}
                     >
                       <p className="text-xs font-medium text-gray-200 mb-1">アップデート単位</p>
                       <p className="text-xs text-gray-500">まとめて通知</p>
@@ -452,11 +446,10 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
 
                     <button
                       onClick={() => setNotificationGranularity('prompt')}
-                      className={`p-3 rounded-lg border transition-all text-left ${
-                        notificationGranularity === 'prompt'
+                      className={`p-3 rounded-lg border transition-all text-left ${notificationGranularity === 'prompt'
                           ? 'border-blue-500 bg-blue-500/10'
                           : 'border-[#3d3d3d] bg-[#1f1f1f] hover:border-[#4d4d4d]'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-1">
                         <p className="text-xs font-medium text-gray-200">プロンプト単位</p>
@@ -467,11 +460,11 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
                       <p className="text-xs text-gray-500">詳細に通知</p>
                     </button>
                   </div>
-                  
+
                   <div className="mt-3 bg-blue-500/5 border border-blue-500/20 rounded-lg p-3">
                     <p className="text-xs text-blue-400 leading-relaxed">
-                      {notificationGranularity === 'update' 
-                        ? '💡 複数の更新をまとめて1つの通知で受け取ります' 
+                      {notificationGranularity === 'update'
+                        ? '💡 複数の更新をまとめて1つの通知で受け取ります'
                         : '💡 各プロンプトの更新を個別に通知し、未読数をバッジで表示します'}
                     </p>
                   </div>
@@ -497,11 +490,10 @@ export function NotebookCreationModal({ isOpen, onClose, onCreateNotebook }: Not
             <button
               onClick={handleCreate}
               disabled={!title.trim() || !prompt.trim()}
-              className={`px-6 py-2 text-sm rounded-lg transition-all flex items-center gap-2 ${
-                !title.trim() || !prompt.trim()
+              className={`px-6 py-2 text-sm rounded-lg transition-all flex items-center gap-2 ${!title.trim() || !prompt.trim()
                   ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
                   : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
+                }`}
             >
               <Sparkles className="w-4 h-4" />
               作成して追跡開始

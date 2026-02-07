@@ -1,17 +1,11 @@
 import {
-  History,
-  User,
   Puzzle,
   Clock,
-  Link,
   Palette,
   CreditCard,
   MessageSquare,
   HelpCircle,
   ChevronRight,
-  Shield,
-  Info,
-  Bell,
   Sparkles,
   Check,
   Code2
@@ -27,9 +21,11 @@ interface SettingsModalProps {
   onViewPlanManagement?: () => void;
   theme?: 'light' | 'dark';
   onThemeChange?: (theme: 'light' | 'dark') => void;
+  onLoadDemoData?: () => void;
+  onPlayDemoScenario?: () => void;
 }
 
-export function SettingsModal({ isOpen, onClose, onViewIntegrations, onViewTrackingSettings, onViewPlanManagement, theme = 'light', onThemeChange }: SettingsModalProps) {
+export function SettingsModal({ isOpen, onClose, onViewIntegrations, onViewTrackingSettings, onViewPlanManagement, theme = 'light', onThemeChange, onLoadDemoData, onPlayDemoScenario }: SettingsModalProps) {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const settingsItems = [
@@ -98,6 +94,27 @@ export function SettingsModal({ isOpen, onClose, onViewIntegrations, onViewTrack
       hasDot: false,
       action: () => alert('コードエディタ機能は現在開発中です')
     },
+    {
+      id: 'demo',
+      icon: Sparkles,
+      label: 'デモデータをロード',
+      hasArrow: false,
+      hasDot: false,
+      action: onLoadDemoData ? () => {
+        onLoadDemoData();
+        alert('デモデータをロードしました');
+      } : () => { }
+    },
+    {
+      id: 'demo-scenario',
+      icon: Sparkles,
+      label: 'デモシナリオを再生',
+      hasArrow: true,
+      hasDot: false,
+      action: onPlayDemoScenario ? () => {
+        onPlayDemoScenario();
+      } : () => { }
+    }
   ];
 
   const themeOptions = [
@@ -129,7 +146,7 @@ export function SettingsModal({ isOpen, onClose, onViewIntegrations, onViewTrack
           >
             {/* Settings List */}
             <div className="py-2">
-              {settingsItems.map((item, index) => {
+              {settingsItems.map((item) => {
                 const Icon = item.icon;
                 const isTheme = item.id === 'theme';
                 const showThemeSubmenu = isTheme && hoveredItem === 'theme';

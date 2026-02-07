@@ -1,4 +1,4 @@
-import { ArrowLeft, Pin, Circle, Clock, Send, Check, Edit2, Save, X, Lightbulb, Sparkles, Info, Menu } from 'lucide-react';
+import { Pin, Circle, Clock, Send, Check, Edit2, Save, X, Lightbulb, Sparkles, Info } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 interface Source {
@@ -28,10 +28,7 @@ interface TrackingPrompt {
 }
 
 interface TrackingPageProps {
-  onBack: () => void;
   promptId?: string | null;
-  isSidebarOpen?: boolean;
-  onToggleSidebar?: () => void;
   theme?: 'light' | 'dark';
   chats: Array<{
     id: string;
@@ -43,22 +40,30 @@ interface TrackingPageProps {
     updateCount?: number;
     messages?: Array<{
       id: string;
-      role: 'user' | 'ai';
+      role: 'user' | 'ai' | 'assistant';
       content: string;
       timestamp: Date;
     }>;
     updates?: Array<{
       timestamp: string;
       update: string;
+      sources?: Array<{ id: string; url: string; title: string }>;
     }>;
   }>;
+  readUpdateIds?: Record<string, string[]>;
+  onMarkUpdateAsRead?: (chatId: string, updateId: string) => void;
 }
 
-export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar, theme = 'light', chats }: TrackingPageProps) {
-  const [selectedPromptId, setSelectedPromptId] = useState<string | null>(promptId || null);
-  const [viewedUpdates, setViewedUpdates] = useState<Set<string>>(new Set());
-  const [expandedUpdates, setExpandedUpdates] = useState<Set<string>>(new Set());
+export function TrackingPage({ promptId, theme = 'light', chats, readUpdateIds = {}, onMarkUpdateAsRead }: TrackingPageProps) {
+
+  // Remove local viewedUpdates state in favor of props
+  // const [viewedUpdates, setViewedUpdates] = useState<Set<string>>(new Set());
+
   const [selectedUpdate, setSelectedUpdate] = useState<string | null>(null);
+
+  const toggleUpdateExpand = (updateId: string) => {
+    setSelectedUpdate(prev => prev === updateId ? null : updateId);
+  };
   const [editingPromptId, setEditingPromptId] = useState<string | null>(null);
   const [editingPromptText, setEditingPromptText] = useState('');
   const [expandedPromptDetails, setExpandedPromptDetails] = useState<string | null>(promptId || null);
@@ -91,10 +96,8 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
   const togglePromptDetails = (promptId: string) => {
     if (expandedPromptDetails === promptId && !selectedUpdate) {
       setExpandedPromptDetails(null);
-      setSelectedPromptId(null);
     } else {
       setExpandedPromptDetails(promptId);
-      setSelectedPromptId(promptId);
       setSelectedUpdate(null);
       setChatMessages([]);
       setEditingPromptId(null);
@@ -111,30 +114,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     setEditingPromptText(promptContent);
   };
 
-  const toggleUpdateExpand = (updateId: string) => {
-    setExpandedUpdates(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(updateId)) {
-        newSet.delete(updateId);
-      } else {
-        newSet.add(updateId);
-      }
-      return newSet;
-    });
-    if (selectedUpdate === updateId) {
-      setSelectedUpdate(null);
-      setChatMessages([]);
-    } else {
-      setSelectedUpdate(updateId);
-      // スムーズなトランジションのため、viewedUpdatesへの追加を遅延
-      setTimeout(() => {
-        setViewedUpdates(prev => new Set([...prev, updateId]));
-      }, 400);
-      setChatMessages([]);
-      setExpandedPromptDetails(null);
-      setEditingPromptId(null);
-    }
-  };
+
 
   const handleSendQuestion = () => {
     if (!question.trim() || (!selectedUpdate && !expandedPromptDetails)) return;
@@ -353,7 +333,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     return updates[Math.floor(Math.random() * updates.length)];
   }
 
-  function generateDescription(chat: any): string {
+  function generateDescription(_chat: any): string {
     const descriptions = [
       'このトピックに関する包括的な情報と最新のトレンドを追跡しています。',
       '継続的に更新される情報源から最新データを収集中です。',
@@ -365,23 +345,28 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
   function generateUpdates(chat: any): Update[] {
     // もしchat.updatesが存在するなら、それを利用する
     if (chat.updates && chat.updates.length > 0) {
-      return chat.updates.map((update: any, index: number) => ({
-        id: `u${chat.id}-${index}`,
-        title: update.update ? update.update.substring(0, 30) + (update.update.length > 30 ? '...' : '') : `${chat.title}に関する更新 #${index + 1}`,
-        content: update.update || '内容がありません',
-        timestamp: update.timestamp ? new Date(update.timestamp) : new Date(),
-        sources: [
-          // ダミーのソースを一部使用（本番ではupdate.sourcesなどがあればそれを使う）
-          { id: `s${chat.id}-${index}-1`, url: '#', title: 'Source 1' },
-          { id: `s${chat.id}-${index}-2`, url: '#', title: 'Source 2' },
-        ],
-      }));
+      return chat.updates.map((update: any, index: number) => {
+        // Generate stable ID using timestamp
+        const timestamp = update.timestamp ? new Date(update.timestamp) : new Date();
+        // Ensure ID generation matches useChat.ts: use raw timestamp string if available
+        const stableId = update.timestamp ? update.timestamp : timestamp.getTime().toString();
+
+        return {
+          id: stableId, // Use timestamp as stable ID
+          title: update.update ? update.update.substring(0, 30) + (update.update.length > 30 ? '...' : '') : `${chat.title}に関する更新 #${index + 1}`,
+          content: update.update || '内容がありません',
+          timestamp: timestamp,
+          sources: update.sources || [
+            // ダミーのソースを一部使用（本番ではupdate.sourcesなどがあればそれを使う）
+            { id: `s${chat.id}-${index}-1`, url: '#', title: 'Source 1' },
+            { id: `s${chat.id}-${index}-2`, url: '#', title: 'Source 2' },
+          ],
+        };
+      });
     }
 
     const updateCount = chat.updateCount || 1;
     const updates: Update[] = [];
-
-    // Perplexity風のダミーsources
     const dummySources = [
       { id: 'ds1', url: 'https://example.com/article1', title: 'Example Article on Recent Developments' },
       { id: 'ds2', url: 'https://research.example.org/paper', title: 'Research Paper: Latest Findings and Analysis' },
@@ -391,11 +376,12 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     ];
 
     for (let i = 0; i < Math.min(updateCount, 5); i++) {
+      const dummyTimestamp = new Date(chat.updatedAt.getTime() - (i * 1000 * 60 * 60));
       updates.push({
         id: `u${chat.id}-${i}`,
         title: `${chat.title}に関する更新 #${i + 1}`,
         content: `${chat.title}に関する更新 #${i + 1}: 新しい情報が追加されました。詳細な内容については、関連する情報源を参照してください。`,
-        timestamp: new Date(chat.updatedAt.getTime() - (i * 1000 * 60 * 60)),
+        timestamp: dummyTimestamp,
         sources: dummySources.slice(0, 2 + (i % 2)), // 2-3個のソースをランダムに割り当て
       });
     }
@@ -524,10 +510,8 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
     if (displayPrompts.length > 0 && !hasInitialized.current) {
       if (promptId) {
         setExpandedPromptDetails(promptId);
-        setSelectedPromptId(promptId);
       } else {
         setExpandedPromptDetails(displayPrompts[0].id);
-        setSelectedPromptId(displayPrompts[0].id);
       }
       hasInitialized.current = true;
     }
@@ -543,7 +527,9 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
 
   // 全アップデートの未読数をカウント
   const totalUnreadCount = displayPrompts.reduce((count, prompt) => {
-    const unreadInPrompt = prompt.updates.filter(update => !viewedUpdates.has(update.id)).length;
+    // Check against readUpdateIds prop
+    const readIds = readUpdateIds[prompt.id] || [];
+    const unreadInPrompt = prompt.updates.filter(update => !readIds.includes(update.id)).length;
     return count + unreadInPrompt;
   }, 0);
 
@@ -593,7 +579,8 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
 
           displayPrompts.forEach(prompt => {
             prompt.updates.forEach((update, index) => {
-              if (!viewedUpdates.has(update.id)) {
+              const readIds = readUpdateIds[prompt.id] || [];
+              if (!readIds.includes(update.id)) {
                 unreadUpdates.push({
                   update,
                   prompt,
@@ -628,7 +615,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                   <div
                     key={update.id}
                     onClick={() => {
-                      setSelectedPromptId(prompt.id);
+                      // setSelectedPromptId(prompt.id);
                       toggleUpdateExpand(update.id);
                       // スムーススクロール
                       setTimeout(() => {
@@ -668,7 +655,7 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
 
                       {/* プロンプトタイトル */}
                       <div className="flex items-center gap-2 mb-2">
-                        <div className={`w-2 h-2 rounded-full ${prompt.status === 'active' ? 'bg-emerald-500' : 'bg-red-500'
+                        <div className={`w-2 h-2 rounded-full ${prompt.isActive ? 'bg-emerald-500' : 'bg-red-500' // Use isActive instead of status
                           }`} />
                         <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                           プロンプト: <span className={`font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>{prompt.title}</span>
@@ -692,7 +679,9 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            setViewedUpdates(prev => new Set([...prev, update.id]));
+                            if (onMarkUpdateAsRead) {
+                              onMarkUpdateAsRead(prompt.id, update.id);
+                            }
                           }}
                           className={`text-xs transition-colors font-medium ${theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-700 hover:text-gray-900'
                             }`}
@@ -709,11 +698,13 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                 ))}
               </div>
 
-              {unreadUpdates.length > 5 && (
-                <p className={`text-center text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  他 {unreadUpdates.length - 5} 件の未読アップデート
-                </p>
-              )}
+              {
+                unreadUpdates.length > 5 && (
+                  <p className={`text-center text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                    他 {unreadUpdates.length - 5} 件の未読アップデート
+                  </p>
+                )
+              }
 
               {/* 区切り線 */}
               <div className="flex items-center gap-4 mt-8 mb-6">
@@ -1081,7 +1072,9 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                   <div className="flex items-center justify-between mb-4">
                     <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>アップデート履歴</h3>
                     {(() => {
-                      const unreadCount = prompt.updates.filter(u => !viewedUpdates.has(u.id)).length;
+                      // Use readUpdateIds prop
+                      const readIds = readUpdateIds[prompt.id] || [];
+                      const unreadCount = prompt.updates.filter(u => !readIds.includes(u.id)).length;
                       return unreadCount > 0 ? (
                         <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">
                           未読 {unreadCount}件
@@ -1106,9 +1099,11 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
                         );
                       }
 
-                      return filteredUpdates.map((update, index) => {
+                      return filteredUpdates.map((update) => {
                         const updateNumber = prompt.updates.length - prompt.updates.indexOf(update);
-                        const isUnread = !viewedUpdates.has(update.id);
+                        // Use readUpdateIds prop
+                        const readIds = readUpdateIds[prompt.id] || [];
+                        const isUnread = !readIds.includes(update.id);
                         const isLatest = prompt.updates[0].id === update.id;
 
                         return (
@@ -1616,6 +1611,6 @@ export function TrackingPage({ onBack, promptId, isSidebarOpen, onToggleSidebar,
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
