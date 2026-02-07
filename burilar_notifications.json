@@ -1,0 +1,393 @@
+[
+  {
+    "id": "1770488596890",
+    "timestamp": "2026-02-08T03:23:16.890883",
+    "title": "Rich Update Test Final",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "This is the final verification of the rich update system.",
+      "changes": [
+        "Toast notifications now show summaries",
+        "Update Panel does not auto-read on dismiss",
+        "Cleaned up interaction logic"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Verification Plan",
+          "url": "https://example.com/plan"
+        }
+      ]
+    },
+    "feedback": "useful"
+  },
+  {
+    "id": "1770488447203",
+    "timestamp": "2026-02-08T03:20:47.203424",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770488409044",
+    "timestamp": "2026-02-08T03:20:09.044681",
+    "title": "Rich Update Test Duo",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "Summary in details",
+      "changes": [
+        "Change 1",
+        "Change 2"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://example.com"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770488390254",
+    "timestamp": "2026-02-08T03:19:50.254738",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770488318204",
+    "timestamp": "2026-02-08T03:18:38.204475",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770488255601",
+    "timestamp": "2026-02-08T03:17:35.601022",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770488010324",
+    "timestamp": "2026-02-08T03:13:30.324178",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770487947202",
+    "timestamp": "2026-02-08T03:12:27.202489",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770487889437",
+    "timestamp": "2026-02-08T03:11:29.437892",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770487842282",
+    "timestamp": "2026-02-08T03:10:42.282584",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770487758186",
+    "timestamp": "2026-02-08T03:09:18.186175",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    }
+  },
+  {
+    "id": "1770486293679",
+    "timestamp": "2026-02-08T02:44:53.679499",
+    "title": "Urgent Update",
+    "message": "Something happened! Check the update panel.",
+    "type": "warning",
+    "link": null,
+    "plan_id": null,
+    "read": true
+  },
+  {
+    "id": "1770486288670",
+    "timestamp": "2026-02-08T02:44:48.670312",
+    "title": "Welcome to Burilar!",
+    "message": "This is a test notification to verify the toast system.",
+    "type": "info",
+    "link": null,
+    "plan_id": null,
+    "read": true
+  },
+  {
+    "id": "1770485882633",
+    "timestamp": "2026-02-08T02:38:02.633503",
+    "title": "Urgent Update",
+    "message": "Something happened! Check the update panel.",
+    "type": "warning",
+    "link": null,
+    "plan_id": null,
+    "read": true
+  },
+  {
+    "id": "1770485877625",
+    "timestamp": "2026-02-08T02:37:57.625981",
+    "title": "Welcome to Burilar!",
+    "message": "This is a test notification to verify the toast system.",
+    "type": "info",
+    "link": null,
+    "plan_id": null,
+    "read": true
+  },
+  {
+    "id": "1770483532351",
+    "timestamp": "2026-02-08T01:58:52.351426",
+    "title": "Update: Notification Test Topic",
+    "message": "Significant change detected: Phase 2 started.",
+    "type": "update",
+    "link": null,
+    "plan_id": "1770483518592",
+    "read": true
+  },
+  {
+    "id": "1770483472901",
+    "timestamp": "2026-02-08T01:57:52.901109",
+    "title": "Update: Notification Test Topic",
+    "message": "Significant change detected: Phase 2 started.",
+    "type": "update",
+    "link": null,
+    "plan_id": "1770483462605",
+    "read": true,
+    "feedback": "useful"
+  },
+  {
+    "id": "1770483432407",
+    "timestamp": "2026-02-08T01:57:12.407576",
+    "title": "API Test",
+    "message": "Running API test.",
+    "type": "info",
+    "link": null,
+    "plan_id": null,
+    "read": true
+  }
+]

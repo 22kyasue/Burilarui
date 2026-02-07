@@ -30,12 +30,16 @@ import * as chatsApi from "./api/chats";
 import { useChat } from "./hooks/useChat";
 import { useTracking } from "./hooks/useTracking";
 import { Chat, Message } from "./types/chat";
+import { NewsTicker } from "./components/NewsTicker";
+import { ToastNotification } from "./components/ToastNotification";
+import { useNotifications } from "./hooks/useNotifications";
 
 function AppContent() {
   // Auth
   const { user, isAuthenticated, isLoading: authLoading, login, register, loginWithGoogle, loginWithApple, logout, error: authError, clearError } = useAuth();
 
   // Read Updates State (Persisted)
+  const { notifications, markAsRead, submitFeedback } = useNotifications();
   const [readUpdateIds, setReadUpdateIds] = useState<Record<string, string[]>>(() => {
     try {
       const saved = localStorage.getItem('burilar_read_updates');
@@ -238,6 +242,8 @@ https://research.example.org/paper`;
           className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? "ml-80" : "ml-16"
             }`}
         >
+
+
           {/* Fixed Header - shown in all views */}
           <Header
             onLogoClick={() => {
@@ -257,6 +263,31 @@ https://research.example.org/paper`;
             onProfileSettings={() => setIsSettingsModalOpen(true)}
             onPlanManagement={() => setCurrentView("planManagement")}
           />
+
+          {/* Phase 4.4: News Ticker */}
+          <NewsTicker
+            theme={theme}
+            notifications={notifications}
+            markAsRead={markAsRead}
+            onNotificationClick={(n) => {
+              // Optional: Navigate to relevant view based on notification
+              console.log("Notification clicked:", n);
+              // For now, open notifications panel
+              setIsUpdatePanelOpen(true);
+            }} />
+
+          {/* Toast Notification */}
+          <ToastNotification
+            notification={notifications.find(n => !n.read && !n.feedback) || null}
+            onDismiss={() => {
+              // Just dismiss the toast, don't mark as read automatically
+              // const latest = notifications.find(n => !n.read && !n.feedback);
+              // if (latest) markAsRead(latest.id);
+            }}
+            onFeedback={submitFeedback}
+            theme={theme}
+          />
+
 
           <AnimatePresence mode="wait">
             {currentView === "home" ? (
@@ -1028,9 +1059,12 @@ https://research.example.org/paper`;
         <UpdatePanel
           isOpen={isUpdatePanelOpen}
           onClose={() => setIsUpdatePanelOpen(false)}
-          chats={chat.chats}
+
           onSelectChat={chat.handleSelectChat}
           theme={theme}
+          notifications={notifications}
+          markAsRead={markAsRead}
+          onFeedback={submitFeedback}
         />
 
         <SettingsModal

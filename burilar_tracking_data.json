@@ -11,12 +11,41 @@
     "next_search_time": null,
     "active": false,
     "created_at": "2026-02-03T22:51:06.360970",
-    "updates": [],
+    "updates": [
+      {
+        "timestamp": "2026-02-08T03:45:38.581027",
+        "update": "Significant market changes detected in AI sector.",
+        "details": {
+          "summary": "AI sector shows 15% growth in Q3 with major announcements from key players.",
+          "changes": [
+            "NVIDIA announced new chip architecture.",
+            "OpenAI released updated model pricing.",
+            "Regulatory bodies in EU proposed new AI guidelines."
+          ],
+          "sources": [
+            {
+              "id": "1",
+              "title": "TechCrunch AI Report",
+              "url": "https://techcrunch.com/ai"
+            },
+            {
+              "id": "2",
+              "title": "Reuters Technology",
+              "url": "https://reuters.com/technology"
+            }
+          ]
+        },
+        "data": {
+          "value": 150
+        }
+      }
+    ],
     "status": "completed",
     "original_query": "WBC\u306e\u30e1\u30f3\u30c4\u306f\uff1f",
     "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770126689729": {
     "id": "1770126689729",
@@ -35,7 +64,8 @@
     "original_query": "WBC\u306e\u30e1\u30f3\u30c4\u306f\uff1f",
     "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770126710936": {
     "id": "1770126710936",
@@ -60,7 +90,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770126905319": {
     "id": "1770126905319",
@@ -85,7 +116,8 @@
     "original_query": "WBC\u306e\u30e1\u30f3\u30c4\u306f\u6c7a\u307e\u3063\u305f\uff1f",
     "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770127416824": {
     "id": "1770127416824",
@@ -104,7 +136,8 @@
     "original_query": "What is AI?",
     "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770291533941": {
     "id": "1770291533941",
@@ -130,7 +163,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770291599992": {
     "id": "1770291599992",
@@ -155,7 +189,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770291839046": {
     "id": "1770291839046",
@@ -180,7 +215,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770291924879": {
     "id": "1770291924879",
@@ -205,7 +241,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770293197874": {
     "id": "1770293197874",
@@ -230,7 +267,8 @@
     "original_query": "SpaceX Starship launch updates",
     "clarification_info": null,
     "suggested_prompt": "Regarding SpaceX Starship Flight 12's preparation during February-March 2026, please continuously monitor the maiden flight status of Starship V3 vehicles, including Booster 19 and Ship 39 assembly and testing progress, official launch date announcements from SpaceX or Elon Musk, FCC licensing updates, pad readiness at Starbase's Orbital Launch Pad 2, Raptor V3 engine performance data, and any delays or technical anomalies. Notify immediately if SpaceX confirms a specific launch date, announces a delay beyond March 2026, reports critical hardware issues, or provides updates on booster catch attempt plans.",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770293322416": {
     "id": "1770293322416",
@@ -255,7 +293,8 @@
     "original_query": "SpaceX Starship updates",
     "clarification_info": null,
     "suggested_prompt": "Regarding SpaceX Starship updates during 2026-2027, please continuously track preparations and launch timeline for Flight 12 with Version 3 prototypes Ship 39 and Booster 19 including cryogenic testing and rollout activities at Starbase, FAA approvals and infrastructure progress at Kennedy Space Center's LC-39A and SLC-37 such as SQD arm installation and launch pad expansions, developments toward ship-to-ship propellant transfer and Version 4 stretched design, and any delays or milestones like Super Heavy booster catches or Raptor V3 engine performance. Consult reliable sources like SpaceX updates, NASASpaceflight, NextSpaceflight, and Elon Musk's X posts, and notify me immediately if there are launch date changes, successful tests, regulatory decisions, or significant hardware movements.",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770294153646": {
     "id": "1770294153646",
@@ -280,7 +319,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "sample_apple_intelligence_jp": {
     "id": "sample_apple_intelligence_jp",
@@ -353,7 +393,8 @@
     "original_query": "Apple Intelligence\u306e\u65e5\u672c\u3067\u306e\u63d0\u4f9b\u958b\u59cb\u6642\u671f\u3068\u5bfe\u5fdc\u6a5f\u80fd\u306b\u3064\u3044\u3066\u6559\u3048\u3066",
     "clarification_info": null,
     "suggested_prompt": "Apple Intelligence\u306e\u65e5\u672c\u5c55\u958b\u306b\u95a2\u3057\u3066\u3001\u65e5\u672c\u8a9e\u5bfe\u5fdc\u306e\u5177\u4f53\u7684\u306a\u958b\u59cb\u6642\u671f\u3001\u5bfe\u5fdc\u3059\u308b\u6a5f\u80fd\u306e\u7bc4\u56f2\u3001\u304a\u3088\u3073\u5bfe\u5fdc\u30c7\u30d0\u30a4\u30b9\u306e\u6700\u65b0\u60c5\u5831\u3092\u7d99\u7d9a\u7684\u306b\u8ffd\u8de1\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
-    "image_url": "https://www.apple.com/newsroom/images/2024/09/apple-intelligence-is-available-today/article/Apple-Intelligence-available-today-hero_big.jpg.large.jpg"
+    "image_url": "https://www.apple.com/newsroom/images/2024/09/apple-intelligence-is-available-today/article/Apple-Intelligence-available-today-hero_big.jpg.large.jpg",
+    "strategy": {}
   },
   "1770390436414": {
     "id": "1770390436414",
@@ -378,7 +419,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770391488403": {
     "id": "1770391488403",
@@ -397,7 +439,8 @@
     "original_query": "Track updates about React 19",
     "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770392674505": {
     "id": "1770392674505",
@@ -423,7 +466,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770393565441": {
     "id": "1770393565441",
@@ -442,7 +486,8 @@
     "original_query": "E2E Tracking Test: Track updates about React 19",
     "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770403281596": {
     "id": "1770403281596",
@@ -467,7 +512,8 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770403519673": {
     "id": "1770403519673",
@@ -486,7 +532,8 @@
     "original_query": "\u3053\u3093\u306b\u3061\u306f",
     "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770403520371": {
     "id": "1770403520371",
@@ -505,7 +552,8 @@
     "original_query": "\u3053\u3093\u306b\u3061\u306f",
     "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
   "1770440056156": {
     "id": "1770440056156",
@@ -530,57 +578,221 @@
       ]
     },
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
-  "1770449090383": {
-    "id": "1770449090383",
+  "1770454484020": {
+    "id": "1770454484020",
     "user_id": null,
-    "topic": "is chat working?",
-    "objective": "Needs clarification",
+    "topic": "iphone 17\u306b\u3064\u3044\u3066",
+    "objective": "Query resolved",
     "frequency_hours": 12,
     "keywords": [],
-    "last_search_result": "",
+    "last_search_result": "iPhone 17\u306f2025\u5e749\u67089\u65e5\uff08\u7c73\u56fd\u6642\u9593\u3001\u73fe\u5730\u6642\u9593\uff09\u306bApple\u304b\u3089\u6b63\u5f0f\u767a\u8868\u3055\u308c\u305f\u6a19\u6e96\u30e2\u30c7\u30eb\u3067\u3001\u65e5\u672c\u6642\u95939\u670810\u65e5\uff08\u6c34\uff09\u306b\u767a\u8868\u3055\u308c\u30019\u670812\u65e5\uff08\u91d1\uff09\u5348\u5f8c9\u6642\u304b\u3089\u4e88\u7d04\u958b\u59cb\u30019\u670819\u65e5\uff08\u91d1\uff09\u306b\u65e5\u672c\u3092\u542b\u308063\u4ee5\u4e0a\u306e\u56fd\u30fb\u5730\u57df\u3067\u767a\u58f2\u3055\u308c\u307e\u3057\u305f[1][2][5][6]\u3002\n\n\u4e3b\u306a\u4ed5\u69d8\u3068\u3057\u3066\u3001**\u9769\u65b0\u7684\u306a\u30bb\u30f3\u30bf\u30fc\u30d5\u30ec\u30fc\u30e0\u30d5\u30ed\u30f3\u30c8\u30ab\u30e1\u30e9**\u3001\u3088\u308a\u5927\u304d\u304f\u660e\u308b\u3044**ProMotion\u30c7\u30a3\u30b9\u30d7\u30ec\u30a4**\u3001\u30d1\u30d5\u30a9\u30fc\u30de\u30f3\u30b9\u5411\u4e0a\u306e**A19\u30c1\u30c3\u30d7**\u3092\u642d\u8f09\u3057\u3001\u6700\u5c0f\u30b9\u30c8\u30ec\u30fc\u30b8\u306f\u524d\u4e16\u4ee3\u306e2\u500d\u306e**256GB**\uff08512GB\u30aa\u30d7\u30b7\u30e7\u30f3\u3042\u308a\uff09\u3001\u30ab\u30e9\u30fc\u306f\u30d6\u30e9\u30c3\u30af\u3001\u30e9\u30d9\u30f3\u30c0\u30fc\u3001\u30df\u30b9\u30c8\u30d6\u30eb\u30fc\u3001\u30bb\u30fc\u30b8\u3001\u30db\u30ef\u30a4\u30c8\u306e5\u8272\u3067\u3059[1]\u3002iOS 26\u306f9\u670816\u65e5\uff08\u706b\uff09\u306b\u7121\u6599\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8\u3067\u63d0\u4f9b\u3055\u308c\u307e\u3059[1][3]\u3002\n\niPhone 17\u30b7\u30ea\u30fc\u30ba\u306b\u306fPro/Pro Max\u30e2\u30c7\u30eb\u3082\u3042\u308a\u3001\u540c\u69d8\u306e\u30b9\u30b1\u30b8\u30e5\u30fc\u30eb\u3067\u30c7\u30a3\u30fc\u30d7\u30d6\u30eb\u30fc\u3001\u30b3\u30ba\u30df\u30c3\u30af\u30aa\u30ec\u30f3\u30b8\u3001\u30b7\u30eb\u30d0\u30fc\u306e\u4ed5\u4e0a\u3052\u304c\u7528\u610f\u3055\u308c\u3066\u3044\u307e\u3059[3]\u3002\u306a\u304a\u3001iPhone 17e\u306f\u5225\u90142026\u5e742\u6708\u9803\u767a\u8868\u30fb\u767a\u58f2\u306e\u5642\u30e2\u30c7\u30eb\u3067\u3001\u6a19\u6e96iPhone 17\u3068\u306f\u7570\u306a\u308a\u307e\u3059[4][7]\u3002\n\n**\u8cfc\u5165\u60c5\u5831**: Apple Store\u3084\u30ad\u30e3\u30ea\u30a2\uff08\u4f8b: docomo\uff09\u3067\u4e88\u7d04\u53ef\u80fd\u3001\u5728\u5eab\u72b6\u6cc1\u306f\u767a\u58f2\u76f4\u5f8c\u306b\u5165\u8377\u5f85\u3061\u304c\u767a\u751f\u3057\u3084\u3059\u3044\u3067\u3059[2][9]\u3002\n\n### Sources:\n- [1] https://www.apple.com/jp/newsroom/2025/09/apple-debuts-iphone-17/\n- [2] https://all-connect.co.jp/magazine/iphone17_releasedate/\n- [3] https://www.apple.com/jp/newsroom/2025/09/apple-unveils-iphone-17-pro-and-iphone-17-pro-max/\n- [4] https://selectra.jp/telecom/mobile/iphone17e-rumors-leaks\n- [5] https://www.strapya.com/blogs/hameefun/17700\n- [6] https://pitakajapan.com/blogs/news/2025-iphone-17-leak\n- [7] https://gori.me/iphone/iphone-news/163033\n- [9] https://www.docomo.ne.jp/iphone/17/\n\n**Sources:**\n[1] https://www.apple.com/jp/newsroom/2025/09/apple-debuts-iphone-17/\n[2] https://all-connect.co.jp/magazine/iphone17_releasedate/\n[3] https://www.apple.com/jp/newsroom/2025/09/apple-unveils-iphone-17-pro-and-iphone-17-pro-max/\n[4] https://selectra.jp/telecom/mobile/iphone17e-rumors-leaks\n[5] https://www.strapya.com/blogs/hameefun/17700\n[6] https://pitakajapan.com/blogs/news/2025-iphone-17-leak\n[7] https://gori.me/iphone/iphone-news/163033\n[8] https://prodig.co.jp/blogs/column/iphone-17e-iphone-16e-compare\n[9] https://www.docomo.ne.jp/iphone/17/\n[10] https://kakaku.com/keitai/smartphone/model/M0000001160/\n",
     "last_search_time": null,
     "next_search_time": null,
     "active": false,
-    "created_at": "2026-02-07T16:24:50.383639",
+    "created_at": "2026-02-07T17:54:44.020096",
     "updates": [],
-    "status": "needs_clarification",
-    "original_query": "is chat working?",
-    "clarification_info": {
-      "reason": "The query 'is chat working?' is extremely vague and could refer to multiple messaging platforms, services, or applications. Without knowing which specific chat service or application the user is asking about, it's impossible to provide an accurate answer.",
-      "questions": [
-        "Which chat application or service are you asking about? (e.g., ChatGPT, Google Messages, Apple Messages, Microsoft Teams, WhatsApp, etc.)",
-        "Are you experiencing a technical issue with a specific chat platform, or are you asking about general availability/status?",
-        "Are you asking about a chat feature on a particular device or platform?"
-      ]
-    },
+    "status": "completed",
+    "original_query": "iphone 17\u306b\u3064\u3044\u3066",
+    "clarification_info": null,
     "suggested_prompt": "",
-    "image_url": ""
+    "image_url": "",
+    "strategy": {}
   },
-  "1770449379914": {
-    "id": "1770449379914",
+  "1770482853149": {
+    "id": "1770482853149",
     "user_id": null,
-    "topic": "it is workign now?",
-    "objective": "Needs clarification",
+    "topic": "Python 3.14 release date",
+    "objective": "Track release_watch for Python 3.14",
     "frequency_hours": 12,
-    "keywords": [],
-    "last_search_result": "",
-    "last_search_time": null,
-    "next_search_time": null,
-    "active": false,
-    "created_at": "2026-02-07T16:29:39.914600",
-    "updates": [],
-    "status": "needs_clarification",
-    "original_query": "it is workign now?",
-    "clarification_info": {
-      "reason": "The query 'it is workign now?' is vague and lacks context, such as what 'it' refers to (e.g., a system, product, service, or previous issue discussed).",
-      "questions": [
-        "What specifically are you asking about (e.g., a website, app, device, or previous problem)?",
-        "Can you provide more details on what 'it' refers to and any recent changes?"
-      ]
+    "keywords": [
+      "Python 3.14 release date official announcement",
+      "Python 3.14 release delays or changes",
+      "Python 3.14 leaks updates 2026",
+      "PEP 745 Python 3.14 schedule latest"
+    ],
+    "last_search_result": {
+      "status": "released",
+      "date": "2025-10-07",
+      "confidence": "high",
+      "latest_update_summary": "Python 3.14.0 was officially released on October 7, 2025, as the stable release with new features and optimizations.",
+      "source_url": "https://www.python.org/downloads/release/python-3140/"
     },
-    "suggested_prompt": "",
-    "image_url": ""
+    "last_search_time": "2026-02-08T01:47:43.406395",
+    "next_search_time": "2026-02-08T13:47:43.406395",
+    "active": true,
+    "created_at": "2026-02-08T01:47:33.149479",
+    "updates": [
+      {
+        "timestamp": "2026-02-08T01:47:43.406395",
+        "update": "The previous result tracked Python 3.14.3 released on February 3, 2026, as the latest bugfix update[1][2][4][5][6][7]. The new result focuses on the initial 3.14.0 stable release on October 7, 2025, but current search results confirm additional bugfix releases (3.14.1 on Dec 2, 2025; 3.14.2 on Dec 5, 2025) beyond both summaries, marking significant progression in the 3.14 series[2][4][5][6].\n\n**Sources:**\n[1] https://realpython.com/python-news-november-2025/\n[2] https://peps.python.org/pep-0745/\n[3] https://cloudsmith.com/blog/python-3-14-what-you-need-to-know\n[4] https://www.python.org/doc/versions/\n[5] https://www.python.org/downloads/source/\n[6] https://www.python.org/downloads/\n[7] https://www.python.org/downloads/release/python-3143/\n[8] https://docs.python.org/3/whatsnew/3.14.html",
+        "data": {
+          "status": "released",
+          "date": "2025-10-07",
+          "confidence": "high",
+          "latest_update_summary": "Python 3.14.0 was officially released on October 7, 2025, as the stable release with new features and optimizations.",
+          "source_url": "https://www.python.org/downloads/release/python-3140/"
+        }
+      }
+    ],
+    "status": "tracking",
+    "original_query": "",
+    "clarification_info": null,
+    "suggested_prompt": "Tracking Python 3.14 release date based on 0 priority sources.",
+    "image_url": "",
+    "strategy": {
+      "topic": "Python 3.14 release date",
+      "intent": "release_watch",
+      "frequency_hours": 12,
+      "priority_sources": [],
+      "search_queries": [
+        "Python 3.14 release date official announcement",
+        "Python 3.14 release delays or changes",
+        "Python 3.14 leaks updates 2026",
+        "PEP 745 Python 3.14 schedule latest"
+      ],
+      "schema_type": "release_watch"
+    }
+  },
+  "1770482987346": {
+    "id": "1770482987346",
+    "user_id": null,
+    "topic": "Python 3.14 release date",
+    "objective": "Track release_watch for Python 3.14",
+    "frequency_hours": 12,
+    "keywords": [
+      "Python 3.14 official release date announcement",
+      "Python 3.14 release delays or postponements",
+      "Python 3.14 final release leaks news",
+      "Python 3.14 bugfix updates schedule 2026",
+      "Python 3.15 release date timeline"
+    ],
+    "last_search_result": {
+      "status": "released",
+      "date": "2025-10-07",
+      "confidence": "high",
+      "latest_update_summary": "Python 3.14.0 was officially released on October 7, 2025, as the stable release, with subsequent maintenance releases up to Python 3.14.3 on February 3, 2026.",
+      "source_url": "https://peps.python.org/pep-0745/"
+    },
+    "last_search_time": "2026-02-08T01:49:57.399146",
+    "next_search_time": "2026-02-08T13:49:57.399146",
+    "active": true,
+    "created_at": "2026-02-08T01:49:47.346823",
+    "updates": [
+      {
+        "timestamp": "2026-02-08T01:49:57.399146",
+        "update": "The new result mentions maintenance releases up to Python 3.14.3 on February 3, 2026, which is now confirmed as actually released across official sources including the PEP schedule[1], python.org versions page[3], source downloads[4], main downloads[5], changelog[6], and dedicated release page[8], representing significant progress since the previous result focused only on the 3.14.0 stable release.\n\n**Sources:**\n[1] https://peps.python.org/pep-0745/\n[2] https://www.developer-tech.com/news/python-3-14-slithers-closer-with-rc1-arrival/\n[3] https://www.python.org/doc/versions/\n[4] https://www.python.org/downloads/source/\n[5] https://www.python.org/downloads/\n[6] https://docs.python.org/3/whatsnew/changelog.html\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://www.python.org/downloads/release/python-3143/\n[9] https://www.liquidweb.com/blog/latest-python-version/",
+        "data": {
+          "status": "released",
+          "date": "2025-10-07",
+          "confidence": "high",
+          "latest_update_summary": "Python 3.14.0 was officially released on October 7, 2025, as the stable release, with subsequent maintenance releases up to Python 3.14.3 on February 3, 2026.",
+          "source_url": "https://peps.python.org/pep-0745/"
+        }
+      }
+    ],
+    "status": "tracking",
+    "original_query": "",
+    "clarification_info": null,
+    "suggested_prompt": "Tracking Python 3.14 release date based on 0 priority sources.",
+    "image_url": "",
+    "strategy": {
+      "topic": "Python 3.14 release date",
+      "intent": "release_watch",
+      "frequency_hours": 12,
+      "priority_sources": [],
+      "search_queries": [
+        "Python 3.14 official release date announcement",
+        "Python 3.14 release delays or postponements",
+        "Python 3.14 final release leaks news",
+        "Python 3.14 bugfix updates schedule 2026",
+        "Python 3.15 release date timeline"
+      ],
+      "schema_type": "release_watch"
+    }
+  },
+  "1770483462605": {
+    "id": "1770483462605",
+    "user_id": null,
+    "topic": "Notification Test Topic",
+    "objective": "Track topic_watch for notification, testing, AWS SNS, push notifications",
+    "frequency_hours": 24,
+    "keywords": [
+      "latest news on Notification Test Topic",
+      "Notification Test Topic recent developments",
+      "Notification Test Topic updates and analysis",
+      "Notification Test Topic latest trends 2026"
+    ],
+    "last_search_result": {
+      "status": "phase_1",
+      "summary": "Phase 1 complete"
+    },
+    "last_search_time": "2026-02-08T01:57:52.896548",
+    "next_search_time": "2026-02-09T01:57:42.605884",
+    "active": true,
+    "created_at": "2026-02-08T01:57:42.605859",
+    "updates": [],
+    "status": "tracking",
+    "original_query": "",
+    "clarification_info": null,
+    "suggested_prompt": "Tracking Notification Test Topic based on 0 priority sources.",
+    "image_url": "",
+    "strategy": {
+      "topic": "Notification Test Topic",
+      "intent": "topic_watch",
+      "frequency_hours": 24,
+      "priority_sources": [],
+      "search_queries": [
+        "latest news on Notification Test Topic",
+        "Notification Test Topic recent developments",
+        "Notification Test Topic updates and analysis",
+        "Notification Test Topic latest trends 2026"
+      ],
+      "schema_type": "topic_watch"
+    }
+  },
+  "1770483518592": {
+    "id": "1770483518592",
+    "user_id": null,
+    "topic": "Notification Test Topic",
+    "objective": "Track topic_watch for Notification Test, Topic",
+    "frequency_hours": 24,
+    "keywords": [
+      "push notification best practices 2026",
+      "notification fatigue user engagement trends",
+      "app notification strategy latest developments",
+      "push notification opt-out rates analysis",
+      "notification preference centers implementation"
+    ],
+    "last_search_result": {
+      "status": "phase_1",
+      "summary": "Phase 1 complete"
+    },
+    "last_search_time": "2026-02-08T01:58:52.345342",
+    "next_search_time": "2026-02-09T01:58:38.592928",
+    "active": true,
+    "created_at": "2026-02-08T01:58:38.592898",
+    "updates": [],
+    "status": "tracking",
+    "original_query": "",
+    "clarification_info": null,
+    "suggested_prompt": "Tracking Notification Test Topic based on 0 priority sources.",
+    "image_url": "",
+    "strategy": {
+      "topic": "Notification Test Topic",
+      "intent": "topic_watch",
+      "frequency_hours": 24,
+      "priority_sources": [],
+      "search_queries": [
+        "push notification best practices 2026",
+        "notification fatigue user engagement trends",
+        "app notification strategy latest developments",
+        "push notification opt-out rates analysis",
+        "notification preference centers implementation"
+      ],
+      "schema_type": "topic_watch"
+    }
   }
 }

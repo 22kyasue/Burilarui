@@ -223,7 +223,7 @@ export function SettingsModal({ isOpen, onClose, onViewIntegrations, onViewTrack
             {/* Footer */}
             <div className="border-t border-gray-200/50 p-4 bg-gray-50/50 rounded-b-2xl">
               <div className="text-xs text-gray-500 text-center">
-                <p className="mb-1">Version 1.0.1</p>
+                <p className="mb-1">Version 1.0.2</p>
                 <p className="mb-1">© 2026 Burilar. All rights reserved.</p>
                 <p>
                   <a href="#" className="text-indigo-600 hover:text-indigo-700 transition-colors">利用規約</a>

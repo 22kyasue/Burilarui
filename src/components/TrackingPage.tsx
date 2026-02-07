@@ -15,6 +15,11 @@ interface Update {
   content: string;
   timestamp: Date;
   sources?: Source[];
+  details?: {
+    summary: string;
+    changes: string[];
+    sources: Source[];
+  };
 }
 
 interface TrackingPrompt {
@@ -363,6 +368,11 @@ export function TrackingPage({ promptId, theme = 'light', chats, readUpdateIds =
             { id: `s${chat.id}-${index}-1`, url: '#', title: 'Source 1' },
             { id: `s${chat.id}-${index}-2`, url: '#', title: 'Source 2' },
           ],
+          details: update.details ? {
+            summary: update.details.summary,
+            changes: update.details.changes,
+            sources: update.details.sources || []
+          } : undefined
         };
       });
     }
@@ -733,16 +743,60 @@ ${prompt.title}に関する最新のアップデート情報を含む包括的�
                       </div>
 
                       {/* アップデート内容 */}
-                      <p className={`text-base leading-relaxed mb-3 line-clamp-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-900'
-                        }`}>
-                        {update.content}
-                      </p>
+                      {update.details ? (
+                        <div className="mb-3">
+                          <p className={`text-base leading-relaxed mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-900'}`}>
+                            {update.details.summary}
+                          </p>
+                          {/* Changes */}
+                          {update.details.changes.length > 0 && (
+                            <ul className="list-disc list-inside space-y-1 mb-2">
+                              {update.details.changes.map((change, idx) => (
+                                <li key={idx} className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'}`}>
+                                  {change}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          {/* Sources */}
+                          {update.details.sources.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {update.details.sources.map((source) => (
+                                <a
+                                  key={source.id}
+                                  href={source.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className={`text-xs px-2 py-1 rounded border transition-colors flex items-center gap-1 ${theme === 'dark'
+                                    ? 'bg-gray-700 border-gray-600 text-blue-400 hover:bg-gray-600'
+                                    : 'bg-indigo-50 border-indigo-200 text-blue-600 hover:bg-indigo-100'
+                                    }`}
+                                >
+                                  <span>📄</span>
+                                  {source.title || `Source ${source.id}`}
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <p className={`text-base leading-relaxed mb-3 line-clamp-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-900'
+                          }`}>
+                          {update.content}
+                        </p>
+                      )}
 
                       {/* アクションボタン */}
                       <div className="flex items-center justify-between">
-                        <button className="text-sm text-indigo-600 font-medium flex items-center gap-1 transition-all">
-                          詳細を表示
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleUpdateExpand(update.id);
+                          }}
+                          className="text-sm text-indigo-600 font-medium flex items-center gap-1 transition-all">
+                          {selectedUpdate === update.id ? '閉じる' : '詳細を表示'}
+                          <svg className={`w-4 h-4 transition-transform ${selectedUpdate === update.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </button>

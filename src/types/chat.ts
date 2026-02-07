@@ -21,6 +21,28 @@ export interface Message {
   followUps?: string[];
 }
 
+export interface UpdateSource {
+  id: string;
+  title: string;
+  url: string;
+}
+
+export interface UpdateDetails {
+  summary: string;
+  changes: string[];
+  sources: UpdateSource[];
+}
+
+export interface TrackingUpdate {
+  id?: string;
+  title?: string;
+  timestamp: string;
+  update: string;
+  sources?: UpdateSource[];
+  details?: UpdateDetails;
+  data?: any;
+}
+
 // Chat/Conversation with optional tracking features
 export interface Chat {
   id: string;
@@ -35,7 +57,7 @@ export interface Chat {
   notificationEnabled?: boolean;
   notificationGranularity?: 'update' | 'prompt';
   thumbnail?: string;
-  updates?: any[];
+  updates?: TrackingUpdate[];
 }
 
 // Request to create a new chat
