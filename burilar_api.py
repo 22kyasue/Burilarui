@@ -8,6 +8,11 @@ import requests
 from typing import Dict, List, Optional, Union
 import threading
 
+"""
+Burilar API Backend
+Version: 1.0.0
+"""
+
 # Initialize Flask app - serve static files from build folder
 app = Flask(__name__, static_folder='build', static_url_path='')
 CORS(app)
