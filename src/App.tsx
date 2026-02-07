@@ -86,6 +86,7 @@ function AppContent() {
   const [isNotebookModalOpen, setIsNotebookModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isUpdatePanelOpen, setIsUpdatePanelOpen] = useState(false);
+  const [demoStatus, setDemoStatus] = useState<string | null>(null);
 
   // Hooks
   const tracking = useTracking();
@@ -94,7 +95,8 @@ function AppContent() {
     readUpdateIds,
     setCurrentView,
     setTrackingPromptId,
-    tracking.setActiveTracking
+    tracking.setActiveTracking,
+    tracking.addTrackingSuggestion
   );
 
   // Custom Logic that needs both hooks or local state
@@ -404,10 +406,204 @@ https://research.example.org/paper`;
                       frequency: "毎日 9:00",
                     });
 
-                    const initialRefinementMessages: Message[] = [
+                    // Demo Data Definition
+                    const demoChatData: Record<string, Message[]> = {
+                      "最新のAIモデルについて": [
+                        {
+                          id: "refine-ai-1",
+                          content: "この情報を追跡する目的を教えてください。\n例：\n・モデルの性能比較\n・アプリ開発への応用\n・研究目的\n・個人の学習 など",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 6000),
+                        },
+                        {
+                          id: "refine-user-1",
+                          content: "アプリ開発への応用です。\n特にGPT-4oやClaude 3.5 Sonnetなどの最新モデルのAPI仕様変更や価格改定を把握したいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 5000),
+                        },
+                        {
+                          id: "refine-ai-2",
+                          content: "アプリ開発への応用とのことですが、特に重視したい観点はありますか？\n複数選択でも構いません。\n\n・マルチモーダル機能\n・Function Calling / Tool Use\n・コンテキストウィンドウの拡大\n・推論速度とコスト\n・ファインチューニングの可能性",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 4000),
+                        },
+                        {
+                          id: "refine-user-2",
+                          content: "マルチモーダル機能と、推論速度とコストのバランスについて特に知りたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 3000),
+                        },
+                        {
+                          id: "refine-ai-3",
+                          content: "追跡する情報ソースについて、希望はありますか？\n例：\n・公式開発者ブログ（OpenAI, Anthropic, Google）\n・技術系ニュースサイト（Hacker News, TechCrunch）\n・開発者コミュニティ（X, Discord, Reddit）\n・論文解説記事",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 2000),
+                        },
+                        {
+                          id: "refine-user-3",
+                          content: "公式開発者ブログと、Xでの開発者の反応を中心にしたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 1000),
+                        },
+                      ],
+                      "ビジネストレンド分析": [
+                        {
+                          id: "refine-ai-1",
+                          content: "この情報を追跡する目的を教えてください。\n例：\n・新規事業立案\n・競合調査\n・投資判断\n・営業トークのネタ作り など",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 6000),
+                        },
+                        {
+                          id: "refine-user-1",
+                          content: "新規事業立案です。\n2025年に注目されるSaaSやDXのトレンドを把握し、自社サービスの企画に活かしたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 5000),
+                        },
+                        {
+                          id: "refine-ai-2",
+                          content: "新規事業立案とのことですが、特にどの領域に関心がありますか？\n複数選択でも構いません。\n\n・Vertical SaaS（特定業界向け）\n・HR Tech / 働き方改革\n・Green Transformation (GX)\n・生成AI活用ビジネス\n・Web3 / ブロックチェーン",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 4000),
+                        },
+                        {
+                          id: "refine-user-2",
+                          content: "生成AI活用ビジネスと、Vertical SaaSの掛け合わせについて特に知りたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 3000),
+                        },
+                        {
+                          id: "refine-ai-3",
+                          content: "追跡する情報ソースについて、希望はありますか？\n例：\n・日経新聞・業界紙\n・ベンチャーキャピタルのレポート\n・スタートアップ企業のプレスリリース\n・ビジネス系ポッドキャスト",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 2000),
+                        },
+                        {
+                          id: "refine-user-3",
+                          content: "VCのレポートと、海外のテック系メディアのトレンド分析を中心にしたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 1000),
+                        },
+                      ],
+                      "マーケティング戦略": [
+                        {
+                          id: "refine-ai-1",
+                          content: "この情報を追跡する目的を教えてください。\n例：\n・自社ブランドの認知拡大\n・SNS運用改善\n・広告運用の効率化\n・Z世代のトレンド把握 など",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 6000),
+                        },
+                        {
+                          id: "refine-user-1",
+                          content: "Z世代のトレンド把握とSNS運用改善です。\n特にTikTokやInstagram Reelsでのショート動画マーケティングの最新事例を知りたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 5000),
+                        },
+                        {
+                          id: "refine-ai-2",
+                          content: "SNS運用改善とのことですが、特に重視したい指標や手法はありますか？\n複数選択でも構いません。\n\n・UGC（ユーザー生成コンテンツ）の活用\n・インフルエンサーマーケティング\n・アルゴリズムの最新動向\n・動画編集・制作トレンド\n・コンバージョン獲得手法",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 4000),
+                        },
+                        {
+                          id: "refine-user-2",
+                          content: "アルゴリズムの最新動向と、UGCの自然な発生を促すキャンペーン設計について特に知りたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 3000),
+                        },
+                        {
+                          id: "refine-ai-3",
+                          content: "追跡する情報ソースについて、希望はありますか？\n例：\n・各プラットフォーム公式発表\n・マーケティング専門メディア（Adweekなど）\n・著名マーケターのニュースレター\n・SNS上のトレンドタグ分析",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 2000),
+                        },
+                        {
+                          id: "refine-user-3",
+                          content: "マーケティング専門メディアと、実際にバズっている事例の解説記事を中心にしたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 1000),
+                        },
+                      ],
+                      "テクノロジー最前線": [
+                        {
+                          id: "refine-ai-1",
+                          content: "この情報を追跡する目的を教えてください。\n例：\n・R&Dテーマの探索\n・長期的な技術投資判断\n・知的好奇心\n・サイエンスニュースの収集 など",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 6000),
+                        },
+                        {
+                          id: "refine-user-1",
+                          content: "長期的な技術投資判断です。\n量子コンピューティングや核融合技術など、10年後の社会を変える技術の実用化マイルストーンを追いたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 5000),
+                        },
+                        {
+                          id: "refine-ai-2",
+                          content: "技術投資判断とのことですが、特に注目している分野はありますか？\n複数選択でも構いません。\n\n・量子コンピューティング（ゲート型/アニーリング型）\n・次世代エネルギー（核融合/水素）\n・バイオテクノロジー・ゲノム編集\n・宇宙開発\n・新素材・ナノテク",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 4000),
+                        },
+                        {
+                          id: "refine-user-2",
+                          content: "量子コンピューティングのエラー訂正技術の進展と、核融合の商用炉設計の進捗について特に知りたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 3000),
+                        },
+                        {
+                          id: "refine-ai-3",
+                          content: "追跡する情報ソースについて、希望はありますか？\n例：\n・学術論文誌（Nature/Science）\n・研究機関のプレスリリース（理研/MIT等）\n・技術系ニュースサイト\n・テック企業のR&Dブログ",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 2000),
+                        },
+                        {
+                          id: "refine-user-3",
+                          content: "Nature/Scienceなどの主要論文誌のサマリーと、主要プレイヤー（Google/IBM等）の発表を中心にしたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 1000),
+                        },
+                      ],
+                      "UIデザインのトレンド": [
+                        {
+                          id: "refine-ai-1",
+                          content: "この情報を追跡する目的を教えてください。\n例：\n・デザイン業務の参考\n・UI/UX改善提案\n・ポートフォリオ作成\n・デザイントレンドの把握 など",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 6000),
+                        },
+                        {
+                          id: "refine-user-1",
+                          content: "デザイン業務の参考です。\n2025年に流行しそうなWebデザインやアプリUIのスタイル、インタラクションのトレンドを先取りしたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 5000),
+                        },
+                        {
+                          id: "refine-ai-2",
+                          content: "デザイン業務の参考とのことですが、特に重視したい要素はありますか？\n複数選択でも構いません。\n\n・ビジュアルスタイル（Bento UI, Glassmorphism等）\n・マイクロインタラクション\n・3D・AR要素の活用\n・タイポグラフィ\n・アクセシビリティ・包括的デザイン",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 4000),
+                        },
+                        {
+                          id: "refine-user-2",
+                          content: "マイクロインタラクションと、空間コンピューティング時代を見据えた3D要素の活用について特に知りたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 3000),
+                        },
+                        {
+                          id: "refine-ai-3",
+                          content: "追跡する情報ソースについて、希望はありますか？\n例：\n・Dribbble/Behanceの人気作品\n・デザインアワード受賞作（Awwwards等）\n・デザインツール公式（Figma等）のアップデート\n・有名デザインブログ",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 2000),
+                        },
+                        {
+                          id: "refine-user-3",
+                          content: "AwwwardsのTrendsセクションと、Figmaコミュニティで話題のプラグインやキットを中心にしたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 1000),
+                        },
+                      ],
+                    };
+
+                    const defaultMessages: Message[] = [
                       {
                         id: "refine-ai-1",
-                        content: `この情報を追跡する目的を教えてください。\n例：\n・投資判断\n・プロダクト企画\n・業界リサーチ\n・個人の情報収集 など`,
+                        content: "この情報を追跡する目的を教えてください。\n例：\n・投資判断\n・プロダクト企画\n・業界リサーチ\n・個人の情報収集 など",
                         role: "assistant",
                         timestamp: new Date(Date.now() - 6000),
                       },
@@ -419,7 +615,7 @@ https://research.example.org/paper`;
                       },
                       {
                         id: "refine-ai-2",
-                        content: `業界リサーチとのことですが、特に重視したい観点はありますか？\n複数選択でも構いません。\n\n・機能・技術（生成AI、オンデバイスAIなど）\n・ビジネス戦略・競争環境\n・プライバシー・規制対応\n・日本市場への影響\n・他社（OpenAI / Google / Microsoft等）との比較`,
+                        content: "業界リサーチとのことですが、特に重視したい観点はありますか？\n複数選択でも構いません。\n\n・機能・技術（生成AI、オンデバイスAIなど）\n・ビジネス戦略・競争環境\n・プライバシー・規制対応\n・日本市場への影響\n・他社（OpenAI / Google / Microsoft等）との比較",
                         role: "assistant",
                         timestamp: new Date(Date.now() - 4000),
                       },
@@ -431,7 +627,7 @@ https://research.example.org/paper`;
                       },
                       {
                         id: "refine-ai-3",
-                        content: `追跡する情報ソースについて、希望はありますか？\n例：\n・Apple公式（発表、WWDC、プレスリリース）\n・海外メディア（Bloomberg, The Vergeなど）\n・日本語メディア\n・アナリストレポート`,
+                        content: "追跡する情報ソースについて、希望はありますか？\n例：\n・Apple公式（発表、WWDC、プレスリリース）\n・海外メディア（Bloomberg, The Vergeなど）\n・日本語メディア\n・アナリストレポート",
                         role: "assistant",
                         timestamp: new Date(Date.now() - 2000),
                       },
@@ -442,6 +638,8 @@ https://research.example.org/paper`;
                         timestamp: new Date(Date.now() - 1000),
                       },
                     ];
+
+                    const initialRefinementMessages = demoChatData[theme] || defaultMessages;
 
                     chat.setRefinementMessages(initialRefinementMessages);
                     tracking.setIsTrackingDetailOpen(true);
@@ -660,7 +858,7 @@ https://research.example.org/paper`;
                                                               s.messageId ===
                                                               messagesBeforeTracking[index - 1].id,
                                                           )?.suggestedPrompt ||
-                                                          "「Apple Intelligenceの2024〜2025年における、主要な機能アップデート、日本語対応の進捗状況、対応デバイスの拡大、プライバシー技術の革新、および市場での評価について、信頼性の高いソースから継続的に追跡し、重要な変化があれば通知してください。」"
+                                                          "このトピックに関する最新情報を継続的に追跡し、重要な変化があれば通知してください。"
                                                         }
                                                         onExecuteTracking={() => {
                                                           const suggestion = tracking.trackingSuggestions.find(
@@ -669,7 +867,7 @@ https://research.example.org/paper`;
                                                               messagesBeforeTracking[index - 1].id,
                                                           );
                                                           const trackingStartTime = new Date();
-                                                          const theme = suggestion?.query || "Apple Intelligence";
+                                                          const theme = suggestion?.query || "Tracked Topic";
 
                                                           tracking.setActiveTracking({
                                                             theme: theme,
@@ -763,6 +961,18 @@ https://research.example.org/paper`;
                                         <ChatMessage message={message} />
                                       </div>
                                     ))}
+                                    {/* Typing Indicator */}
+                                    {chat.isTyping && (
+                                      <div className="flex justify-start mb-6 px-6">
+                                        <div className={`rounded-2xl px-5 py-3 flex items-center space-x-2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    <div className="h-4" />
                                   </>
                                 );
                               })()}
@@ -837,18 +1047,28 @@ https://research.example.org/paper`;
           theme={theme}
           onThemeChange={(newTheme) => setTheme(newTheme)}
           onLoadDemoData={chat.loadDemoData}
-          onPlayDemoScenario={() => {
+          onPlayDemoScenario={async () => {
             setIsSettingsModalOpen(false);
             setCurrentView("chat");
 
-            // 1. Create New Chat
-            const newChatId = chat.handleNewChat();
+            // Helper for delay
+            const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-            // 2. Simulate User Message (Tesla Analysis)
+            // Step 1: Starting
+            setDemoStatus("デモシナリオを開始：ユーザー体験をシミュレーションします");
+            await delay(1500);
+
+            // Step 2: Create Chat
+            setDemoStatus("1. 新規チャットの作成：分析テーマ用のスペースを準備中...");
+            const newChatId = chat.handleNewChat();
+            await delay(1500);
+
+            // Step 3: User Typing
+            setDemoStatus("2. ユーザー入力：具体的な分析リクエストを送信中...");
             const userMessageId = (Date.now()).toString();
             const userMessage: Message = {
               id: userMessageId,
-              content: "テスラの競合分析をお願いします。\n特にEV市場でのシェア推移と、自律走行技術における他社との比較を知りたいです。",
+              content: "テスラの競合分析をお願いします。\n特にEV市場でのシェア推移と、自律走行技術における他社との比較について、最新の情報を基に教えてください。",
               role: "user",
               timestamp: new Date(),
             };
@@ -867,38 +1087,88 @@ https://research.example.org/paper`;
                   : c
               )
             );
+            await delay(2500);
 
-            // 3. Simulate AI Response with Delay
-            setTimeout(() => {
-              const aiMessageId = (Date.now() + 1).toString();
-              const aiMessage: Message = {
-                id: aiMessageId,
-                content: "テスラの競合分析について承知いたしました。\n\n**1. EV市場シェアの動向**\nBYDなどの中国メーカーの台頭により、グローバルシェアは激化しています。特に価格競争力のあるモデルとの競合が激しくなっています。\n\n**2. 自律走行技術 (FSD)**\nFSD v12の展開により、エンドツーエンドのニューラルネットアプローチで先行していますが、WaymoやCruise、および中国系企業の技術進歩も著しい状況です。\n\nこのトピックについて、継続的な市場動向や技術アップデートを追跡することをお勧めします。",
-                role: "assistant",
-                timestamp: new Date(),
-              };
+            // Step 4: AI Analyzing
+            setDemoStatus("3. AI分析：Perplexity APIを使用してWeb上の最新情報を検索・統合中...");
+            await delay(3000);
 
-              chat.setChats((prevChats) =>
-                prevChats.map((c) =>
-                  c.id === newChatId
-                    ? { ...c, messages: [...c.messages, aiMessage], updatedAt: new Date() }
-                    : c
-                )
-              );
+            // Step 5: AI Response
+            setDemoStatus("4. 回答生成：ソースに基づいた包括的なレポートを表示しました");
+            const aiMessageId = (Date.now() + 1).toString();
+            const aiMessage: Message = {
+              id: aiMessageId,
+              content: `テスラの市場シェアと自律走行技術における競合他社との比較について、最新の情報を基に詳細に分析いたします。
 
-              // 4. Trigger Tracking Suggestion
-              tracking.setTrackingSuggestions((prev) => [
-                ...prev,
-                {
-                  messageId: userMessageId,
-                  query: "テスラの競合分析",
-                  accepted: false,
-                  suggestedPrompt: "テスラの市場シェアと自律走行技術の競合他社比較を継続的に追跡し、主要なアップデートを報告してください。",
-                },
-              ]);
-            }, 1000);
+### 1. EV市場シェアの現況と推移
+テスラは依然としてEVの世界販売で最大手ですが、直近数年はシェアの伸びが鈍化し、地域によっては競合に押されつつあります [1]。特に中国市場では価格競争が激化しており、BYDなどの地元メーカーが台頭しています [4]。
+
+| 企業 | 強みの軸 | テスラに対する位置づけ |
+| :--- | :--- | :--- |
+| **テスラ** | ブランド、ソフトウェア、充電網 | 依然トップクラスのBEV販売と高い利益率だが、成長鈍化が課題 |
+| **BYD** | 低価格、多車種、垂直統合 | 中国・一部海外で販売台数ベースではテスラを上回りつつある [1] |
+| **既存OEM** | 販売網、ブランド力 | EVラインナップ拡充中だが、ソフト面・利益率で出遅れとされる |
+| **新興EV** | ニッチセグメント | 台数は限定的だがブランド性や技術で存在感（Rivianなど） |
+
+### 2. 自律走行技術 (FSD) の比較
+テスラのFSD v12は「エンドツーエンドニューラルネットワーク」を採用し、人間のような滑らかな運転を実現しています [2]。一方、競合他社のアプローチは異なります。
+
+*   **Waymo (Google系):** 高精度マップとLiDARを組み合わせたアプローチで、無人タクシーの商用化で先行しています [3]。限定エリアでの安全性は高い評価を得ています。
+*   **中国勢 (Huawei/Xpeng):** 市街地NOA (Navigation on Autopilot) の展開速度が速く、中国国内ではテスラFSDに匹敵する性能を見せています。
+
+### 結論
+2024年はテスラにとって、EV販売の成長維持とFSDの完成度向上が問われる重要な年となります [5]。ロボタクシー事業への転換スピードが今後の勝敗を分ける鍵となるでしょう。`,
+              role: "assistant",
+              timestamp: new Date(),
+              sources: 5,
+              followUps: [
+                "テスラのCybercab量産スケジュールと価格戦略",
+                "BYDのEVシェアがテスラを上回った理由",
+                "テスラFSDの安全性データ詳細",
+                "NVIDIAのAlpamayoがテスラに与える影響"
+              ]
+            };
+
+            chat.setChats((prevChats) =>
+              prevChats.map((c) =>
+                c.id === newChatId
+                  ? { ...c, messages: [...c.messages, aiMessage], updatedAt: new Date() }
+                  : c
+              )
+            );
+            await delay(1500);
+
+            // Step 6: Tracking Suggestion
+            setDemoStatus("5. 追跡提案：継続的な情報収集のためのプランをAIが自動設計中...");
+            tracking.setTrackingSuggestions((prev) => [
+              ...prev,
+              {
+                messageId: userMessageId,
+                query: "テスラの競合分析",
+                accepted: false,
+                suggestedPrompt: "テスラの市場シェアと自律走行技術の競合他社比較を継続的に追跡し、主要なアップデートを報告してください。",
+              },
+            ]);
+            await delay(1500);
+
+            setDemoStatus(null);
           }}
         />
+
+        {/* Demo Status Banner */}
+        <AnimatePresence>
+          {demoStatus && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, x: "-50%" }}
+              animate={{ opacity: 1, y: 0, x: "-50%" }}
+              exit={{ opacity: 0, y: -20, x: "-50%" }}
+              className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-3"
+            >
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <span className="font-medium">{demoStatus}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <LoginModal
           isOpen={isLoginModalOpen}

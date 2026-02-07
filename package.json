@@ -1,6 +1,6 @@
 {
       "name": "Burilar UIデザイン",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "private": true,
       "dependencies": {
             "@radix-ui/react-accordion": "^1.2.3",
@@ -45,6 +45,7 @@
             "react-markdown": "*",
             "react-resizable-panels": "^2.1.7",
             "recharts": "^2.15.2",
+            "remark-gfm": "^4.0.1",
             "sonner": "^2.0.3",
             "tailwind-merge": "*",
             "vaul": "^1.1.2"

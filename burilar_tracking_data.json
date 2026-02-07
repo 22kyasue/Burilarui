@@ -531,5 +531,56 @@
     },
     "suggested_prompt": "",
     "image_url": ""
+  },
+  "1770449090383": {
+    "id": "1770449090383",
+    "user_id": null,
+    "topic": "is chat working?",
+    "objective": "Needs clarification",
+    "frequency_hours": 12,
+    "keywords": [],
+    "last_search_result": "",
+    "last_search_time": null,
+    "next_search_time": null,
+    "active": false,
+    "created_at": "2026-02-07T16:24:50.383639",
+    "updates": [],
+    "status": "needs_clarification",
+    "original_query": "is chat working?",
+    "clarification_info": {
+      "reason": "The query 'is chat working?' is extremely vague and could refer to multiple messaging platforms, services, or applications. Without knowing which specific chat service or application the user is asking about, it's impossible to provide an accurate answer.",
+      "questions": [
+        "Which chat application or service are you asking about? (e.g., ChatGPT, Google Messages, Apple Messages, Microsoft Teams, WhatsApp, etc.)",
+        "Are you experiencing a technical issue with a specific chat platform, or are you asking about general availability/status?",
+        "Are you asking about a chat feature on a particular device or platform?"
+      ]
+    },
+    "suggested_prompt": "",
+    "image_url": ""
+  },
+  "1770449379914": {
+    "id": "1770449379914",
+    "user_id": null,
+    "topic": "it is workign now?",
+    "objective": "Needs clarification",
+    "frequency_hours": 12,
+    "keywords": [],
+    "last_search_result": "",
+    "last_search_time": null,
+    "next_search_time": null,
+    "active": false,
+    "created_at": "2026-02-07T16:29:39.914600",
+    "updates": [],
+    "status": "needs_clarification",
+    "original_query": "it is workign now?",
+    "clarification_info": {
+      "reason": "The query 'it is workign now?' is vague and lacks context, such as what 'it' refers to (e.g., a system, product, service, or previous issue discussed).",
+      "questions": [
+        "What specifically are you asking about (e.g., a website, app, device, or previous problem)?",
+        "Can you provide more details on what 'it' refers to and any recent changes?"
+      ]
+    },
+    "suggested_prompt": "",
+    "image_url": ""
   }
 }

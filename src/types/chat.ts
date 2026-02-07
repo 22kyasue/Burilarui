@@ -18,6 +18,7 @@ export interface Message {
     url?: string;
     size?: number;
   }[];
+  followUps?: string[];
 }
 
 // Chat/Conversation with optional tracking features

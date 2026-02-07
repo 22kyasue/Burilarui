@@ -4,6 +4,44 @@ import { Message, Chat } from "../types/chat";
 import { DEMO_CHAT_DATA } from "../data/demoData";
 
 // Define strict types for the arguments to ensure type safety
+
+// Helper to generate mock responses
+// Helper to generate mock responses
+const generateMockResponse = (query: string): { content: string, suggestedPrompt: string, topic: string } => {
+    const q = query.toLowerCase();
+
+    if (q.includes("chart") || q.includes("graph") || q.includes("data") || q.includes("trend")) {
+        return {
+            topic: "Market Trends",
+            suggestedPrompt: `Track market trends and data related to "${query}" continuously.`,
+            content: `Based on the latest data regarding "${query}", here is a comprehensive analysis.\n\n### Market Snapshot\n\nThe current trends indicate a positive shift.\n\n| Metric | Q1 2024 | Q2 2024 (Proj) | YoY |\n| :--- | :--- | :--- | :--- |\n| **Revenue** | $12.5M | $14.2M | +13.6% |\n| **User Growth** | 1.2M | 1.5M | +25% |\n| **Retention** | 85% | 87% | +2.3% |\n\n### Key Drivers\n\n*   **Innovation:** New feature rollouts have boosted engagement.\n*   **Expansion:** Entering new regional markets [1].\n*   **Efficiency:** Operational costs have decreased by 5%.\n\n[1] Annual Industry Report 2024`
+        };
+    }
+
+    if (q.includes("code") || q.includes("python") || q.includes("react") || q.includes("bug")) {
+        return {
+            topic: "Technical Analysis",
+            suggestedPrompt: `Monitor updates and best practices for "${query}".`,
+            content: `Here is a technical breakdown for "${query}".\n\n### Implementation Strategy\n\nTo address this, consider the following approach:\n\n1.  **Analyze the Core Logic:** Ensure efficient algorithms.\n2.  **Refactor Components:** Improve modularity.\n3.  **Test Thoroughly:** Unit and integration tests are critical.\n\n### Code Example\n\n\`\`\`typescript\nconst optimize = (data) => {\n  return data.filter(item => item.isActive);\n};\n\`\`\`\n\n### Best Practices\n\n*   **Clean Code:** Maintain readability [1].\n*   **Performance:** Optimize for rendering speed.\n\n[1] Clean Code Guidelines`
+        };
+    }
+
+    if (q.includes("chat") || q.includes("working") || q.includes("status")) {
+        return {
+            topic: "System Status",
+            suggestedPrompt: `Track the system status and availability for "${query}".`,
+            content: `Regarding "${query}", the systems are currently **fully operational**.\n\n### Status Overview\n\n| Service | Status | Uptime (24h) |\n| :--- | :--- | :--- |\n| **API Gateway** | ✅ Operational | 99.99% |\n| **Database** | ✅ Operational | 99.95% |\n| **Messaging** | ✅ Operational | 100% |\n\nNo major incidents have been reported in the last 24 hours [1].\n\n[1] System Status Page`
+        };
+    }
+
+    // Default generic response
+    return {
+        topic: query.length > 20 ? query.substring(0, 20) + "..." : query,
+        suggestedPrompt: `Keep me updated on the latest developments regarding "${query}".`,
+        content: `Here is the information regarding "${query}".\n\n### Overview\n\nThis topic has seen significant activity recently. Experts suggest that keeping a close watch on these developments is crucial for staying ahead.\n\n### Key Points\n\n*   **Context:** The situation is evolving rapidly.\n*   **Impact:** Potential implications for the broader sector are high [1].\n*   **Future Outlook:** Continued growth is expected in the next quarter.\n\n### Summary Table\n\n| Aspect | Detail | Impact |\n| :--- | :--- | :--- |\n| **Scope** | Broad | High |\n| **Timeline** | 2024-2025 | Medium |\n\nSuggested actions include conducting a deeper dive into specific sub-areas [2].\n\n[1] Industry News Daily\n[2] Global Trends Report`
+    };
+};
+
 type ViewType =
     | "home"
     | "chat"
@@ -20,12 +58,14 @@ export function useChat(
     readUpdateIds: Record<string, string[]>,
     setCurrentView: (view: ViewType) => void,
     setTrackingPromptId: (id: string | null) => void,
-    setActiveTracking: (tracking: any) => void
+    setActiveTracking: (tracking: any) => void,
+    addTrackingSuggestion: (suggestion: any) => void
 ) {
     // State
     const [chats, setChats] = useState<Chat[]>([]);
     const [currentChatId, setCurrentChatId] = useState<string | null>(null);
     const [refinementMessages, setRefinementMessages] = useState<Message[]>([]);
+    const [isTyping, setIsTyping] = useState(false);
 
     // Computed
     const currentChat = currentChatId
@@ -45,7 +85,6 @@ export function useChat(
                 : new Date(u.timestamp).getTime().toString();
 
             const isRead = readIds.includes(stableId);
-            console.log(`[useChat] Chat ${chatId} Update ${stableId} Read? ${isRead}`, { readIds, stableId });
             return !isRead;
         }).length;
     };
@@ -148,6 +187,8 @@ export function useChat(
             )
         );
 
+        setIsTyping(true);
+
         // Call API
         if (isAuthenticated) {
             try {
@@ -165,29 +206,47 @@ export function useChat(
                             : c
                     )
                 );
-
             } catch (error) {
                 console.error('Failed to send message:', error);
-                // Fallback or error handling
+                // Fallback to mock if API fails? Or just show error?
+                // For now, let's show error in console and stop typing
+            } finally {
+                setIsTyping(false);
             }
         } else {
-            // For unauthenticated demo, keep the simulated behavior or warn
-            // simulating for consistency if not logged in
+            // For unauthenticated demo, use the simulated behavior
             setTimeout(() => {
-                const assistantMessage: Message = {
+                const generated = generateMockResponse(content);
+                const mockResponse: Message = {
                     id: (Date.now() + 1).toString(),
-                    content: `(Demo Mode) I received: "${content}"${attachments.length > 0 ? ` and ${attachments.length} file(s)` : ''}. Please log in for real AI responses.`,
+                    content: generated.content,
                     role: "assistant",
                     timestamp: new Date(),
+                    sources: Math.floor(Math.random() * 4) + 1, // Random sources for effect
                 };
+
+                // Add dynamic tracking suggestion
+                const suggestion = {
+                    messageId: userMessage.id, // associate with USER message as per App.tsx logic
+                    query: generated.topic,
+                    accepted: false,
+                    suggestedPrompt: generated.suggestedPrompt,
+                };
+                addTrackingSuggestion(suggestion);
+
                 setChats((prevChats) =>
                     prevChats.map((c) =>
                         c.id === currentChatId
-                            ? { ...c, messages: [...c.messages, assistantMessage], updatedAt: new Date() }
+                            ? {
+                                ...c,
+                                messages: [...c.messages, mockResponse],
+                                updatedAt: new Date(),
+                            }
                             : c
                     )
                 );
-            }, 1000);
+                setIsTyping(false);
+            }, 1500 + Math.random() * 1000); // Random delay 1.5s - 2.5s
         }
     };
 
@@ -329,5 +388,6 @@ export function useChat(
         handleDeleteChat,
         handleTogglePin,
         loadDemoData,
+        isTyping,
     };
 }

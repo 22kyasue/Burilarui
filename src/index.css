@@ -5064,3 +5064,42 @@ html {
     transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));
   }
 }
+
+/* Markdown Table Styles */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+.markdown-body th {
+  background-color: #f9fafb;
+}
+.dark .markdown-body th {
+  background-color: #1f2937;
+}
+.markdown-body td, .markdown-body th {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+}
+.dark .markdown-body td, .dark .markdown-body th {
+  border-color: #374151;
+}
+.markdown-body tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+.dark .markdown-body tr:nth-child(even) {
+  background-color: #1f2937;
+}
+.markdown-body ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+}
+.markdown-body ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}

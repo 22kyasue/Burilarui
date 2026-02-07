@@ -66,8 +66,8 @@ export function Sidebar({
   // 履歴セクションへの参照
   const historyRef = useRef<HTMLDivElement>(null);
 
-  // 追跡中のチャットのみを対象
-  const trackingChats = chats.filter((chat) => chat.isTracking);
+  const activeTrackingChats = chats.filter((chat) => chat.isTracking && chat.trackingActive);
+  const stoppedTrackingChats = chats.filter((chat) => chat.isTracking && !chat.trackingActive);
 
   // 通常のチャット（追跡していないもの）
   const historyChats = chats.filter((chat) => !chat.isTracking);
@@ -90,7 +90,12 @@ export function Sidebar({
   };
 
   // プロンプト単位表示用（ピン留め > 新着順にソート）
-  const sortedTrackingChats = [...trackingChats].sort((a, b) => {
+  const sortedActiveTrackingChats = [...activeTrackingChats].sort((a, b) => {
+    if (a.pinned !== b.pinned) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+    return b.updatedAt.getTime() - a.updatedAt.getTime();
+  });
+
+  const sortedStoppedTrackingChats = [...stoppedTrackingChats].sort((a, b) => {
     if (a.pinned !== b.pinned) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
     return b.updatedAt.getTime() - a.updatedAt.getTime();
   });
@@ -184,11 +189,14 @@ export function Sidebar({
 
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto">
-          {/* プロンプト単位表示 */}
+          {/* 追跡中 (Active) */}
           <div className="px-3 py-3">
             <div className="px-2 py-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Podcast className={`w-4 h-4 ${theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600'}`} />
+                <div className="relative">
+                  <Podcast className={`w-4 h-4 ${theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600'}`} />
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full border-2 border-white dark:border-[#1a1f2e]"></span>
+                </div>
                 <h4 className={`text-xs font-semibold uppercase tracking-wide ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>追跡中</h4>
               </div>
               <button
@@ -202,8 +210,8 @@ export function Sidebar({
               </button>
             </div>
 
-            {sortedTrackingChats.length > 0 ? (
-              sortedTrackingChats.map((chat) => (
+            {sortedActiveTrackingChats.length > 0 ? (
+              sortedActiveTrackingChats.map((chat) => (
                 <div
                   key={chat.id}
                   className={`group relative px-3 py-3 mb-2 rounded-xl cursor-pointer transition-all select-none ${trackingPromptId === chat.id
@@ -224,10 +232,10 @@ export function Sidebar({
                       {chat.pinned ? (
                         <Pin
                           className="w-4 h-4"
-                          style={{ color: chat.trackingActive ? '#10b981' : '#ef4444' }}
+                          style={{ color: '#10b981' }}
                         />
                       ) : (
-                        <div className={`w-2 h-2 rounded-full ${chat.trackingActive ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
                       )}
                     </div>
 
@@ -298,11 +306,113 @@ export function Sidebar({
                 </div>
               ))
             ) : (
-              <div className={`px-3 py-8 text-center text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
+              <div className={`px-3 py-4 text-center text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
                 追跡中のプロンプトはありません
               </div>
             )}
           </div>
+
+          {/* 追跡停止中 (Stopped) */}
+          {sortedStoppedTrackingChats.length > 0 && (
+            <div className="px-3 pb-3">
+              <div className="px-2 py-2 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Podcast className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`} />
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-gray-400 rounded-full border-2 border-white dark:border-[#1a1f2e]"></span>
+                  </div>
+                  <h4 className={`text-xs font-semibold uppercase tracking-wide ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>停止中</h4>
+                </div>
+              </div>
+
+              {sortedStoppedTrackingChats.map((chat) => (
+                <div
+                  key={chat.id}
+                  className={`group relative px-3 py-3 mb-2 rounded-xl cursor-pointer transition-all select-none opacity-80 hover:opacity-100 ${trackingPromptId === chat.id
+                    ? theme === 'dark'
+                      ? 'bg-gradient-to-r from-gray-800 to-gray-800 border border-gray-700'
+                      : 'bg-gray-100 border border-gray-200'
+                    : theme === 'dark'
+                      ? 'hover:bg-gray-800 border border-transparent'
+                      : 'hover:bg-gray-50 border border-transparent'
+                    }`}
+                  onClick={() => onSelectChat(chat.id)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
+                >
+                  <div className="flex items-start gap-3">
+                    {/* アイコン部分 */}
+                    <div className="flex-shrink-0 relative mt-1">
+                      {chat.pinned ? (
+                        <Pin
+                          className="w-4 h-4"
+                          style={{ color: '#9ca3af' }}
+                        />
+                      ) : (
+                        <div className="w-2 h-2 rounded-full bg-gray-400" />
+                      )}
+                    </div>
+
+                    {/* テキスト部分 */}
+                    <div className="flex-1 min-w-0">
+                      <div className={`text-sm mb-0.5 truncate font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>{chat.title}</div>
+                      <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>{formatDate(chat.updatedAt)}</div>
+                    </div>
+
+                    {/* ミートボールメニュー */}
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            className={`p-1.5 rounded-lg transition-colors ${theme === 'dark'
+                              ? 'hover:bg-gray-700 text-gray-400'
+                              : 'hover:bg-gray-200 text-gray-500'
+                              }`}
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              onTogglePin(chat.id);
+                            }}
+                          >
+                            {chat.pinned ? (
+                              <>
+                                <PinOff className="w-4 h-4 mr-2" />
+                                <span>ピン留め解除</span>
+                              </>
+                            ) : (
+                              <>
+                                <Pin className="w-4 h-4 mr-2" />
+                                <span>ピン留め</span>
+                              </>
+                            )}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-red-500 focus:text-red-500"
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              onDeleteChat(chat.id);
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            <span>削除</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* 履歴セクション */}
           <div className={`px-3 py-3 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-100'}`} ref={historyRef}>

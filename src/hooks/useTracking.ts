@@ -52,9 +52,14 @@ export function useTracking() {
         }
     }, [isTrackingDetailOpen, isDefaultModeDetailOpen]);
 
+    const addTrackingSuggestion = (suggestion: TrackingSuggestion) => {
+        setTrackingSuggestions((prev) => [...prev, suggestion]);
+    };
+
     return {
         trackingSuggestions,
         setTrackingSuggestions,
+        addTrackingSuggestion,
         activeTracking,
         setActiveTracking,
         isTrackingDetailOpen,
