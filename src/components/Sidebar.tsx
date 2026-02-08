@@ -127,10 +127,10 @@ export function Sidebar({
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:fixed inset-y-0 left-0 z-50 w-80 border-r flex flex-col transition-all duration-300 shadow-xl ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed lg:fixed inset-y-0 left-0 z-50 w-80 border-r flex flex-col transition-all duration-300 ease-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
           } ${theme === 'dark'
-            ? 'bg-[#1a1f2e] border-gray-800'
-            : 'bg-white border-gray-200'
+            ? 'bg-[#1a1f2e]/95 backdrop-blur-xl border-gray-800/50 shadow-2xl shadow-black/20'
+            : 'bg-white/95 backdrop-blur-xl border-gray-200/50 shadow-2xl shadow-gray-900/5'
           }`}
       >
         {/* Header */}
@@ -188,7 +188,7 @@ export function Sidebar({
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto sidebar-scroll">
           {/* 追跡中 (Active) */}
           <div className="px-3 py-3">
             <div className="px-2 py-2 flex items-center justify-between">
@@ -248,7 +248,7 @@ export function Sidebar({
                     {/* 未読数バッジ */}
                     {chat.updateCount !== undefined && chat.updateCount > 0 && (
                       <div className="flex-shrink-0 mt-1">
-                        <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs rounded-full font-semibold shadow-sm">
+                        <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs rounded-full font-semibold shadow-md shadow-indigo-500/25 animate-badge-pulse">
                           {chat.updateCount}
                         </span>
                       </div>

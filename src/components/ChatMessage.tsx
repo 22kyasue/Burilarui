@@ -200,8 +200,8 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
   return (
     <div className={`flex gap-4 mb-8 ${isUser ? 'justify-end' : ''}`}>
       {!isUser && (
-        <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-          <Sparkles className="w-5 h-5 text-white" />
+        <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/20">
+          <Sparkles className="w-4 h-4 text-white" />
         </div>
       )}
 
@@ -256,13 +256,13 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
                     {message.followUps.map((question, idx) => (
                       <button
                         key={idx}
-                        className={`w-full text-left flex items-center justify-between p-3 rounded-lg text-sm transition-all group ${theme === 'dark'
-                          ? 'bg-gray-800/50 hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-700/50 hover:border-gray-600'
-                          : 'bg-gray-50 hover:bg-white text-gray-700 hover:text-gray-900 border border-transparent hover:border-gray-200 hover:shadow-sm'
+                        className={`w-full text-left flex items-center justify-between p-3 rounded-xl text-sm transition-all duration-200 group ${theme === 'dark'
+                          ? 'bg-gray-800/50 hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-700/50 hover:border-indigo-500/30'
+                          : 'bg-gray-50/80 hover:bg-white text-gray-700 hover:text-gray-900 border border-gray-100 hover:border-indigo-200 hover:shadow-sm'
                           }`}
                       >
                         <span>{question}</span>
-                        <ArrowRight className={`w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                        <ArrowRight className={`w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 ${theme === 'dark' ? 'text-indigo-400' : 'text-indigo-500'
                           }`} />
                       </button>
                     ))}
@@ -455,8 +455,8 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
       </div>
 
       {isUser && (
-        <div className="w-8 h-8 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-          <User className="w-5 h-5 text-white" />
+        <div className="w-8 h-8 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md shadow-indigo-400/20">
+          <User className="w-4 h-4 text-white" />
         </div>
       )}
     </div>

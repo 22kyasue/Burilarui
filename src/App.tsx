@@ -995,10 +995,10 @@ https://research.example.org/paper`;
                                     {/* Typing Indicator */}
                                     {chat.isTyping && (
                                       <div className="flex justify-start mb-6 px-6">
-                                        <div className={`rounded-2xl px-5 py-3 flex items-center space-x-2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                                        <div className={`rounded-2xl px-5 py-3 flex items-center space-x-1.5 ${theme === 'dark' ? 'bg-gray-800/80 backdrop-blur-sm' : 'bg-gray-100/80 backdrop-blur-sm'}`}>
+                                          <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                          <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                          <div className="w-2 h-2 bg-pink-400 rounded-full animate-bounce"></div>
                                         </div>
                                       </div>
                                     )}

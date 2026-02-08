@@ -32,12 +32,12 @@ export function SimpleTrackingSetup({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border-2 border-gray-200 overflow-hidden"
+      className="w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl shadow-gray-900/5 border border-gray-200/50 overflow-hidden"
     >
       {/* ヘッダー */}
-      <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 px-8 py-6 border-b border-gray-200">
+      <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 px-8 py-6 border-b border-gray-200/50">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
             <span className="text-2xl">✨</span>
           </div>
           <div>
@@ -223,14 +223,14 @@ export function SimpleTrackingSetup({
         <div className="flex items-center gap-4 pt-4">
           <button
             onClick={onOpenDetailSettings}
-            className="flex-1 px-6 py-4 rounded-xl border-2 border-gray-300 bg-white text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-4 rounded-xl border border-gray-200 bg-white text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98]"
           >
             <span>⚙️</span>
             <span>詳細編集</span>
           </button>
           <button
             onClick={onExecuteTracking}
-            className="flex-1 px-6 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 flex items-center justify-center gap-2 active:scale-[0.98]"
           >
             <span>✓</span>
             <span>追跡実行</span>

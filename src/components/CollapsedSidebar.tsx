@@ -20,9 +20,9 @@ export function CollapsedSidebar({
   theme = 'light'
 }: CollapsedSidebarProps) {
   return (
-    <div className={`fixed left-0 top-0 h-screen w-16 border-r flex flex-col items-center py-4 gap-2 z-30 shadow-sm transition-colors ${theme === 'dark'
-        ? 'bg-gray-800/80 backdrop-blur-md border-gray-700/50'
-        : 'bg-white/80 backdrop-blur-md border-gray-200/50'
+    <div className={`fixed left-0 top-0 h-screen w-16 border-r flex flex-col items-center py-4 gap-2 z-30 transition-all duration-300 ${theme === 'dark'
+        ? 'bg-[#1a1f2e]/90 backdrop-blur-xl border-gray-800/50 shadow-lg shadow-black/10'
+        : 'bg-white/90 backdrop-blur-xl border-gray-200/30 shadow-sm'
       }`}>
       {/* ハンバーガーメニュー - サイドバーを開く */}
       <button

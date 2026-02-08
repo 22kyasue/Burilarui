@@ -86,16 +86,16 @@ export function HomePage({ onSendMessage, onViewPlan, onOpenTrackingDetail, them
         <div className="w-full max-w-3xl">
           {/* Welcome Message */}
           <div className="text-center mb-12">
-            <h2 className="text-5xl mb-4">
-              <span className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>お手伝いできることは</span>
+            <h2 className="text-5xl mb-4 animate-stagger-in" style={{ animationDelay: '0.1s' }}>
+              <span className={`${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>お手伝いできることは</span>
             </h2>
-            <h2 className="text-5xl">
-              <span className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>ありますか？</span>
+            <h2 className="text-5xl animate-stagger-in" style={{ animationDelay: '0.25s' }}>
+              <span className={`${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>ありますか？</span>
             </h2>
           </div>
 
           {/* Search Input */}
-          <div className="mb-8">
+          <div className="mb-10 animate-stagger-in" style={{ animationDelay: '0.4s' }}>
             <ChatInput
               onSendMessage={(message, attachments) => {
                 if (onSendMessage) onSendMessage(message, attachments);
@@ -106,24 +106,25 @@ export function HomePage({ onSendMessage, onViewPlan, onOpenTrackingDetail, them
 
           {/* Suggestions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {suggestions.map((suggestion) => (
+            {suggestions.map((suggestion, index) => (
               <button
                 key={suggestion.id}
                 onClick={() => handleSuggestionClick(suggestion.title, suggestion.description)}
-                className={`rounded-2xl p-5 border transition-all text-left group ${theme === 'dark'
-                  ? 'bg-gray-800 border-gray-700 hover:border-indigo-500 hover:shadow-lg'
-                  : 'bg-white border-gray-200 hover:border-indigo-300 hover:shadow-lg'
+                className={`rounded-2xl p-5 border transition-all duration-300 text-left group animate-stagger-in ${theme === 'dark'
+                  ? 'bg-gray-800/80 backdrop-blur-sm border-gray-700/50 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/5 hover:bg-gray-800'
+                  : 'bg-white/80 backdrop-blur-sm border-gray-200/50 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-0.5'
                   }`}
+                style={{ animationDelay: `${0.5 + index * 0.08}s` }}
               >
                 <div className="flex items-start gap-3">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${suggestion.gradient} flex items-center justify-center flex-shrink-0 text-2xl shadow-md group-hover:scale-110 transition-transform`}>
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${suggestion.gradient} flex items-center justify-center flex-shrink-0 text-2xl shadow-md group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
                     {suggestion.icon}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className={`font-semibold mb-1 text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
                       {suggestion.title}
                     </h3>
-                    <p className={`text-xs line-clamp-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <p className={`text-xs line-clamp-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                       {suggestion.description}
                     </p>
                   </div>

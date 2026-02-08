@@ -35,7 +35,17 @@ export const NewsTicker: React.FC<NewsTickerProps> = ({ theme, onNotificationCli
     const borderColor = theme === 'dark' ? 'border-blue-800' : 'border-blue-200';
 
     return (
-        <div className={`w-full ${bgColor} border-b ${borderColor} py-2 px-4 flex items-center justify-between transition-colors duration-300`}>
+        <div className={`w-full ${bgColor} border-b ${borderColor} py-2 px-4 flex items-center justify-between transition-colors duration-300 relative overflow-hidden`}>
+            {/* Progress bar for auto-rotate */}
+            {notifications.length > 1 && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black/5 dark:bg-white/5">
+                    <div
+                        key={currentNotification.id}
+                        className={`h-full animate-ticker-progress ${theme === 'dark' ? 'bg-blue-400/40' : 'bg-blue-500/30'}`}
+                    />
+                </div>
+            )}
+
             <div className="flex items-center space-x-3 flex-1 overflow-hidden">
                 <div className={`p-1.5 rounded-full ${theme === 'dark' ? 'bg-blue-800/50' : 'bg-blue-100'}`}>
                     <Bell size={14} className={textColor} />
@@ -63,10 +73,15 @@ export const NewsTicker: React.FC<NewsTickerProps> = ({ theme, onNotificationCli
                 </AnimatePresence>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1">
+                {notifications.length > 1 && (
+                    <span className={`text-[10px] font-medium opacity-50 mr-1 ${textColor}`}>
+                        {currentIndex + 1}/{notifications.length}
+                    </span>
+                )}
                 <button
                     onClick={() => markAsRead(currentNotification.id)}
-                    className={`p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${textColor}`}
+                    className={`p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-200 ${textColor}`}
                     title="Dismiss"
                 >
                     <X size={14} />

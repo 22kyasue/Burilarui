@@ -142,7 +142,7 @@ export function SettingsModal({ isOpen, onClose, onViewIntegrations, onViewTrack
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed bottom-20 left-4 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200/50"
+            className="fixed bottom-20 left-4 z-50 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl shadow-gray-900/10 border border-gray-200/30"
           >
             {/* Settings List */}
             <div className="py-2">
@@ -160,19 +160,19 @@ export function SettingsModal({ isOpen, onClose, onViewIntegrations, onViewTrack
                   >
                     <button
                       onClick={item.action}
-                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 transition-all group"
+                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-all duration-150 group"
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className="w-5 h-5 text-gray-600" />
+                        <Icon className="w-5 h-5 text-gray-500 group-hover:text-indigo-600 transition-colors duration-150" />
                         <span className="text-gray-800 text-sm font-medium">
                           {item.label}
                         </span>
                         {item.hasDot && (
-                          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+                          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 shadow-sm shadow-indigo-500/30"></div>
                         )}
                       </div>
                       {item.hasArrow && (
-                        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all duration-150" />
                       )}
                     </button>
 

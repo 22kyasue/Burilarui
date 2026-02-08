@@ -169,9 +169,9 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className={`bg-white/95 backdrop-blur-md rounded-3xl px-5 py-3.5 transition-all duration-300 cursor-text relative ${isFocused
-              ? 'border border-indigo-400 shadow-2xl ring-4 ring-indigo-100/50'
-              : 'shadow-lg hover:shadow-xl'
+            className={`bg-white/95 backdrop-blur-xl rounded-3xl px-5 py-3.5 transition-all duration-300 cursor-text relative ${isFocused
+              ? 'border border-indigo-400/60 shadow-2xl shadow-indigo-500/10 ring-4 ring-indigo-100/40'
+              : 'border border-gray-200/50 shadow-lg hover:shadow-xl hover:border-gray-300/50'
               } ${isDragging
                 ? 'border-2 border-indigo-500 bg-indigo-50/50 ring-4 ring-indigo-200/50'
                 : ''
@@ -287,10 +287,14 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
                   handleSend();
                 }}
                 disabled={!input.trim() && attachedFiles.length === 0}
-                className="p-2 hover:bg-indigo-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  input.trim() || attachedFiles.length > 0
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95'
+                    : 'hover:bg-gray-100 text-gray-400'
+                } disabled:opacity-40 disabled:cursor-not-allowed`}
                 aria-label="送信"
               >
-                <Send className="w-4 h-4 text-indigo-600" />
+                <Send className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -309,9 +313,9 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
-          className={`bg-white/95 backdrop-blur-md rounded-3xl px-6 py-4 transition-all duration-300 cursor-text relative ${isFocused
-            ? 'border border-indigo-400 shadow-2xl ring-4 ring-indigo-100/50'
-            : 'shadow-lg hover:shadow-xl'
+          className={`bg-white/95 backdrop-blur-xl rounded-3xl px-6 py-4 transition-all duration-300 cursor-text relative ${isFocused
+            ? 'border border-indigo-400/60 shadow-2xl shadow-indigo-500/10 ring-4 ring-indigo-100/40'
+            : 'border border-gray-200/50 shadow-lg hover:shadow-xl hover:border-gray-300/50'
             } ${isDragging
               ? 'border-2 border-indigo-500 bg-indigo-50/50 ring-4 ring-indigo-200/50'
               : ''
@@ -432,10 +436,10 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
               {(input.trim() || attachedFiles.length > 0) && (
                 <button
                   onClick={handleSend}
-                  className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
+                  className="p-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 active:scale-95"
                   aria-label="送信"
                 >
-                  <Send className="w-5 h-5 text-indigo-600" />
+                  <Send className="w-4 h-4" />
                 </button>
               )}
             </div>

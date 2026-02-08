@@ -42,7 +42,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ notificati
                 initial={{ opacity: 0, y: 50, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                className={`fixed bottom-6 right-6 z-50 p-4 rounded-xl shadow-2xl border ${bgColor} ${borderColor} max-w-sm w-full flex items-start gap-3`}
+                className={`fixed bottom-6 right-6 z-50 p-4 rounded-2xl shadow-2xl border backdrop-blur-xl ${bgColor} ${borderColor} max-w-sm w-full flex items-start gap-3`}
             >
                 <div className="flex-shrink-0 mt-0.5">
                     {getIcon()}

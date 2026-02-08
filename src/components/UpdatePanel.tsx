@@ -51,7 +51,7 @@ export function UpdatePanel({ isOpen, onClose, onSelectChat, theme = 'light', no
       {/* Slide Panel */}
       <div
         className={`fixed top-0 right-0 h-full w-96 shadow-2xl z-50 transform transition-all duration-300 ease-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'
-          } ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}
+          } ${theme === 'dark' ? 'bg-gray-800/95 backdrop-blur-xl' : 'bg-white/95 backdrop-blur-xl'}`}
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4 flex items-center justify-between flex-shrink-0">
@@ -120,17 +120,17 @@ export function UpdatePanel({ isOpen, onClose, onSelectChat, theme = 'light', no
         </div>
 
         {/* Updates List - スクロール可能 */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto update-panel-scroll">
           {filteredNotifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 px-6 text-center">
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${theme === 'dark'
+              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 animate-float ${theme === 'dark'
                 ? 'bg-gradient-to-br from-gray-700 to-gray-800'
                 : 'bg-gradient-to-br from-indigo-100 to-purple-100'
                 }`}>
-                <Bell className={`w-8 h-8 ${theme === 'dark' ? 'text-indigo-400' : 'text-indigo-400'}`} />
+                <Bell className={`w-7 h-7 ${theme === 'dark' ? 'text-indigo-400' : 'text-indigo-500'}`} />
               </div>
               <p className={`mb-2 font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>通知はありません</p>
-              <p className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+              <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
                 新しい情報が見つかるとここに表示されます
               </p>
             </div>
