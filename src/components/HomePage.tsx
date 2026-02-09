@@ -21,6 +21,20 @@ export function HomePage({ onSendMessage, onViewPlan, onOpenTrackingDetail, them
 
   const suggestions = [
     {
+      id: 7,
+      title: 'Tesla Competitor Analysis',
+      description: 'テスラの競合分析（EV・自動運転）',
+      icon: '🚗',
+      gradient: 'from-red-500 to-red-700',
+    },
+    {
+      id: 5,
+      title: 'Apple Intelligence',
+      description: '最新の動向と日本市場への影響',
+      icon: '🍎',
+      gradient: 'from-gray-700 to-gray-900',
+    },
+    {
       id: 1,
       title: '最新のAIモデルについて',
       description: '最新のLLMやマルチモーダルAIの動向を教えて',
@@ -95,7 +109,7 @@ export function HomePage({ onSendMessage, onViewPlan, onOpenTrackingDetail, them
           </div>
 
           {/* Search Input */}
-          <div className="mb-10 animate-stagger-in" style={{ animationDelay: '0.4s' }}>
+          <div className="mb-4 animate-stagger-in" style={{ animationDelay: '0.4s' }}>
             <ChatInput
               onSendMessage={(message, attachments) => {
                 if (onSendMessage) onSendMessage(message, attachments);

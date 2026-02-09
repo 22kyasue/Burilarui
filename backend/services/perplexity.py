@@ -47,7 +47,7 @@ def call_perplexity(messages: List[Dict], model: str = "sonar", return_images: b
                 content += f"[{i}] {citation}\n"
 
         if return_images:
-            return {"content": content, "images": images}
+            return {"content": content, "images": images, "citations": result.get('citations', [])}
 
         return content
     except requests.exceptions.HTTPError as e:

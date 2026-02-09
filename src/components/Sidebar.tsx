@@ -214,7 +214,7 @@ export function Sidebar({
               sortedActiveTrackingChats.map((chat) => (
                 <div
                   key={chat.id}
-                  className={`group relative px-3 py-3 mb-2 rounded-xl cursor-pointer transition-all select-none ${trackingPromptId === chat.id
+                  className={`group relative px-3 py-2 mb-1 rounded-xl cursor-pointer transition-all select-none ${trackingPromptId === chat.id
                     ? theme === 'dark'
                       ? 'bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-700'
                       : 'bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200'
@@ -328,7 +328,7 @@ export function Sidebar({
               {sortedStoppedTrackingChats.map((chat) => (
                 <div
                   key={chat.id}
-                  className={`group relative px-3 py-3 mb-2 rounded-xl cursor-pointer transition-all select-none opacity-80 hover:opacity-100 ${trackingPromptId === chat.id
+                  className={`group relative px-3 py-2 mb-1 rounded-xl cursor-pointer transition-all select-none opacity-80 hover:opacity-100 ${trackingPromptId === chat.id
                     ? theme === 'dark'
                       ? 'bg-gradient-to-r from-gray-800 to-gray-800 border border-gray-700'
                       : 'bg-gray-100 border border-gray-200'
@@ -427,7 +427,7 @@ export function Sidebar({
               sortedHistoryChats.map((chat) => (
                 <div
                   key={chat.id}
-                  className={`group relative px-3 py-3 mb-2 rounded-xl cursor-pointer transition-all select-none ${currentChatId === chat.id
+                  className={`group relative px-3 py-2 mb-1 rounded-xl cursor-pointer transition-all select-none ${currentChatId === chat.id
                     ? theme === 'dark'
                       ? 'bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-700'
                       : 'bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200'

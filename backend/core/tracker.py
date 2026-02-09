@@ -30,7 +30,7 @@ class BurilarTracker:
         
         self.load_tracking_plans()
     
-    def process_query(self, raw_query: str, chat_history: List[Dict] = None) -> Dict:
+    def process_query(self, raw_query: str, chat_history: Optional[List[Dict]] = None) -> Dict:
         """
         Orchestrate the analysis pipeline:
         1. Normalize
@@ -290,8 +290,10 @@ If there are no significant changes, respond with only "NO_CHANGE".
         if not plan.last_search_result:
              print(f"Running initial execution for plan {plan.id}...")
              search_content = self.executor.execute_plan(plan)
+             # FIX: Extract string content if search_content is a dict
+             content_text = search_content.get("content", "") if isinstance(search_content, dict) else search_content
              schema_type = plan.strategy.get("schema_type", "topic_watch")
-             structured_data = self.extractor.extract_data(search_content, schema_type)
+             structured_data = self.extractor.extract_data(content_text, schema_type)
              plan.last_search_result = structured_data # Store JSON
              plan.last_search_time = datetime.now()
 
@@ -311,8 +313,12 @@ If there are no significant changes, respond with only "NO_CHANGE".
                 
                 # Phase 3: Execute & Extract
                 search_content = self.executor.execute_plan(plan)
+                
+                # FIX: Extract string content from dict
+                content_text = search_content.get("content", "") if isinstance(search_content, dict) else search_content
+                
                 schema_type = plan.strategy.get("schema_type", "topic_watch")
-                new_structured_data = self.extractor.extract_data(search_content, schema_type)
+                new_structured_data = self.extractor.extract_data(content_text, schema_type)
                 
                 # Compare with previous result
                 update_obj = None

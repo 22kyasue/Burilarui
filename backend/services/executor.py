@@ -49,7 +49,10 @@ class TrackingExecutor:
             # Let's assume we can modify perplexity.py or use it as is if it supports this.
             # Based on tracker.py: call_perplexity(messages, model="sonar", return_images=True) returns a dict.
             
-            return call_perplexity(messages, model="sonar", return_images=True)
+            result = call_perplexity(messages, model="sonar", return_images=True)
+            if isinstance(result, str):
+                 return {"content": result, "citations": [], "images": []}
+            return result
         except Exception as e:
             print(f"Executor Error: {str(e)}")
             return {"content": "Error retrieving search results.", "citations": [], "images": []}

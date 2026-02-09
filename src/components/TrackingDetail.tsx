@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import { RefinementScenario } from "../data/demoScenarios";
 
 interface TrackingDetailProps {
   isOpen: boolean;
@@ -11,12 +12,13 @@ interface TrackingDetailProps {
   mode?: "default" | "pro";
   planId?: string; // Optional: if provided, we're editing an existing plan
   onTrackingStarted?: (planId: string) => void; // Callback when tracking starts
+  scenario?: RefinementScenario;
 }
 
 export function TrackingDetail({
   isOpen: _isOpen,
   onClose,
-  query,
+  scenario,
 }: TrackingDetailProps) {
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
   const notificationSettingsRef = useRef<HTMLDivElement>(null);
@@ -28,12 +30,39 @@ export function TrackingDetail({
   const [isComposing, setIsComposing] = useState(false);
   const [trackingStatus, setTrackingStatus] = useState<"active" | "paused">("paused");
 
+  // Default to Apple Intelegence if no scenario provided (for backward compatibility/safety)
+  const activeScenario = scenario || {
+    title: "Apple Intelligenceの2024〜2025年の最新動向",
+    recommendedPrompt: "「Apple Intelligenceについて、2024年から2025年にかけての最新動向を業界リサーチ目的で継続的に追跡してください。特に、生成AIやオンデバイスAI、OSとの統合などに関する新機能・技術アップデートと、日本市場における対応状況（日本語対応の進捗、提供開始時期、対応デバイスの拡大）を重点的に把握したいです。情報源はAppleの公式発表および信頼性の高い海外テックメディアを中心とし、重要な変化が確認された場合のみ通知してください。その際は、変化の内容とそれがAppleのAI戦略や市場において持つ意味を簡潔に説明してください。」",
+    structureItems: [
+      { color: "indigo", title: "期間の明確化", description: "追跡期間を具体的に指定することで、関連性の高い情報に絞り込めます" },
+      { color: "purple", title: "具体的な観点の列挙", description: "複数の観点を明示することで、包括的な追跡が可能になります" },
+      { color: "pink", title: "アクション条件の設定", description: "どんな時に通知が欲しいかを明記することで、ノイズを削減できます" }
+    ],
+    missingPoints: [
+      { text: "2025年第2四半期以降の具体的なリリーススケジュール" },
+      { text: "日本語版の完全対応時期と機能の制限事項" },
+      { text: "新型iPhone/iPad/Macの発表および対応状況" },
+      { text: "第三者評価機関による最新のプライバシー監査結果" }
+    ],
+    notificationTriggers: [
+      { text: "Apple公式サイトで新しいアップデートや機能が発表されたとき" },
+      { text: "主要テックメディアが日本語対応の進捗を報じたとき" },
+      { text: "新型デバイスの発表や対応機種リストの更新があったとき" },
+      { text: "プライバシー技術に関する重要な分析レポートが公開されたとき" },
+      { text: "毎日9:00の定期チェックで新しい情報が検出されたとき" }
+    ]
+  };
+
   // プロンプト編集の状態管理
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
-  const [currentPrompt, setCurrentPrompt] = useState(
-    "「Apple Intelligenceについて、2024年から2025年にかけての最新動向を業界リサーチ目的で継続的に追跡してください。特に、生成AIやオンデバイスAI、OSとの統合などに関する新機能・技術アップデートと、日本市場における対応状況（日本語対応の進捗、提供開始時期、対応デバイスの拡大）を重点的に把握したいです。情報源はAppleの公式発表および信頼性の高い海外テックメディアを中心とし、重要な変化が確認された場合のみ通知してください。その際は、変化の内容とそれがAppleのAI戦略や市場において持つ意味を簡潔に説明してください。」"
-  );
-  const originalPrompt = query; // ユーザーが最初に入力したプロンプト
+  const [currentPrompt, setCurrentPrompt] = useState(activeScenario.recommendedPrompt);
+  const originalPrompt = activeScenario.recommendedPrompt;
+
+  // Reset prompt when scenario changes
+  useEffect(() => {
+    setCurrentPrompt(activeScenario.recommendedPrompt);
+  }, [activeScenario.recommendedPrompt]);
 
   // 通知設定が開いたときに自動スクロール
   useEffect(() => {
@@ -87,7 +116,7 @@ export function TrackingDetail({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: "100%" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="absolute right-0 top-0 w-[65%] h-full p-4 flex flex-col z-20"
+      className="absolute right-0 top-0 w-full md:w-[65%] h-full p-4 flex flex-col z-20"
     >
       {/* 枠で囲まれたコンテナ */}
       <div className="flex-1 min-h-0 bg-white rounded-2xl border-2 border-gray-300 shadow-lg flex flex-col">
@@ -95,7 +124,7 @@ export function TrackingDetail({
         <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 flex-shrink-0">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-gray-900 text-xl font-semibold">
-              Apple Intelligenceの2024〜2025年の最新動向
+              {activeScenario.title}
             </h2>
             <button
               onClick={onClose}
@@ -178,27 +207,15 @@ export function TrackingDetail({
 
               {/* 推奨要素の説明 */}
               <div className="space-y-3">
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-1 bg-indigo-400 rounded-full"></div>
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">期間の明確化</div>
-                    <div className="text-xs text-gray-600 mt-0.5">追跡期間を具体的に指定することで、関連性の高い情報に絞り込めます</div>
+                {activeScenario.structureItems.map((item, index) => (
+                  <div key={index} className="flex gap-3">
+                    <div className={`flex-shrink-0 w-1 bg-${item.color}-400 rounded-full`}></div>
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{item.title}</div>
+                      <div className="text-xs text-gray-600 mt-0.5">{item.description}</div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-1 bg-purple-400 rounded-full"></div>
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">具体的な観点の列挙</div>
-                    <div className="text-xs text-gray-600 mt-0.5">複数の観点を明示することで、包括的な追跡が可能になります</div>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-1 bg-pink-400 rounded-full"></div>
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">アクション条件の設定</div>
-                    <div className="text-xs text-gray-600 mt-0.5">どんな時に通知が欲しいかを明記することで、ノイズを削減できます</div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -217,22 +234,12 @@ export function TrackingDetail({
                   </div>
                 </div>
                 <div className="space-y-2 pl-4 border-l-2 border-amber-200">
-                  <div className="flex items-start gap-2">
-                    <span className="text-amber-600 text-sm mt-0.5">•</span>
-                    <p className="text-sm text-gray-700">2025年第2四半期以降の具体的なリリーススケジュール</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-amber-600 text-sm mt-0.5">•</span>
-                    <p className="text-sm text-gray-700">日本語版の完全対応時期と機能の制限事項</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-amber-600 text-sm mt-0.5">•</span>
-                    <p className="text-sm text-gray-700">新型iPhone/iPad/Macの発表および対応状況</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-amber-600 text-sm mt-0.5">•</span>
-                    <p className="text-sm text-gray-700">第三者評価機関による最新のプライバシー監査結果</p>
-                  </div>
+                  {activeScenario.missingPoints.map((point, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <span className="text-amber-600 text-sm mt-0.5">•</span>
+                      <p className="text-sm text-gray-700">{point.text}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -244,26 +251,12 @@ export function TrackingDetail({
                   </div>
                 </div>
                 <div className="space-y-2 pl-4 border-l-2 border-indigo-200">
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 text-sm mt-0.5">→</span>
-                    <p className="text-sm text-gray-700">Apple公式サイトで新しいアップデートや機能が発表されたとき</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 text-sm mt-0.5">→</span>
-                    <p className="text-sm text-gray-700">主要テックメディアが日本語対応の進捗を報じたとき</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 text-sm mt-0.5">→</span>
-                    <p className="text-sm text-gray-700">新型デバイスの発表や対応機種リストの更新があったとき</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 text-sm mt-0.5">→</span>
-                    <p className="text-sm text-gray-700">プライバシー技術に関する重要な分析レポートが公開されたとき</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-indigo-600 text-sm mt-0.5">→</span>
-                    <p className="text-sm text-gray-700">毎日9:00の定期チェックで新しい情報が検出されたとき</p>
-                  </div>
+                  {activeScenario.notificationTriggers.map((trigger, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <span className="text-indigo-600 text-sm mt-0.5">→</span>
+                      <p className="text-sm text-gray-700">{trigger.text}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
 

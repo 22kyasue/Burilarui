@@ -195,7 +195,7 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
               )}
             </AnimatePresence>
 
-            {/* Attached Files Grid */}
+            {/* Attached Files Grid - Compact Mode */}
             <AnimatePresence>
               {attachedFiles.length > 0 && (
                 <motion.div
@@ -203,7 +203,7 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="mb-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
+                  className="mb-2 flex flex-wrap gap-2 max-h-[100px] overflow-y-auto custom-scrollbar py-1"
                 >
                   {attachedFiles.map((file) => (
                     <motion.div
@@ -211,7 +211,7 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="relative group aspect-video sm:aspect-[4/3] rounded-xl overflow-hidden border border-gray-200 bg-gray-50"
+                      className="relative group w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-gray-50"
                     >
                       {file.preview ? (
                         <img
@@ -220,31 +220,21 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center">
-                          <div className="w-8 h-8 mb-2 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
-                            <FileText className="w-4 h-4" />
-                          </div>
-                          <p className="text-xs text-gray-600 font-medium truncate w-full px-2">
-                            {file.name}
-                          </p>
-                          <p className="text-[10px] text-gray-400">
-                            {(file.size / 1024).toFixed(0)}KB
-                          </p>
+                        <div className="w-full h-full flex flex-col items-center justify-center p-1 text-center">
+                          <FileText className="w-6 h-6 text-indigo-500" />
                         </div>
                       )}
 
-                      {/* Delete Button (Hover) */}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemoveFile(file.id);
-                          }}
-                          className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/40 transition-colors text-white"
-                        >
-                          <X className="w-5 h-5" />
-                        </button>
-                      </div>
+                      {/* Delete Button (Persistent Badge) */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveFile(file.id);
+                        }}
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-gray-500/80 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors shadow-sm z-10"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -287,11 +277,10 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
                   handleSend();
                 }}
                 disabled={!input.trim() && attachedFiles.length === 0}
-                className={`p-2 rounded-lg transition-all duration-200 ${
-                  input.trim() || attachedFiles.length > 0
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95'
-                    : 'hover:bg-gray-100 text-gray-400'
-                } disabled:opacity-40 disabled:cursor-not-allowed`}
+                className={`p-2 rounded-lg transition-all duration-200 ${input.trim() || attachedFiles.length > 0
+                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95'
+                  : 'hover:bg-gray-100 text-gray-400'
+                  } disabled:opacity-40 disabled:cursor-not-allowed`}
                 aria-label="送信"
               >
                 <Send className="w-4 h-4" />
@@ -339,7 +328,7 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
             )}
           </AnimatePresence>
 
-          {/* Attached Files Grid */}
+          {/* Attached Files Grid - Compact Mode */}
           <AnimatePresence>
             {attachedFiles.length > 0 && (
               <motion.div
@@ -347,7 +336,7 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.2 }}
-                className="mb-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
+                className="mb-2 flex flex-wrap gap-2 max-h-[100px] overflow-y-auto custom-scrollbar py-1"
               >
                 {attachedFiles.map((file) => (
                   <motion.div
@@ -355,7 +344,7 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    className="relative group aspect-video sm:aspect-[4/3] rounded-xl overflow-hidden border border-gray-200 bg-gray-50"
+                    className="relative group w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-gray-50"
                   >
                     {file.preview ? (
                       <img
@@ -364,31 +353,22 @@ export function ChatInput({ onSendMessage, isHome = false, currentMode, onModeCh
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center">
-                        <div className="w-8 h-8 mb-2 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
-                          <FileText className="w-4 h-4" />
-                        </div>
-                        <p className="text-xs text-gray-600 font-medium truncate w-full px-2">
-                          {file.name}
-                        </p>
-                        <p className="text-[10px] text-gray-400">
-                          {(file.size / 1024).toFixed(0)}KB
-                        </p>
+                      <div className="w-full h-full flex flex-col items-center justify-center p-1 text-center">
+                        <FileText className="w-6 h-6 text-indigo-500" />
                       </div>
                     )}
 
-                    {/* Delete Button (Hover) */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveFile(file.id);
-                        }}
-                        className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/40 transition-colors text-white"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
+                    {/* Delete Button (Persistent Badge) */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveFile(file.id);
+                      }}
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-gray-500/80 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors shadow-sm z-10"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+
                   </motion.div>
                 ))}
               </motion.div>

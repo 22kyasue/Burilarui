@@ -271,7 +271,7 @@ export function ChatMessage({ message, showWhiteBackground, theme = 'light' }: C
               )}
 
               {/* ソースボタン - アクションボタンの上に配置 */}
-              {message.sources && message.sources > 0 && (
+              {(message.sources ?? 0) > 0 && (
                 <div className="flex justify-end mb-3">
                   <button
                     onClick={() => setShowSources(!showSources)}

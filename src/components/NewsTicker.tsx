@@ -46,7 +46,7 @@ export const NewsTicker: React.FC<NewsTickerProps> = ({ theme, onNotificationCli
                 </div>
             )}
 
-            <div className="flex items-center space-x-3 flex-1 overflow-hidden">
+            <div className="flex items-center space-x-3 flex-1 overflow-hidden min-w-0">
                 <div className={`p-1.5 rounded-full ${theme === 'dark' ? 'bg-blue-800/50' : 'bg-blue-100'}`}>
                     <Bell size={14} className={textColor} />
                 </div>
@@ -58,14 +58,14 @@ export const NewsTicker: React.FC<NewsTickerProps> = ({ theme, onNotificationCli
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.3 }}
-                        className="flex-1 cursor-pointer"
+                        className="flex-1 cursor-pointer min-w-0 overflow-hidden w-full"
                         onClick={() => onNotificationClick?.(currentNotification)}
                     >
-                        <div className="flex items-baseline space-x-2">
+                        <div className="flex items-baseline space-x-2 min-w-0">
                             <span className={`font-semibold text-sm ${textColor}`}>
                                 {currentNotification.title}
                             </span>
-                            <span className={`text-xs opacity-70 truncate ${textColor}`}>
+                            <span className={`text-xs opacity-70 truncate ${textColor} min-w-0`}>
                                 {currentNotification.message}
                             </span>
                         </div>

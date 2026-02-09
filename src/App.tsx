@@ -33,6 +33,7 @@ import { Chat, Message } from "./types/chat";
 import { NewsTicker } from "./components/NewsTicker";
 import { ToastNotification } from "./components/ToastNotification";
 import { useNotifications } from "./hooks/useNotifications";
+import { demoScenarios, RefinementScenario } from "./data/demoScenarios";
 
 function AppContent() {
   // Auth
@@ -58,11 +59,6 @@ function AppContent() {
       const newReads = [...currentReads, updateId];
       const newState = { ...prev, [chatId]: newReads };
       localStorage.setItem('burilar_read_updates', JSON.stringify(newState));
-
-      // Update chats state to reflect new unread count immediately - hook handles this logic internally?
-      // Actually useChat doesn't update updateCount automatically on readUpdateIds change unless we trigger it.
-      // But we can manually update via chat.setChats if needed, or rely on re-render.
-      // The hook effect depends on readUpdateIds, so it might re-fetch/re-calculate.
       return newState;
     });
   };
@@ -91,6 +87,9 @@ function AppContent() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isUpdatePanelOpen, setIsUpdatePanelOpen] = useState(false);
   const [demoStatus, setDemoStatus] = useState<string | null>(null);
+
+  // Demo State
+  const [currentScenario, setCurrentScenario] = useState<RefinementScenario | undefined>(undefined);
 
   // Hooks
   const tracking = useTracking();
@@ -169,13 +168,6 @@ https://research.example.org/paper`;
   // Scroll ref (needed for chat scrolling)
   const chatMessagesEndRef = useRef<HTMLDivElement>(null);
 
-  // メインチャット画面のメッセージが更新されたら自動スクロール
-  // useEffect logic now in App.tsx using hook data or move to hook?
-  // Hook doesn't control scroll ref passed from outside easily. 
-  // Let's keep effect here.
-  // Note: imported useEffect is removed from top list in my previous edit? No, I need to check imports.
-  // I must include useEffect in imports.
-
   // Render
   return (
     <AuthGuard>
@@ -239,7 +231,7 @@ https://research.example.org/paper`;
 
         {/* Main Content Area - with margin when sidebar is open */}
         <div
-          className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? "ml-80" : "ml-16"
+          className={`flex-1 flex flex-col transition-all duration-300 min-w-0 overflow-hidden ${isSidebarOpen ? "ml-80" : "ml-16"
             }`}
         >
 
@@ -437,8 +429,81 @@ https://research.example.org/paper`;
                       frequency: "毎日 9:00",
                     });
 
+                    // Determine and set the current scenario
+                    if (theme === "Apple Intelligence" || theme === "Apple Intelligenceの2024〜2025年の最新動向") {
+                      setCurrentScenario(demoScenarios["Apple Intelligence"]);
+                    } else if (theme === "Tesla Competitor Analysis" || theme === "テスラの競合分析") {
+                      setCurrentScenario(demoScenarios["Tesla Competitor Analysis"]);
+                    } else {
+                      setCurrentScenario(undefined); // Use default or nothing
+                    }
+
                     // Demo Data Definition
                     const demoChatData: Record<string, Message[]> = {
+                      "Apple Intelligence": [
+                        {
+                          id: "refine-ai-1",
+                          content: "この情報を追跡する目的を教えてください。\n例：\n・投資判断\n・プロダクト企画\n・業界リサーチ\n・個人の情報収集 など",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 6000),
+                        },
+                        {
+                          id: "refine-user-1",
+                          content: "業界リサーチです。\n特にAppleがAI分野でどこまで本気なのかを継続的に把握したいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 5000),
+                        },
+                        {
+                          id: "refine-ai-2",
+                          content: "業界リサーチとのことですが、特に重視したい観点はありますか？\n複数選択でも構いません。\n\n・機能・技術（生成AI、オンデバイスAIなど）\n・ビジネス戦略・競争環境\n・プライバシー・規制対応\n・日本市場への影響\n・他社（OpenAI / Google / Microsoft等）との比較",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 4000),
+                        },
+                        {
+                          id: "refine-user-2",
+                          content: "機能・技術と、日本市場への影響は特に知りたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 3000),
+                        },
+                        {
+                          id: "refine-ai-3",
+                          content: "追跡する情報ソースについて、希望はありますか？\n例：\n・Apple公式（発表、WWDC、プレスリリース）\n・海外メディア（Bloomberg, The Vergeなど）\n・日本語メディア\n・アナリストレポート",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 2000),
+                        },
+                        {
+                          id: "refine-user-3",
+                          content: "Apple公式と、信頼性の高い海外メディアを中心にしたいです。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 1000),
+                        },
+                      ],
+                      "Tesla Competitor Analysis": [
+                        {
+                          id: "refine-ai-tesla-1",
+                          content: "この情報を追跡する目的を教えてください。\n例：\n・投資判断（TSLA保有中）\n・EV市場調査\n・技術トレンド分析\n・自動車業界の動向把握 など",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 6000),
+                        },
+                        {
+                          id: "refine-user-tesla-1",
+                          content: "テスラの競合分析をお願いします。\n特にEV市場でのシェア推移と、自律走行技術における他社との比較について、最新の情報を基に教えてください。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 5000),
+                        },
+                        {
+                          id: "refine-ai-tesla-2",
+                          content: "競合分析承知しました。比較対象として特に重視したい企業や地域はありますか？\n\n・中国メーカー (BYD, XPeng, Nio)\n・欧州既存メーカー (VW, BMW, Mercedes)\n・米国スタートアップ (Rivian, Lucid)\n・自動運転技術企業 (Waymo, Cruise)",
+                          role: "assistant",
+                          timestamp: new Date(Date.now() - 4000),
+                        },
+                        {
+                          id: "refine-user-tesla-2",
+                          content: "中国のBYDと、自動運転のWaymoとの比較を重点的にお願いします。",
+                          role: "user",
+                          timestamp: new Date(Date.now() - 3000),
+                        },
+                      ],
                       "最新のAIモデルについて": [
                         {
                           id: "refine-ai-1",
@@ -672,6 +737,7 @@ https://research.example.org/paper`;
 
                     const initialRefinementMessages = demoChatData[theme] || defaultMessages;
 
+                    chat.setCurrentChatId(null);
                     chat.setRefinementMessages(initialRefinementMessages);
                     tracking.setIsTrackingDetailOpen(true);
                     setCurrentView("chat");
@@ -1047,6 +1113,7 @@ https://research.example.org/paper`;
                           "Apple Intelligenceの2024〜2025年の動向についてキャッチアップしたい。最新の動向を教えてください。"
                         }
                         mode={currentMode}
+                        scenario={currentScenario}
                       />
                     )}
                   </AnimatePresence>
