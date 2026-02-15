@@ -168,7 +168,7 @@ export function UpdatePanel({ isOpen, onClose, onSelectChat, theme = 'light', no
                           </p>
 
                           {/* Specific Changes */}
-                          {notification.details.changes.length > 0 && (
+                          {notification.details.changes?.length > 0 && (
                             <ul className="list-disc list-inside space-y-1">
                               {notification.details.changes.map((change, idx) => (
                                 <li key={idx} className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -179,7 +179,7 @@ export function UpdatePanel({ isOpen, onClose, onSelectChat, theme = 'light', no
                           )}
 
                           {/* Sources */}
-                          {notification.details.sources.length > 0 && (
+                          {notification.details.sources?.length > 0 && (
                             <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-dashed border-gray-200 dark:border-gray-700">
                               <span className="text-xs font-semibold text-gray-500">Sources:</span>
                               {notification.details.sources.map((source) => (

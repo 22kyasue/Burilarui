@@ -1,5 +1,45 @@
 [
   {
+    "id": "1771142095021",
+    "timestamp": "2026-02-15T16:54:55.021414",
+    "title": "Update: Long Content",
+    "message": "Start of long message.\n\n- Item 1\n- Item 2\n- Item 3\n- Item 4\n- Item 5\n- Item 6\n- Item 7\n- Item 8\n- Item 9\n- Item 10\n\nMiddle of message.\n\nEnd of long message. Verify scroll.",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": null
+  },
+  {
+    "id": "1771142086900",
+    "timestamp": "2026-02-15T16:54:46.900744",
+    "title": "Update: Test Notification with Markdown",
+    "message": "This is a **bold** statement.\n\nHere is a list:\n- Item 1\n- Item 2\n\n[Link to Google](https://google.com)\n\nVerify that this renders correctly and scrolls if too long.",
+    "type": "update",
+    "link": null,
+    "plan_id": null,
+    "read": true,
+    "details": null
+  },
+  {
+    "id": "1770707624976",
+    "timestamp": "2026-02-10T16:13:44.976569",
+    "title": "Update: Python 3.14 release date",
+    "message": "Significant new developments since the previous results (both covering only Python 3.14.0 release on 2025-10-07): Python 3.14.1 was released on Dec. 2, 2025, as the first maintenance release with ~558 bugfixes, build improvements, documentation changes, and new features like PEP 779 (free-threaded Python support), PEP 649 (deferred annotations), PEP 750 (template string literals), PEP 734 (multiple interpreters), PEP 784 (compression.zstd module), and others including official macOS/Windows binaries with experimental JIT, Android binaries, and no more PGP signatures[2][3][5]. Python 3.14.2 is now the latest stable release as of January 2026[5]. Python 3.9.25 was the final security release on Oct. 31, 2025, marking end-of-life for 3.9[1]. Python 3.15 development is underway with alpha 1 including PEP 686 (UTF-8 default) and PEP 799 (profiling API), final release scheduled for Oct. 2026[1][3].\n\n**Sources:**\n[1] https://realpython.com/python-news-november-2025/\n[2] https://www.python.org/downloads/release/python-3141/\n[3] https://peps.python.org/pep-0745/\n[4] https://github.com/astral-sh/ruff/issues/19467\n[5] https://en.wikipedia.org/wiki/History_of_Python\n[6] https://dailypythonprojects.substack.com/p/what-a-developer-should-do-when-a\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://www.liquidweb.com/blog/latest-python-version/",
+    "type": "update",
+    "link": null,
+    "plan_id": "1770482987346",
+    "read": false,
+    "details": {
+      "summary": "Significant new developments since the previous results (both covering only Python 3.14.0 release on 2025-10-07): Python 3.14.1 was released on Dec. 2, 2025, as the first maintenance release with ~558 bugfixes, build improvements, documentation changes, and new features like PEP 779 (free-threaded Python support), PEP 649 (deferred annotations), PEP 750 (template string literals), PEP 734 (multiple interpreters), PEP 784 (compression.zstd module), and others including official macOS/Windows binaries with experimental JIT, Android binaries, and no more PGP signatures[2][3][5]. Python 3.14.2 is now the latest stable release as of January 2026[5]. Python 3.9.25 was the final security release on Oct. 31, 2025, marking end-of-life for 3.9[1]. Python 3.15 development is underway with alpha 1 including PEP 686 (UTF-8 default) and PEP 799 (profiling API), final release scheduled for Oct. 2026[1][3].\n\n**Sources:**\n[1] https://realpython.com/python-news-november-2025/\n[2] https://www.python.org/downloads/release/python-3141/\n[3] https://peps.python.org/pep-0745/\n[4] https://github.com/astral-sh/ruff/issues/19467\n[5] https://en.wikipedia.org/wiki/History_of_Python\n[6] https://dailypythonprojects.substack.com/p/what-a-developer-should-do-when-a\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://www.liquidweb.com/blog/latest-python-version/",
+      "changes": [
+        "General update detected in summary."
+      ],
+      "sources": []
+    },
+    "feedback": "useful"
+  },
+  {
     "id": "1770622271485",
     "timestamp": "2026-02-09T16:31:11.485260",
     "title": "Update: Apple Intelligence\u306e\u65e5\u672c\u5c55\u958b\u3068\u6a5f\u80fd\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8",
@@ -60,7 +100,8 @@
           "url": "https://www.watch.impress.co.jp/docs/series/nishida/2075331.html"
         }
       ]
-    }
+    },
+    "feedback": "useful"
   },
   {
     "id": "1770620967071",
@@ -143,7 +184,8 @@
           "url": "https://www.liquidweb.com/blog/latest-python-version/"
         }
       ]
-    }
+    },
+    "feedback": "useful"
   },
   {
     "id": "1770620954438",
@@ -231,7 +273,8 @@
           "url": "https://www.liquidweb.com/blog/latest-python-version/"
         }
       ]
-    }
+    },
+    "feedback": "useful"
   },
   {
     "id": "1770570026836",
@@ -241,7 +284,7 @@
     "type": "update",
     "link": null,
     "plan_id": "1770483518592",
-    "read": false,
+    "read": true,
     "details": {
       "summary": "The new result provides a detailed **latest_update_summary** on 2026 push notification best practices, listing **key_developments** like separating transactional/promotional notifications, user-controlled channels (3\u20135), behavior-based timing, personalization, rich media, and strategic permission requests\u2014advancing beyond the previous vague 'phase_1' status.[new_result][1][3][4]\n\n**Sources:**\n[1] https://appbot.co/blog/app-push-notifications-2026-best-practices/\n[2] https://openforge.io/6-push-notifications-best-practices-with-real-examples/\n[3] https://www.jotform.com/blog/push-notification-best-practices/\n[4] https://www.pushwoosh.com/blog/android-push-notifications/\n[5] https://community.braze.com/discussions/orchestration/best-practices-for-crafting-effective-push-notifications/3553\n[6] https://reteno.com/blog/push-notification-best-practices-ultimate-guide-for-2026\n[7] https://www.adjust.com/blog/how-to-develop-a-successfull-push-notification-strategy/\n[8] https://www.reactiv.ai/post/try-these-top-10-push-notification-best-practices",
       "changes": [
@@ -334,7 +377,8 @@
           "url": "https://blog.logrocket.com/ux-design/notification-blindness-ux-strategies/"
         }
       ]
-    }
+    },
+    "feedback": "useful"
   },
   {
     "id": "1770569998361",
@@ -344,7 +388,7 @@
     "type": "update",
     "link": null,
     "plan_id": "1770483462605",
-    "read": false,
+    "read": true,
     "details": {
       "summary": "The AppState-ALERT emergency notification system test has been **rescheduled from February 4 to February 11, 2026, at 11:55 a.m.**[1] This represents a one-week delay from the originally planned date. The rescheduled test will include a full system check across multiple notification methods\u2014email, voice and text messaging, and the Alertus desktop notification system\u2014for both the Boone and Hickory campus communities[1].\n\n**Sources:**\n[1] https://today.appstate.edu/2026/02/02/appstate-alert\n[2] https://today.appstate.edu/2025/01/28/appstate-alert\n[3] https://www.appstatealert.com\n[4] https://appcares.appstate.edu/messages/id/114\n[5] https://emergency.appstate.edu\n[6] https://today.appstate.edu",
       "changes": [
@@ -432,7 +476,8 @@
           "url": "https://blog.qatestlab.com/2025/12/24/software-quality-trends-in-2026-key-changes-shaping-modern-qa/"
         }
       ]
-    }
+    },
+    "feedback": "useful"
   },
   {
     "id": "1770526291468",
@@ -442,7 +487,7 @@
     "type": "update",
     "link": null,
     "plan_id": "1770482853149",
-    "read": false,
+    "read": true,
     "details": {
       "summary": "The new result adds a significant development: **Python 3.14.3 was released on February 3, 2026**, representing the third maintenance release of the 3.14 series[1]. This is a meaningful milestone beyond the initial 3.14.0 release, indicating the version has progressed through the bugfix/maintenance phase with multiple updates (3.14.1 on December 2, 2025, 3.14.2 on December 5, 2025, and 3.14.3 on February 3, 2026)[6]. The new result also specifies that the release occurred \"on schedule with no delays,\" providing additional context about the release timeline's reliability.\n\n**Sources:**\n[1] https://blog.python.org/?m=0\n[2] https://www.python.org/downloads/release/python-3140/\n[3] https://devguide.python.org/versions/\n[4] https://realpython.com/python-news-november-2025/\n[5] https://cloudsmith.com/blog/python-3-14-what-you-need-to-know\n[6] https://www.python.org/downloads/\n[7] https://docs.python.org/3/whatsnew/index.html\n[8] https://www.liquidweb.com/blog/latest-python-version/",
       "changes": [
@@ -515,7 +560,8 @@
           "url": "https://www.liquidweb.com/blog/latest-python-version/"
         }
       ]
-    }
+    },
+    "feedback": "useful"
   },
   {
     "id": "1770488596890",

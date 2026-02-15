@@ -12,7 +12,7 @@ interface HomePageProps {
   theme?: 'light' | 'dark';
 }
 
-export function HomePage({ onSendMessage, onViewPlan, onOpenTrackingDetail, theme = 'light' }: HomePageProps) {
+export function HomePage({ onSendMessage, onViewPlan, onOpenTrackingDetail: _onOpenTrackingDetail, theme = 'light' }: HomePageProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
 
@@ -71,10 +71,10 @@ export function HomePage({ onSendMessage, onViewPlan, onOpenTrackingDetail, them
     },
   ];
 
-  const handleSuggestionClick = (title: string, description: string) => {
-    // 4つのサジェスチョンは直接TrackingDetailを開く
-    if (onOpenTrackingDetail) {
-      onOpenTrackingDetail(title, description);
+  const handleSuggestionClick = (_title: string, description: string) => {
+    // 検索として実行（詳細ポップアップではなく、チャットを開始）
+    if (onSendMessage) {
+      onSendMessage(description);
     }
   };
 

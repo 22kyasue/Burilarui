@@ -65,7 +65,7 @@ export const NewsTicker: React.FC<NewsTickerProps> = ({ theme, onNotificationCli
                             <span className={`font-semibold text-sm ${textColor}`}>
                                 {currentNotification.title}
                             </span>
-                            <span className={`text-xs opacity-70 truncate ${textColor} min-w-0`}>
+                            <span className={`text-xs opacity-70 ${textColor} min-w-0 break-words whitespace-normal`}>
                                 {currentNotification.message}
                             </span>
                         </div>

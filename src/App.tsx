@@ -30,7 +30,6 @@ import * as chatsApi from "./api/chats";
 import { useChat } from "./hooks/useChat";
 import { useTracking } from "./hooks/useTracking";
 import { Chat, Message } from "./types/chat";
-import { NewsTicker } from "./components/NewsTicker";
 import { ToastNotification } from "./components/ToastNotification";
 import { useNotifications } from "./hooks/useNotifications";
 import { demoScenarios, RefinementScenario } from "./data/demoScenarios";
@@ -86,6 +85,7 @@ function AppContent() {
   const [isNotebookModalOpen, setIsNotebookModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isUpdatePanelOpen, setIsUpdatePanelOpen] = useState(false);
+  const [dismissedToastIds, setDismissedToastIds] = useState<string[]>([]);
   const [demoStatus, setDemoStatus] = useState<string | null>(null);
 
   // Demo State
@@ -256,29 +256,25 @@ https://research.example.org/paper`;
             onPlanManagement={() => setCurrentView("planManagement")}
           />
 
-          {/* Phase 4.4: News Ticker */}
-          <NewsTicker
-            theme={theme}
-            notifications={notifications}
-            markAsRead={markAsRead}
-            onNotificationClick={(n) => {
-              // Optional: Navigate to relevant view based on notification
-              console.log("Notification clicked:", n);
-              // For now, open notifications panel
-              setIsUpdatePanelOpen(true);
-            }} />
+
+
 
           {/* Toast Notification */}
-          <ToastNotification
-            notification={notifications.find(n => !n.read && !n.feedback) || null}
-            onDismiss={() => {
-              // Just dismiss the toast, don't mark as read automatically
-              // const latest = notifications.find(n => !n.read && !n.feedback);
-              // if (latest) markAsRead(latest.id);
-            }}
-            onFeedback={submitFeedback}
-            theme={theme}
-          />
+          {(() => {
+            const activeNotification = notifications.find(n => !n.read && !n.feedback && !dismissedToastIds.includes(n.id)) || null;
+            return (
+              <ToastNotification
+                notification={activeNotification}
+                onDismiss={() => {
+                  if (activeNotification) {
+                    setDismissedToastIds(prev => [...prev, activeNotification.id]);
+                  }
+                }}
+                onFeedback={submitFeedback}
+                theme={theme}
+              />
+            );
+          })()}
 
 
           <AnimatePresence mode="wait">
@@ -345,6 +341,12 @@ https://research.example.org/paper`;
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ query: message }),
                       });
+
+                      if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(`Server error: ${response.status} ${text}`);
+                      }
+
                       const data = await response.json();
 
                       let responseContent = '';
