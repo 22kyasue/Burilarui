@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0] - 2026-02-15
+### Added
+- Notifications API
+- Integrations API
+- User & Plan Management API
+- Authentication & Chat Persistence
+- Toast Notification Markdown Support
+- Fix Toast Notification Close Button
+
 ## [1.0.4] - 2026-02-09
 
 ### Fixed
