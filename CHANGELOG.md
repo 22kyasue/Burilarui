@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.1.0] - 2026-02-15
+## [1.1.1] - 2026-02-15
 ### Added
 - Notifications API
 - Integrations API

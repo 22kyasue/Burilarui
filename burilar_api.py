@@ -9,7 +9,7 @@ from backend.models.tracking import TrackingPlan
 
 """
 Burilar API Backend
-Version: 1.1.0 (Modularized)
+Version: 1.1.1 (Modularized)
 """
 
 # Initialize Flask app - serve static files from build folder
