@@ -68,20 +68,7 @@ export function UpdatePanel({ isOpen, onClose, onSelectChat, theme = 'light', no
           </button>
         </div>
 
-        {/* Stats */}
-        <div className={`px-6 py-4 border-b flex-shrink-0 ${theme === 'dark'
-          ? 'bg-gradient-to-br from-gray-700 to-gray-800 border-gray-700'
-          : 'bg-gradient-to-br from-indigo-50 to-purple-50 border-gray-200'
-          }`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className={`text-xs mb-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>未読通知</p>
-              <p className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                {notifications.length}
-              </p>
-            </div>
-          </div>
-        </div>
+
 
         {/* Search Bar */}
         <div className={`px-6 py-4 border-b flex-shrink-0 ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
@@ -152,107 +139,86 @@ export function UpdatePanel({ isOpen, onClose, onSelectChat, theme = 'light', no
                       }`} />
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <h4 className={`text-sm font-semibold line-clamp-1 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
-                          {notification.title}
-                        </h4>
-                        <span className="text-xs text-gray-400 whitespace-nowrap">
-                          {formatTimeAgo(notification.timestamp)}
-                        </span>
-                      </div>
+                      <div className="flex flex-col gap-2">
+                        {/* Header Row: Badges and Time */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {/* New Badge (optional, based on logic) */}
+                            <span className="px-2 py-0.5 text-[10px] font-bold text-white bg-indigo-500 rounded-full">
+                              NEW
+                            </span>
+                            {/* Title as Badge */}
+                            <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'
+                              }`}>
+                              {notification.title}
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-400 whitespace-nowrap">
+                            {formatTimeAgo(notification.timestamp)}
+                          </span>
+                        </div>
 
-                      {notification.details ? (
-                        <div className="mt-2 space-y-3">
-                          <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {notification.details.summary}
+                        {notification.details ? (
+                          <div className="mt-2 space-y-2">
+                            <p className={`text-sm line-clamp-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                              {notification.details.summary}
+                            </p>
+                            {/* Rich details hidden in list view - accessible via "View Details" */}
+                          </div>
+                        ) : (
+                          <p className={`text-xs mt-1 line-clamp-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {notification.message}
                           </p>
-
-                          {/* Specific Changes */}
-                          {notification.details.changes?.length > 0 && (
-                            <ul className="list-disc list-inside space-y-1">
-                              {notification.details.changes.map((change, idx) => (
-                                <li key={idx} className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                                  {change}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-
-                          {/* Sources */}
-                          {notification.details.sources?.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-dashed border-gray-200 dark:border-gray-700">
-                              <span className="text-xs font-semibold text-gray-500">Sources:</span>
-                              {notification.details.sources.map((source) => (
-                                <a
-                                  key={source.id}
-                                  href={source.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className={`text-xs px-1.5 py-0.5 rounded border transition-colors ${theme === 'dark'
-                                    ? 'bg-gray-800 border-gray-600 text-blue-400 hover:bg-gray-700'
-                                    : 'bg-white border-gray-300 text-blue-600 hover:bg-gray-50'
-                                    }`}
-                                  title={source.title}
-                                >
-                                  [{source.id}]
-                                </a>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <p className={`text-xs mt-1 line-clamp-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {notification.message}
-                        </p>
-                      )}
-
-                      {/* Actions */}
-                      <div className="mt-2 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => markAsRead(notification.id)}
-                          className={`text-xs flex items-center gap-1 ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}
-                        >
-                          <CheckCircle size={12} />
-                          既読にする
-                        </button>
-                        {/* Feedback Buttons */}
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onFeedback?.(notification.id, 'useful');
-                            }}
-                            className={`p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${notification.feedback === 'useful' ? 'text-green-500' : (theme === 'dark' ? 'text-gray-500' : 'text-gray-400')
-                              }`}
-                            title="役に立った"
-                          >
-                            <ThumbsUp size={14} className={notification.feedback === 'useful' ? 'fill-current' : ''} />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onFeedback?.(notification.id, 'not_useful');
-                            }}
-                            className={`p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${notification.feedback === 'not_useful' ? 'text-red-500' : (theme === 'dark' ? 'text-gray-500' : 'text-gray-400')
-                              }`}
-                            title="役に立たない"
-                          >
-                            <ThumbsDown size={14} className={notification.feedback === 'not_useful' ? 'fill-current' : ''} />
-                          </button>
-                        </div>
-                        {notification.plan_id && (
-                          <button
-                            onClick={() => {
-                              // Assuming plan_id maps to chat_id for now, or we need a way to navigate
-                              if (notification.plan_id) onSelectChat(notification.plan_id);
-                              onClose();
-                            }}
-                            className={`text-xs flex items-center gap-1 ${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-700'}`}
-                          >
-                            <Search size={12} />
-                            詳細を見る
-                          </button>
                         )}
+
+                        {/* Actions */}
+                        <div className="mt-2 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => markAsRead(notification.id)}
+                            className={`text-xs flex items-center gap-1 ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}
+                          >
+                            <CheckCircle size={12} />
+                            既読にする
+                          </button>
+                          {/* Feedback Buttons */}
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onFeedback?.(notification.id, 'useful');
+                              }}
+                              className={`p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${notification.feedback === 'useful' ? 'text-green-500' : (theme === 'dark' ? 'text-gray-500' : 'text-gray-400')
+                                }`}
+                              title="役に立った"
+                            >
+                              <ThumbsUp size={14} className={notification.feedback === 'useful' ? 'fill-current' : ''} />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onFeedback?.(notification.id, 'not_useful');
+                              }}
+                              className={`p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${notification.feedback === 'not_useful' ? 'text-red-500' : (theme === 'dark' ? 'text-gray-500' : 'text-gray-400')
+                                }`}
+                              title="役に立たない"
+                            >
+                              <ThumbsDown size={14} className={notification.feedback === 'not_useful' ? 'fill-current' : ''} />
+                            </button>
+                          </div>
+                          {notification.plan_id && (
+                            <button
+                              onClick={() => {
+                                // Assuming plan_id maps to chat_id for now, or we need a way to navigate
+                                if (notification.plan_id) onSelectChat(notification.plan_id);
+                                onClose();
+                              }}
+                              className={`text-xs flex items-center gap-1 ${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-700'}`}
+                            >
+                              <Search size={12} />
+                              詳細を見る
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
