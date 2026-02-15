@@ -1,4 +1,4 @@
-import { Pin, Clock, Send, Check, Edit2, Save, X, Lightbulb, Info } from 'lucide-react';
+import { Pin, Clock, Send, Check, Edit2, Save, X, Lightbulb, Info, Circle } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';

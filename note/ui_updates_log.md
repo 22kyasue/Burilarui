@@ -19,5 +19,10 @@ Refined the `Unread Updates` panel UI to be more concise and visually aligned wi
 *   **Color Adjustments**:
     *   Badges use `indigo-500` (purple) for "NEW" and neutral gray for the title background to distinguish hierarchy.
 
+### 3. Dashboard Cleanup
+*   **Removed Unread Updates Section**: The large "Unread Updates" section at the top of the main dashboard (`TrackingPage`) has been removed entirely, including the bell icon header and the grid of update cards, to streamline the view.
+*   **Removed Unread Count Badge**: The "Unread: X" badge in the dashboard header was also removed to match the cleanup.
+
 ## Files Modified
 *   `src/components/UpdatePanel.tsx`
+*   `src/components/TrackingPage.tsx`
