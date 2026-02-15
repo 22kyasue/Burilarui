@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: burilar-ui
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn burilar_api:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.18
