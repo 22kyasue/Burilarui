@@ -1,32 +1,42 @@
 """
-Supabase storage backend.
-Implements the same BaseStorage interface as JSONFileStorage so that
-UserStorage and ChatStorage can swap backends transparently.
+Supabase storage backend using REST API directly (no supabase-py).
+Uses requests + Supabase PostgREST API for full Python version compatibility.
 """
 
+import os
+import requests
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from .base import BaseStorage
-from backend.db import get_supabase
+
+
+def _get_headers(prefer: str = "return=representation") -> dict:
+    key = (os.environ.get("SUPABASE_KEY") or "").strip()
+    h = {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+    }
+    if prefer:
+        h["Prefer"] = prefer
+    return h
+
+
+def _base_url() -> str:
+    url = (os.environ.get("SUPABASE_URL") or "").rstrip("/")
+    return f"{url}/rest/v1"
 
 
 class SupabaseStorage(BaseStorage):
-    """Supabase-backed implementation of BaseStorage."""
+    """Supabase-backed storage using REST API directly."""
 
     def __init__(self, table: str, id_field: str = "id"):
         self.table = table
         self.id_field = id_field
 
-    # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
-
-    def _db(self):
-        client = get_supabase()
-        if client is None:
-            raise RuntimeError("Supabase client not initialised — check SUPABASE_URL and SUPABASE_KEY env vars")
-        return client
+    def _url(self, suffix: str = "") -> str:
+        return f"{_base_url()}/{self.table}{suffix}"
 
     def _now(self) -> str:
         return datetime.utcnow().isoformat()
@@ -36,20 +46,25 @@ class SupabaseStorage(BaseStorage):
     # ------------------------------------------------------------------
 
     def get(self, key: str) -> Optional[Dict]:
-        res = self._db().table(self.table).select("*").eq(self.id_field, key).execute()
-        return res.data[0] if res.data else None
+        r = requests.get(
+            self._url(),
+            headers=_get_headers(""),
+            params={self.id_field: f"eq.{key}"},
+        )
+        data = r.json() if r.ok else []
+        return data[0] if data else None
 
     def get_all(self) -> List[Dict]:
-        res = self._db().table(self.table).select("*").execute()
-        return res.data or []
+        r = requests.get(self._url(), headers=_get_headers(""))
+        return r.json() if r.ok else []
 
     def query(self, filters: Dict[str, Any] = None) -> List[Dict]:
-        q = self._db().table(self.table).select("*")
+        params = {}
         if filters:
             for col, val in filters.items():
-                q = q.eq(col, val)
-        res = q.execute()
-        return res.data or []
+                params[col] = f"eq.{val}"
+        r = requests.get(self._url(), headers=_get_headers(""), params=params)
+        return r.json() if r.ok else []
 
     def create(self, data: Dict) -> Dict:
         now = self._now()
@@ -57,23 +72,36 @@ class SupabaseStorage(BaseStorage):
             data[self.id_field] = str(int(datetime.utcnow().timestamp() * 1000))
         data.setdefault("created_at", now)
         data.setdefault("updated_at", now)
-        res = self._db().table(self.table).insert(data).execute()
-        return res.data[0] if res.data else data
+        r = requests.post(
+            self._url(),
+            headers=_get_headers("return=representation"),
+            json=data,
+        )
+        result = r.json() if r.ok else None
+        if isinstance(result, list) and result:
+            return result[0]
+        return data
 
     def update(self, key: str, data: Dict) -> Optional[Dict]:
         data["updated_at"] = self._now()
-        res = (
-            self._db()
-            .table(self.table)
-            .update(data)
-            .eq(self.id_field, key)
-            .execute()
+        r = requests.patch(
+            self._url(),
+            headers=_get_headers("return=representation"),
+            params={self.id_field: f"eq.{key}"},
+            json=data,
         )
-        return res.data[0] if res.data else None
+        result = r.json() if r.ok else None
+        if isinstance(result, list) and result:
+            return result[0]
+        return None
 
     def delete(self, key: str) -> bool:
-        res = self._db().table(self.table).delete().eq(self.id_field, key).execute()
-        return bool(res.data)
+        r = requests.delete(
+            self._url(),
+            headers=_get_headers(""),
+            params={self.id_field: f"eq.{key}"},
+        )
+        return r.ok
 
     def count(self, filters: Dict[str, Any] = None) -> int:
         return len(self.query(filters))
