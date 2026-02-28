@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+*.pyc
+.git/
+.env
+.env.local
+.claude/
+_backup_20260207/
+*.log
+.DS_Store
+Thumbs.db
