@@ -627,24 +627,24 @@ def debug_notification():
 @app.route('/api/stripe/create-checkout-session', methods=['POST'])
 @auth_required
 def create_checkout_session():
-    """Create a Stripe Checkout session for Pro plan upgrade."""
+    """Create a Stripe Embedded Checkout session for Pro plan upgrade."""
     user = get_current_user()
     if not user:
         return jsonify({'error': 'Unauthorized'}), 401
 
-    app_url = os.environ.get('APP_URL', 'https://burilarui-x6av.onrender.com')
+    app_url = os.environ.get('APP_URL', 'https://burilar.com')
 
     try:
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{'price': STRIPE_PRICE_ID, 'quantity': 1}],
             mode='subscription',
+            ui_mode='embedded',
             customer_email=user['email'],
             metadata={'user_id': user['id']},
-            success_url=f"{app_url}/?payment=success",
-            cancel_url=f"{app_url}/?payment=cancel",
+            return_url=f"{app_url}/?payment=success",
         )
-        return jsonify({'url': session.url})
+        return jsonify({'client_secret': session.client_secret})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
