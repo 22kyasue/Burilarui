@@ -2,7 +2,11 @@
 nixPkgs = ["python311", "python311Packages.pip", "nodejs_18"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
+cmds = [
+  "python3 -m venv /opt/venv",
+  "/opt/venv/bin/pip install --upgrade pip",
+  "/opt/venv/bin/pip install -r requirements.txt"
+]
 
 [start]
-cmd = "gunicorn burilar_api:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+cmd = "/opt/venv/bin/gunicorn burilar_api:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
