@@ -174,52 +174,60 @@ def get_me():
         'email': user['email'],
         'name': user['name'],
         'plan': user.get('plan', 'free'),
+        'avatar': user.get('avatar'),
     })
 
 
 
 @auth_bp.route('/google', methods=['POST'])
 def google_login():
-    """Login with Google OAuth."""
+    """Login with Google OAuth — verifies access token via Google's userinfo endpoint."""
+    import requests as req
     data = request.json or {}
     token = data.get('token')
-    
-    print(f"DEBUG: Google login attempt with token: {token[:10]}..." if token else "DEBUG: Google login attempt without token")
 
     if not token:
-        return jsonify({
-            'error': {
-                'code': 'VALIDATION_ERROR',
-                'message': 'トークンが必要です'
-            }
-        }), 400
+        return jsonify({'error': {'code': 'VALIDATION_ERROR', 'message': 'トークンが必要です'}}), 400
 
-    # In a real app, verify the token with Google
-    # For MVP, we'll decode it if it's a JWT or just trust it for dev/demo
-    # Here we'll simulate a successful login for any non-empty token
-    
-    # Mock user data from "Google"
-    email = "google_user@example.com"
-    name = "Google User"
-    
-    # Check if user exists
+    # Verify token and fetch user info from Google
+    try:
+        r = req.get(
+            'https://www.googleapis.com/oauth2/v3/userinfo',
+            headers={'Authorization': f'Bearer {token}'},
+            timeout=10,
+        )
+        if r.status_code != 200:
+            return jsonify({'error': {'code': 'INVALID_TOKEN', 'message': 'Googleトークンが無効です'}}), 401
+        info = r.json()
+    except Exception:
+        return jsonify({'error': {'code': 'GOOGLE_ERROR', 'message': 'Google認証に失敗しました'}}), 502
+
+    email = info.get('email', '')
+    name = info.get('name') or email.split('@')[0]
+    picture = info.get('picture', '')
+
+    if not email:
+        return jsonify({'error': {'code': 'NO_EMAIL', 'message': 'メールアドレスが取得できませんでした'}}), 400
+
+    # Find or create user
     user = user_storage.get_by_email(email)
-    
     if not user:
-        # Register new user
         try:
             user = user_storage.create({
                 'email': email,
-                'password_hash': 'google_oauth_placeholder',
+                'password_hash': 'google_oauth',
                 'name': name,
                 'plan': 'free',
-                'auth_probider': 'google'
+                'auth_provider': 'google',
+                'avatar': picture,
             })
         except ValueError:
-            # Should not happen given get_by_email check, but handle race condition
             user = user_storage.get_by_email(email)
-    
-    # Generate token
+    elif picture and not user.get('avatar'):
+        # Store avatar on first Google login
+        user_storage.update(user['id'], {'avatar': picture})
+        user['avatar'] = picture
+
     token_data = create_access_token(user['id'], user['email'])
 
     return jsonify({

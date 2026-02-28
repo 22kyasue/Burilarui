@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useGoogleLogin } from '@react-oauth/google';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLogin: (email: string, password: string) => Promise<void>;
   onRegister: (email: string, password: string, name: string) => Promise<void>;
-  onGoogleLogin: () => Promise<void>;
+  onGoogleLogin: (token: string) => Promise<void>;
   onAppleLogin: () => Promise<void>;
   error?: string | null;
   isLoading?: boolean;
@@ -67,14 +68,17 @@ export function LoginModal({
     onClose();
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      await onGoogleLogin();
-      handleClose();
-    } catch {
-      // Error is handled by parent component
-    }
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        await onGoogleLogin(tokenResponse.access_token);
+        handleClose();
+      } catch {
+        // Error handled by parent
+      }
+    },
+    onError: () => setLocalError('Googleログインに失敗しました'),
+  });
 
   const handleAppleLogin = async () => {
     try {
@@ -137,7 +141,7 @@ export function LoginModal({
               {/* Social Login Buttons */}
               <div className="space-y-3">
                 <button
-                  onClick={handleGoogleLogin}
+                  onClick={() => googleLogin()}
                   disabled={isLoading}
                   className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow"
                 >

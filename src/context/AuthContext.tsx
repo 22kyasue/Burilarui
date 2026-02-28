@@ -15,7 +15,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: (token: string) => Promise<void>;
   loginWithApple: () => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -107,15 +107,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, []);
 
-  const loginWithGoogle = useCallback(async () => {
+  const loginWithGoogle = useCallback(async (token: string) => {
     setIsLoading(true);
     setError(null);
     try {
-      // In a real implementation, this would open a Google OAuth popup/redirect
-      // and receive a token back. For now, we'll simulate with a placeholder.
-      // The actual implementation would use @react-oauth/google or similar
-      const mockToken = 'google-oauth-token'; // Replace with actual OAuth flow
-      const response = await authApi.loginWithGoogle(mockToken);
+      const response = await authApi.loginWithGoogle(token);
       setAuthToken(response.accessToken);
       setRefreshToken(response.refreshToken);
       setUser({

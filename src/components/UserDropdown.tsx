@@ -1,4 +1,4 @@
-import { User, CreditCard, LogOut, ChevronDown } from 'lucide-react';
+import { User, CreditCard, LogOut, ChevronDown, Crown } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,17 +65,24 @@ export function UserDropdown({
           className="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-100/50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           aria-label="ユーザーメニュー"
         >
-          {user.avatar ? (
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="w-8 h-8 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-semibold text-sm">
-              {getInitial(user.name)}
-            </div>
-          )}
+          <div className="relative">
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-semibold text-sm">
+                {getInitial(user.name)}
+              </div>
+            )}
+            {user.plan === 'pro' && (
+              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center border border-white shadow-sm">
+                <Crown className="w-2 h-2 text-white" />
+              </div>
+            )}
+          </div>
           <ChevronDown className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
         </button>
       </DropdownMenuTrigger>
@@ -90,17 +97,24 @@ export function UserDropdown({
         {/* User Info Section */}
         <div className="px-3 py-3">
           <div className="flex items-center gap-3">
-            {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-10 h-10 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-semibold">
-                {getInitial(user.name)}
-              </div>
-            )}
+            <div className="relative">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-semibold">
+                  {getInitial(user.name)}
+                </div>
+              )}
+              {user.plan === 'pro' && (
+                <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center border border-white shadow-sm">
+                  <Crown className="w-2.5 h-2.5 text-white" />
+                </div>
+              )}
+            </div>
             <div className="flex-1 min-w-0">
               <p className={`text-sm font-medium truncate ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
                 }`}>
