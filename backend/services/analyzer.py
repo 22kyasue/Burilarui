@@ -1,6 +1,6 @@
 import json
 from typing import Dict, List, Optional
-from backend.services.perplexity import call_perplexity
+from backend.utils.ai_client import call_ai
 
 class TrackingAnalyzer:
     """
@@ -86,7 +86,7 @@ Respond with ONLY the resolved query string.
 """
         messages = [{"role": "user", "content": prompt}]
         try:
-            resolved_query = call_perplexity(messages, model="sonar").strip().strip('"')
+            resolved_query = call_ai(messages, task="generation").strip().strip('"')
             return resolved_query
         except Exception as e:
             print(f"Context Resolution Error: {str(e)}")
@@ -148,10 +148,10 @@ Respond in JSON format:
         return self._get_json_response(prompt)
 
     def _get_json_response(self, prompt: str) -> Dict:
-        """Helper to call Perplexity and parse JSON."""
+        """Helper to call AI and parse JSON."""
         messages = [{"role": "user", "content": prompt + "\n\nRespond with ONLY the JSON object."}]
         try:
-            response_text = call_perplexity(messages, model="sonar")
+            response_text = call_ai(messages, task="generation")
             start_idx = response_text.find('{')
             end_idx = response_text.rfind('}') + 1
             if start_idx != -1 and end_idx != 0:

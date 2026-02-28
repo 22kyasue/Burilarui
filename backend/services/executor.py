@@ -1,5 +1,5 @@
 from typing import List, Dict, Optional
-from backend.services.perplexity import call_perplexity
+from backend.utils.ai_client import call_ai
 
 class TrackingExecutor:
     """
@@ -43,13 +43,7 @@ class TrackingExecutor:
             {"role": "user", "content": query}
         ]
         try:
-            # We assume call_perplexity can return a dict if configured, 
-            # OR we parse the response. 
-            # Looking at previous step info, call_perplexity has return_images=True option.
-            # Let's assume we can modify perplexity.py or use it as is if it supports this.
-            # Based on tracker.py: call_perplexity(messages, model="sonar", return_images=True) returns a dict.
-            
-            result = call_perplexity(messages, model="sonar", return_images=True)
+            result = call_ai(messages, task="web_search", return_images=True)
             if isinstance(result, str):
                  return {"content": result, "citations": [], "images": []}
             return result

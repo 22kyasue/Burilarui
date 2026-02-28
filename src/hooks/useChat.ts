@@ -250,7 +250,7 @@ export function useChat(
         }
     };
 
-    const handleRefinementMessage = (content: string) => {
+    const handleRefinementMessage = async (content: string, planId?: string) => {
         if (!content.trim()) return;
 
         const userMessage: Message = {
@@ -262,21 +262,48 @@ export function useChat(
 
         setRefinementMessages((prev) => [...prev, userMessage]);
 
-        // AIの応答をシミュレート（実際のAPIコールに置き換え可能）
-        setTimeout(() => {
-            const assistantMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                content: `プロンプトのブラッシュアップについてのご質問ありがとうございます。${content}について、より具体的な改善をご提案いたします。`,
-                role: "assistant",
-                timestamp: new Date(),
-            };
-            setRefinementMessages((prev) => [...prev, assistantMessage]);
-        }, 500);
+        if (planId) {
+            try {
+                const response = await fetch(`/api/tracking/${planId}/refine`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: content }),
+                });
+                const data = await response.json();
+                const assistantMessage: Message = {
+                    id: (Date.now() + 1).toString(),
+                    content: data.success
+                        ? `✅ ${data.summary}`
+                        : `追跡戦略の更新に失敗しました: ${data.error || ''}`,
+                    role: "assistant",
+                    timestamp: new Date(),
+                };
+                setRefinementMessages((prev) => [...prev, assistantMessage]);
+            } catch {
+                const assistantMessage: Message = {
+                    id: (Date.now() + 1).toString(),
+                    content: 'ネットワークエラーが発生しました。もう一度お試しください。',
+                    role: "assistant",
+                    timestamp: new Date(),
+                };
+                setRefinementMessages((prev) => [...prev, assistantMessage]);
+            }
+        } else {
+            // Fallback when no planId (pro mode without active plan)
+            setTimeout(() => {
+                const assistantMessage: Message = {
+                    id: (Date.now() + 1).toString(),
+                    content: `プロンプトのブラッシュアップについてのご質問ありがとうございます。${content}について、より具体的な改善をご提案いたします。`,
+                    role: "assistant",
+                    timestamp: new Date(),
+                };
+                setRefinementMessages((prev) => [...prev, assistantMessage]);
+            }, 500);
+        }
     };
 
-    const handleNewChat = () => {
-        // ホームの検索画面に移動
-        const newChat: Chat = {
+    const handleNewChat = async () => {
+        let newChat: Chat = {
             id: Date.now().toString(),
             title: "New Chat",
             messages: [],
@@ -288,6 +315,17 @@ export function useChat(
             trackingFrequency: "",
             updates: [],
         };
+
+        if (isAuthenticated) {
+            try {
+                const savedChat = await chatsApi.createChat({ title: "New Chat" });
+                newChat = savedChat;
+            } catch (error) {
+                console.error('Failed to create chat on backend:', error);
+                // Fall through with local-only chat
+            }
+        }
+
         setChats((prev) => [newChat, ...prev]);
         setCurrentChatId(newChat.id);
         setCurrentView("chat"); // Navigate to the new chat

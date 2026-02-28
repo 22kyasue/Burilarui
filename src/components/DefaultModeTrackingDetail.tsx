@@ -1,20 +1,27 @@
-import { Sparkles, ChevronDown } from "lucide-react";
+import { Sparkles, ChevronDown, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { RefinementScenario } from "../data/demoScenarios";
 
 interface DefaultModeTrackingDetailProps {
   query: string;
   frequency: string;
   onExecute: () => void;
+  scenario?: RefinementScenario;
+  planId?: string;
 }
 
 export function DefaultModeTrackingDetail({
+  query,
   frequency,
   onExecute,
+  scenario,
+  planId,
 }: DefaultModeTrackingDetailProps) {
 
   const [selectedFrequency, setSelectedFrequency] = useState(frequency);
   const [selectedCondition, setSelectedCondition] = useState("新しい情報が見つかった");
   const [selectedOutput, setSelectedOutput] = useState("要約レポート（3-5項目）");
+  const [isExecuting, setIsExecuting] = useState(false);
 
   return (
     <div className="w-full max-w-4xl mx-auto px-6 py-8">
@@ -47,33 +54,40 @@ export function DefaultModeTrackingDetail({
           {/* 推奨プロンプト */}
           <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
             <p className="text-gray-700 text-sm leading-relaxed">
-              「Apple Intelligenceの2024〜2025年における、主要な機能アップデート、日本語対応の進捗状況、対応デバイスの拡大、プライバシー技術の革新、および市場での評価について、信頼性の高いソースから継続的に追跡し、重要な変化があれば通知してください。」
+              「{scenario?.recommendedPrompt || query}」
             </p>
           </div>
 
-          {/* 期間の明確化 */}
-          <div className="border-l-4 border-indigo-400 pl-4 mb-3">
-            <h4 className="text-gray-900 text-sm font-medium mb-1">期間の明確化</h4>
-            <p className="text-gray-600 text-sm">
-              追跡期間を具体的に指定することで、関連性の高い情報に絞り込めます
-            </p>
-          </div>
-
-          {/* 具体的な観点の列挙 */}
-          <div className="border-l-4 border-purple-400 pl-4 mb-3">
-            <h4 className="text-gray-900 text-sm font-medium mb-1">具体的な観点の列挙</h4>
-            <p className="text-gray-600 text-sm">
-              追跡したい項目を明示することで、より的確な情報収集が可能になります
-            </p>
-          </div>
-
-          {/* 信頼性の担保 */}
-          <div className="border-l-4 border-pink-400 pl-4">
-            <h4 className="text-gray-900 text-sm font-medium mb-1">信頼性の担保</h4>
-            <p className="text-gray-600 text-sm">
-              「信頼性の高いソース」と指定することで、情報の質を確保できます
-            </p>
-          </div>
+          {/* 構成アイテム - 動的またはデフォルト */}
+          {scenario?.structureItems && scenario.structureItems.length > 0 ? (
+            scenario.structureItems.map((item, index) => (
+              <div key={index} className={`border-l-4 border-${item.color}-400 pl-4 mb-3`}>
+                <h4 className="text-gray-900 text-sm font-medium mb-1">{item.title}</h4>
+                <p className="text-gray-600 text-sm">{item.description}</p>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="border-l-4 border-indigo-400 pl-4 mb-3">
+                <h4 className="text-gray-900 text-sm font-medium mb-1">期間の明確化</h4>
+                <p className="text-gray-600 text-sm">
+                  追跡期間を具体的に指定することで、関連性の高い情報に絞り込めます
+                </p>
+              </div>
+              <div className="border-l-4 border-purple-400 pl-4 mb-3">
+                <h4 className="text-gray-900 text-sm font-medium mb-1">具体的な観点の列挙</h4>
+                <p className="text-gray-600 text-sm">
+                  追跡したい項目を明示することで、より的確な情報収集が可能になります
+                </p>
+              </div>
+              <div className="border-l-4 border-pink-400 pl-4">
+                <h4 className="text-gray-900 text-sm font-medium mb-1">信頼性の担保</h4>
+                <p className="text-gray-600 text-sm">
+                  「信頼性の高いソース」と指定することで、情報の質を確保できます
+                </p>
+              </div>
+            </>
+          )}
 
           {/* ヒント */}
           <div className="mt-4 bg-amber-50/50 rounded-lg p-3 border border-amber-100">
@@ -148,11 +162,33 @@ export function DefaultModeTrackingDetail({
 
         {/* トラッキング実行ボタン */}
         <button
-          onClick={onExecute}
-          className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:from-indigo-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+          disabled={isExecuting}
+          onClick={async () => {
+            if (planId) {
+              setIsExecuting(true);
+              try {
+                await fetch(`/api/tracking/${planId}/execute`, { method: 'POST' });
+              } catch (e) {
+                console.error('Execute failed:', e);
+              } finally {
+                setIsExecuting(false);
+              }
+            }
+            onExecute();
+          }}
+          className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:from-indigo-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          <span className="text-lg">✓</span>
-          トラッキング実行
+          {isExecuting ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              実行中...
+            </>
+          ) : (
+            <>
+              <span className="text-lg">✓</span>
+              トラッキング実行
+            </>
+          )}
         </button>
       </div>
     </div>

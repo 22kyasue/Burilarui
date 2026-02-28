@@ -18,6 +18,8 @@ interface TrackingDetailProps {
 export function TrackingDetail({
   isOpen: _isOpen,
   onClose,
+  theme,
+  query,
   scenario,
 }: TrackingDetailProps) {
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
@@ -30,28 +32,13 @@ export function TrackingDetail({
   const [isComposing, setIsComposing] = useState(false);
   const [trackingStatus, setTrackingStatus] = useState<"active" | "paused">("paused");
 
-  // Default to Apple Intelegence if no scenario provided (for backward compatibility/safety)
-  const activeScenario = scenario || {
-    title: "Apple Intelligenceの2024〜2025年の最新動向",
-    recommendedPrompt: "「Apple Intelligenceについて、2024年から2025年にかけての最新動向を業界リサーチ目的で継続的に追跡してください。特に、生成AIやオンデバイスAI、OSとの統合などに関する新機能・技術アップデートと、日本市場における対応状況（日本語対応の進捗、提供開始時期、対応デバイスの拡大）を重点的に把握したいです。情報源はAppleの公式発表および信頼性の高い海外テックメディアを中心とし、重要な変化が確認された場合のみ通知してください。その際は、変化の内容とそれがAppleのAI戦略や市場において持つ意味を簡潔に説明してください。」",
-    structureItems: [
-      { color: "indigo", title: "期間の明確化", description: "追跡期間を具体的に指定することで、関連性の高い情報に絞り込めます" },
-      { color: "purple", title: "具体的な観点の列挙", description: "複数の観点を明示することで、包括的な追跡が可能になります" },
-      { color: "pink", title: "アクション条件の設定", description: "どんな時に通知が欲しいかを明記することで、ノイズを削減できます" }
-    ],
-    missingPoints: [
-      { text: "2025年第2四半期以降の具体的なリリーススケジュール" },
-      { text: "日本語版の完全対応時期と機能の制限事項" },
-      { text: "新型iPhone/iPad/Macの発表および対応状況" },
-      { text: "第三者評価機関による最新のプライバシー監査結果" }
-    ],
-    notificationTriggers: [
-      { text: "Apple公式サイトで新しいアップデートや機能が発表されたとき" },
-      { text: "主要テックメディアが日本語対応の進捗を報じたとき" },
-      { text: "新型デバイスの発表や対応機種リストの更新があったとき" },
-      { text: "プライバシー技術に関する重要な分析レポートが公開されたとき" },
-      { text: "毎日9:00の定期チェックで新しい情報が検出されたとき" }
-    ]
+  // Use provided scenario or build a generic fallback from query/theme props
+  const activeScenario = scenario ?? {
+    title: theme || query,
+    recommendedPrompt: query,
+    structureItems: [] as RefinementScenario['structureItems'],
+    missingPoints: [] as RefinementScenario['missingPoints'],
+    notificationTriggers: [] as RefinementScenario['notificationTriggers'],
   };
 
   // プロンプト編集の状態管理

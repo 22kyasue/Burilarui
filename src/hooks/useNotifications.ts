@@ -49,7 +49,7 @@ export function useNotifications() {
 
 
 
-    const submitFeedback = async (id: string, feedback: 'useful' | 'not_useful') => {
+    const submitFeedback = async (id: string, feedback: 'useful' | 'not_useful'): Promise<{ adapted: boolean; message?: string } | null> => {
         try {
             const response = await fetch(`/api/notifications/${id}/feedback`, {
                 method: 'POST',
@@ -64,10 +64,13 @@ export function useNotifications() {
                 setNotifications(prev => prev.map(n =>
                     n.id === id ? { ...n, feedback } : n
                 ));
+                const data = await response.json();
+                return { adapted: data.adapted ?? false, message: data.message };
             }
         } catch (error) {
             console.error('Failed to submit feedback:', error);
         }
+        return null;
     };
 
     return {

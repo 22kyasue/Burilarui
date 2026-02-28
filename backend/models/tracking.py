@@ -23,6 +23,7 @@ class TrackingPlan:
         self.suggested_prompt = ""
         self.image_url = ""
         self.strategy = strategy if strategy is not None else {}
+        self.consecutive_not_useful = 0
 
     def to_dict(self) -> Dict:
         return {
@@ -43,7 +44,8 @@ class TrackingPlan:
             'clarification_info': self.clarification_info,
             'suggested_prompt': getattr(self, 'suggested_prompt', ""),
             'image_url': getattr(self, 'image_url', ""),
-            'strategy': self.strategy
+            'strategy': self.strategy,
+            'consecutive_not_useful': self.consecutive_not_useful
         }
 
     @classmethod
@@ -65,6 +67,7 @@ class TrackingPlan:
         plan.clarification_info = data.get('clarification_info')
         plan.suggested_prompt = data.get('suggested_prompt', '')
         plan.image_url = data.get('image_url', '')
+        plan.consecutive_not_useful = data.get('consecutive_not_useful', 0)
         # plan.strategy is already set in __init__ if passed, otherwise it's {}
 
         if data.get('last_search_time'):

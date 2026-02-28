@@ -1,0 +1,1285 @@
+=============================================================================
+                    BURILARUI - COMPLETION PLAN
+                    Last Updated: 2026-02-27
+=============================================================================
+
+Overall completion estimate: ~95%
+This plan covers every incomplete and broken feature, ordered by priority.
+
+=============================================================================
+SECTION 0: API FOUNDATION (Prerequisite for everything)
+=============================================================================
+
+WHY THIS IS FIRST:
+  Every incomplete feature (suggestions, refinement chat, strategy generation,
+  adaptive learning, tracking execution) depends on a reliable AI call.
+  Fixing UI wiring while the API layer is fragile means nothing works end-to-end.
+
+STRATEGY:
+  Gemini is the primary AI for all generation/reasoning tasks.
+  Perplexity (sonar) will be added later specifically for live web search tasks
+  (tracking updates, real-time event monitoring, current price/stats checks).
+
+  Task Type Routing (final goal once both APIs are active):
+    "generation" tasks  → Gemini first, Perplexity fallback
+    "web_search" tasks  → Perplexity first, Gemini fallback
+
+  For now (Phase 0):
+    ALL tasks → Gemini only
+    Perplexity calls left in place but bypassed via abstraction layer
+
+-----------------------------------------------------------------------------
+TASK 0.1 - Create Gemini API Client
+-----------------------------------------------------------------------------
+Status: COMPLETE
+Effort: Small (~1 hour)
+
+Create: backend/utils/ai_client.py
+  This becomes the single import point for all AI calls across the backend.
+  No service file should call any AI API directly after this.
+
+  Functions to implement:
+
+    call_gemini(messages, model="gemini-2.0-flash")
+      - messages: list of {"role": "user"/"model", "content": "..."}
+      - Calls Google Generative AI (google-generativeai SDK or REST)
+      - Returns: plain text response string
+      - Raises: AIClientError on failure
+
+    call_perplexity(messages, model="sonar")  [KEEP EXISTING, wrap here]
+      - Move/import existing call_perplexity logic here
+      - Returns: plain text response string
+
+    call_ai(messages, task="generation")
+      - task="generation" → call_gemini(), no fallback for now
+      - task="web_search" → call_perplexity() [disabled until Perplexity added]
+      - Handles retry logic (1 retry on timeout/rate-limit)
+      - Logs which provider was used and response time
+      - Returns: plain text response string
+
+  Error class:
+    class AIClientError(Exception):
+      def __init__(self, provider, message, status_code=None)
+
+Dependencies to add to requirements.txt:
+  google-generativeai>=0.8.0
+
+Environment variable to add to .env / Render config:
+  GEMINI_API_KEY=<your key>
+
+-----------------------------------------------------------------------------
+TASK 0.2 - Replace call_perplexity() with call_ai() in All Services
+-----------------------------------------------------------------------------
+Status: COMPLETE
+Effort: Small (~45 min)
+Depends on: TASK 0.1
+
+Files that currently call call_perplexity() directly:
+  backend/services/architect.py   → _generate_comprehensive_strategy()
+  backend/services/analyzer.py    → classify_intent(), probe_sources(),
+                                     resolve_ambiguity()
+  backend/services/executor.py    → execute_plan() or search calls
+  backend/services/extractor.py   → extract_structured_data()
+  backend/core/tracker.py         → search_with_ai_enhanced(), assess_topic_status()
+
+Changes per file:
+  - Replace: from backend.utils.perplexity import call_perplexity
+  - With:    from backend.utils.ai_client import call_ai
+  - Replace: call_perplexity(messages, model="sonar")
+  - With:    call_ai(messages, task="generation")
+             (or task="web_search" for live data queries - will use Perplexity later)
+
+  Note: executor.py and tracker.py search calls should use task="web_search"
+  so they are already tagged for Perplexity once it's re-enabled.
+  All strategy/analysis/extraction calls should use task="generation".
+
+-----------------------------------------------------------------------------
+TASK 0.3 - Verify All Endpoints Work with Gemini
+-----------------------------------------------------------------------------
+Status: COMPLETE (verify_api.py + verify_adaptive.py both pass)
+Effort: Small (~30 min)
+Depends on: TASK 0.2
+
+Test sequence (use verify_api.py as template):
+  1. POST /api/search  { "query": "Tesla Robotaxi event" }
+     → Should return proposed_plan with structure_items from Gemini
+  2. POST /api/tracking/start  { "plan_id": "..." }
+     → Should activate tracking
+  3. POST /api/tracking/check
+     → Should run executor and return an update (may be limited without Perplexity)
+  4. POST /api/notifications/{id}/feedback  { "feedback": "useful" }
+     → Should store feedback
+  5. POST /api/chats/{id}/messages  { "message": "Hello" }
+     → Should return AI response from Gemini
+
+  Create: test_gemini_integration.py in project root
+  Similar to verify_api.py but tests all 5 scenarios above.
+
+-----------------------------------------------------------------------------
+TASK 0.4 - Add Perplexity Back (Web Search Tasks Only)
+-----------------------------------------------------------------------------
+Status: DEFERRED (do this when ready for live tracking feature)
+Effort: Small (~1 hour)
+Depends on: TASK 0.1, TASK 0.2
+
+When Perplexity is ready:
+  1. Add PERPLEXITY_API_KEY to env
+  2. In call_ai():
+       if task == "web_search": call call_perplexity() not call_gemini()
+  3. Update executor.py and tracker.py search calls to use task="web_search"
+  4. Test live tracking update: execute a plan and verify real web data comes back
+
+=============================================================================
+SECTION 1: QUICK WINS (Backend done, just needs wiring)
+=============================================================================
+
+-----------------------------------------------------------------------------
+TASK 1.1 - Wire Feedback Buttons in UpdatePanel
+-----------------------------------------------------------------------------
+Status: COMPLETE
+Effort: Small (~30 min)
+
+Problem:
+  - UpdatePanel.tsx has ThumbsUp/ThumbsDown buttons rendered at lines 190-205
+  - onFeedback prop is defined in the interface (line 14) but never passed in
+  - useNotifications.ts has submitFeedback() at line 52 that calls the API
+  - Backend endpoint POST /api/notifications/{id}/feedback is fully working
+  - Nothing connects these three pieces together
+
+What needs to change:
+
+  FILE: src/components/UpdatePanel.tsx
+    - Change: Button onClick handlers at lines ~190 and ~201 should call:
+        onClick={() => onFeedback?.(notification.id, 'useful')}
+        onClick={() => onFeedback?.(notification.id, 'not_useful')}
+    - These already have the correct visual state logic (green/red on feedback)
+    - Just need the actual function call added
+
+  FILE: src/App.tsx (or wherever UpdatePanel is rendered)
+    - Find the <UpdatePanel> usage
+    - Pass: onFeedback={(id, feedback) => notifications.submitFeedback(id, feedback)}
+    - notifications.submitFeedback already exists in useNotifications hook
+
+  FILE: src/hooks/useNotifications.ts
+    - Already exports submitFeedback, no changes needed
+
+Verification:
+  - Click thumbs up on a notification in Update Panel
+  - Check burilar_notifications.json - the notification entry should have "feedback": "useful"
+  - Thumbs up icon should turn green, thumbs down should turn red
+
+-----------------------------------------------------------------------------
+TASK 1.2 - Wire Manual Execute Button in TrackingDetail
+-----------------------------------------------------------------------------
+Status: COMPLETE (POST /api/tracking/{id}/execute + spinner + toast)
+Effort: Medium (~1-2 hours)
+
+Problem:
+  - DefaultModeTrackingDetail.tsx has an Execute button at line ~150 that calls onExecute()
+  - TrackingDetail.tsx has isExecuting flag at line 29 that never changes
+  - Backend only has POST /api/tracking/check which runs ALL plans globally
+  - Need a per-plan endpoint to trigger a single tracking update
+  - No loading/result feedback shown to user after execution
+
+Backend changes needed:
+
+  FILE: burilar_api.py
+    - Add new route:
+        POST /api/tracking/<plan_id>/execute
+    - Implementation:
+        1. Look up plan by plan_id in tracker.tracking_plans
+        2. If not found, return 404
+        3. Run: result = tracker.executor.execute_plan(plan)
+        4. Run: extracted = tracker.extractor.extract_structured_data(plan, result)
+        5. Run: tracker.notifier.process_update(plan, extracted)
+        6. Return: { "success": true, "update": extracted, "message": "..." }
+    - Use the same logic as check_tracking_updates() but for a single plan
+
+Frontend changes needed:
+
+  FILE: src/api/trackings.ts (or equivalent)
+    - Add function: executeTracking(planId: string)
+        POST /api/tracking/{planId}/execute
+        Returns the new update data
+
+  FILE: src/components/DefaultModeTrackingDetail.tsx
+    - onExecute() should:
+        1. Set isExecuting = true (show spinner)
+        2. Call executeTracking(planId) via API
+        3. On success: show a toast "Update complete" + refresh updates list
+        4. On error: show error toast
+        5. Set isExecuting = false
+
+  FILE: src/components/TrackingDetail.tsx
+    - Wire the same execute flow
+    - isExecuting state should toggle during the API call to show loading state
+
+Verification:
+  - Click Execute on a tracking plan
+  - Button should show loading spinner
+  - After completion, a new update should appear in the updates list
+  - A toast notification should confirm success
+
+-----------------------------------------------------------------------------
+TASK 1.3 - Fix NotificationSettings Page (Broken 404)
+-----------------------------------------------------------------------------
+Status: COMPLETE (GET+PUT /api/notifications/settings/global added)
+Effort: Small (~45 min)
+
+Problem:
+  - NotificationSettings.tsx lines 93-99 calls GET /api/notifications/settings/global
+  - This endpoint does not exist in burilar_api.py
+  - Page likely crashes or shows empty/error state
+
+Two options (pick one):
+
+  OPTION A - Add the missing backend endpoint (recommended):
+    FILE: burilar_api.py
+      Add route: GET /api/notifications/settings/global
+        - Return a default settings object:
+            {
+              "email_enabled": false,
+              "push_enabled": false,
+              "in_app_enabled": true,
+              "quiet_hours_start": null,
+              "quiet_hours_end": null,
+              "digest_enabled": false,
+              "digest_frequency": "daily"
+            }
+
+      Add route: PUT /api/notifications/settings/global
+        - Accept and store the settings in a JSON file (data/notification_settings.json)
+        - Return the updated settings
+
+    FILE: NotificationSettings.tsx
+      - The existing fetch logic should work once the endpoint exists
+
+  OPTION B - Remove the fetch, use local state only:
+    FILE: NotificationSettings.tsx
+      - Remove the API call
+      - Use React state with default values
+      - Settings are ephemeral (lost on refresh) but page won't crash
+      - Mark as "demo mode" for now
+
+Verification:
+  - Open Notifications from the Settings screen
+  - Page should load without errors
+  - Toggles should be interactive and save state
+
+=============================================================================
+SECTION 2: CORE FEATURE COMPLETION
+=============================================================================
+
+-----------------------------------------------------------------------------
+TASK 2.1 - Show AI-Generated Strategy in TrackingDetail (Not Hardcoded)
+-----------------------------------------------------------------------------
+Status: COMPLETE (hardcoded scenario removed, dynamic data from API displayed)
+Effort: Medium (~2-3 hours)
+
+Problem:
+  - TrackingDetail.tsx lines 34-55 has hardcoded "Apple Intelligence" scenario
+  - When /api/search returns structure_items, missing_points, notification_triggers,
+    frontend does not use them in TrackingDetail display
+  - Uncommitted App.tsx changes try to fix this but are incomplete/not committed
+  - The RefinementScenario type exists but is only populated with hardcoded demo data
+
+Current data flow (broken):
+  /api/search response
+    → proposed_plan.structure_items (ignored)
+    → proposed_plan.missing_points (ignored)
+    → proposed_plan.notification_triggers (ignored)
+
+Target data flow:
+  /api/search response
+    → proposed_plan.structure_items
+    → proposed_plan.missing_points
+    → proposed_plan.notification_triggers
+    → stored in trackingSuggestions entry (useTracking.ts)
+    → passed to TrackingDetail when user opens it
+    → displayed dynamically replacing hardcoded scenario
+
+What needs to change:
+
+  FILE: src/hooks/useTracking.ts
+    - TrackingSuggestion interface already has structureItems, missingPoints,
+      notificationTriggers fields added in the uncommitted diff
+    - addTrackingSuggestion() already receives these
+    - No change needed here once App.tsx is fixed
+
+  FILE: src/App.tsx
+    - In the /api/search response handler (around line 395):
+      - Already maps structure_items to structureItems (uncommitted diff)
+      - Commit and complete this mapping
+    - The setCurrentScenario logic (around line 435) partially fixed in uncommitted diff:
+      - Complete the dynamic branch so it works for any query, not just Apple/Tesla
+      - Make sure the fallback (setCurrentScenario(undefined)) shows a generic scenario
+        built from the API response data, not null
+
+  FILE: src/components/TrackingDetail.tsx
+    - Remove hardcoded scenario (lines 34-55)
+    - Accept currentScenario prop and display it
+    - If currentScenario is null/undefined, show a default empty state or skeleton
+    - Structure items, missing points, notification triggers should all render from props
+
+  FILE: src/components/DefaultModeTrackingDetail.tsx
+    - Similar removal of hardcoded Apple Intelligence content
+    - Should accept and render dynamic scenario data
+
+Commit the uncommitted changes after completing the wiring.
+
+Verification:
+  - Search for "Tesla Robotaxi launch date"
+  - TrackingDetail should show Tesla-specific structure items and missing points
+  - NOT the hardcoded Apple Intelligence content
+  - Search for a random topic - should show generic AI-generated content
+
+-----------------------------------------------------------------------------
+TASK 2.2 - Dynamic Home Page Suggestions
+-----------------------------------------------------------------------------
+Status: COMPLETE (GET /api/suggestions + skeleton loading + fallback defaults)
+Effort: Medium (~2-3 hours)
+
+Problem:
+  - HomePage.tsx lines 22-72 has 7 hardcoded suggestion objects:
+      { title: "Apple Intelligence...", description: "...", category: "tech" }
+  - These never change, are not personalized, not AI-generated
+  - No API call is made to generate suggestions
+  - TrackingSuggestionCard just displays whatever it receives
+
+Decision to make before implementing:
+  Q: Should suggestions be:
+  A) Static defaults (keep 7 hardcoded but make them better quality)
+  B) Fetched from backend on page load (needs a new endpoint)
+  C) Generated based on user's existing trackings
+
+  Recommendation: Option C - Show suggestions based on what the user tracks.
+  If no trackings exist yet, fall back to a curated default list.
+
+Backend changes needed (for Option B/C):
+
+  FILE: burilar_api.py
+    - Add route: GET /api/suggestions
+    - Implementation:
+        1. Load user's existing tracking plans
+        2. If plans exist: generate related suggestions (e.g. if tracking iPhone,
+           suggest "iPad Pro release" or "Apple earnings")
+        3. If no plans: return a curated default list of 6-8 trending topics
+        4. Return: [{ title, description, category, query, imageUrl }]
+    - For the AI generation: reuse architect.py or a simple Perplexity call
+
+Frontend changes needed:
+
+  FILE: src/components/HomePage.tsx
+    - Add useEffect to fetch from GET /api/suggestions on mount
+    - Show skeleton loading state while fetching
+    - Replace hardcoded suggestion array with state populated from API
+    - Keep the hardcoded list as a fallback if API fails
+    - Each card's onClick should pass the 'query' field to onSendMessage
+
+  FILE: src/hooks/useTracking.ts or new useHomeSuggestions.ts
+    - fetchSuggestions() function to call /api/suggestions
+    - State: suggestions[], isLoading, error
+
+Verification:
+  - Load home page → suggestions should load from API
+  - Add a tracking for a topic → refresh home → related suggestions appear
+  - If backend is offline → hardcoded fallback suggestions show
+
+-----------------------------------------------------------------------------
+TASK 2.3 - Complete Refinement Chat (Backend needed)
+-----------------------------------------------------------------------------
+Status: COMPLETE (POST /api/tracking/{id}/refine + real Gemini response)
+Effort: Large (~3-4 hours)
+
+Problem:
+  - useChat.ts handleRefinementMessage() lines 253-275 generates fake responses:
+      "追跡戦略を見直しました..." (hardcoded Japanese text)
+  - No backend endpoint exists for refinement
+  - User refines their tracking intent but nothing actually changes
+
+What "refinement" should do:
+  - User has a tracking plan (e.g. "iPhone 17 release date")
+  - User says "focus more on the camera specs, ignore price rumors"
+  - Backend updates the search queries and structure of the plan
+  - Frontend shows confirmation with updated structure
+
+Backend changes needed:
+
+  FILE: burilar_api.py
+    - Add route: POST /api/tracking/<plan_id>/refine
+    - Request body: { "message": "focus on camera specs only" }
+    - Implementation:
+        1. Load the existing plan
+        2. Call Perplexity with current plan context + refinement message
+        3. Prompt: "Update these search queries based on user feedback: [message]
+                    Current queries: [plan.search_queries]
+                    Return updated JSON with search_queries, structure_items,
+                    missing_points, notification_triggers"
+        4. Update the plan's queries and strategy in memory + JSON file
+        5. Return: { "success": true, "updated_plan": { ... } }
+
+Frontend changes needed:
+
+  FILE: src/hooks/useChat.ts (handleRefinementMessage)
+    - Replace mock response generator with real API call
+    - POST /api/tracking/{planId}/refine with { message }
+    - On response: update the tracking suggestion with new strategy data
+    - Show AI response message with summary of what changed
+
+  FILE: src/components/TrackingRefinementChat.tsx
+    - Already shows chat UI and messages
+    - Just needs the actual API call wired in
+
+Verification:
+  - Open a tracking plan
+  - Type in refinement chat: "ignore pricing, focus on specs"
+  - Response should confirm what changed
+  - Execute the tracking again → results should reflect the refinement
+
+=============================================================================
+SECTION 3: MISSING BACKEND ENDPOINTS
+=============================================================================
+
+-----------------------------------------------------------------------------
+TASK 3.1 - Add PATCH /api/tracking/{id}/frequency
+-----------------------------------------------------------------------------
+Status: COMPLETE (PATCH /api/tracking/{id} accepts frequency_hours + active)
+Effort: Small (~30 min)
+
+Problem:
+  - TrackingSuggestionCard.tsx has a frequency selector (lines 154-172)
+  - User can pick: "1時間毎", "6時間毎", "毎日", etc.
+  - But there is no endpoint to update frequency after tracking starts
+  - Changes made in UI are lost on refresh
+
+Backend changes needed:
+
+  FILE: burilar_api.py
+    - Add route: PATCH /api/tracking/<plan_id>
+    - Accept body: { "frequency_hours": 6, "active": true/false }
+    - Update the plan in tracker.tracking_plans dict
+    - Save to burilar_tracking_data.json
+    - Return updated plan
+
+Frontend changes needed:
+
+  FILE: src/components/TrackingSuggestionCard.tsx (or TrackingDetail)
+    - When frequency dropdown changes, call PATCH /api/tracking/{planId}
+    - Show confirmation that change was saved
+
+-----------------------------------------------------------------------------
+TASK 3.2 - Feasibility Check UI (Show Clarification to User)
+-----------------------------------------------------------------------------
+Status: COMPLETE (clarification chips + not_feasible/no_sources messages in UI)
+Effort: Medium (~1.5 hours)
+
+Problem:
+  - Backend analyzer.probe_sources() can return: "No reliable sources found"
+  - Backend can also return clarification_questions when topic is ambiguous
+  - Frontend never shows either of these to the user
+  - User searches for something vague → no feedback, just silence or wrong result
+
+What the /api/search response already returns for ambiguous queries:
+  { "status": "clarification_needed", "clarification_questions": ["..."] }
+
+Frontend changes needed:
+
+  FILE: src/App.tsx (handleSendMessage / search response handler)
+    - Add handling for status === "clarification_needed"
+    - Display clarification_questions as follow-up chat messages from the AI
+    - User answers → resubmit with additional context
+
+  FILE: src/App.tsx
+    - Add handling for status === "not_feasible" or feasibility check failure
+    - Show a clear message: "I couldn't find reliable sources for this topic.
+      Try being more specific or try a different topic."
+
+  FILE: src/components/ChatMessage.tsx
+    - May need a new message variant for "clarification" type messages
+    - Could display questions as clickable suggestion buttons
+
+Verification:
+  - Search for something very vague like "stuff"
+  - Should see a clarification message asking for more details
+  - Search for something obscure with no sources
+  - Should see a "no reliable sources" message
+
+=============================================================================
+SECTION 4: ADAPTIVE LEARNING (Phase D Final Feature)
+=============================================================================
+
+Overview:
+  When a user marks 3+ consecutive notifications from the same tracking plan
+  as "not_useful", the system automatically regenerates the search strategy
+  using Gemini and notifies the user.
+
+  Data flow:
+    User clicks 👎  →  POST /api/notifications/{id}/feedback
+      →  burilar_api.py counts consecutive not_useful for that plan
+      →  if count >= 3: architect.refine_from_feedback(plan)
+      →  updated strategy saved to plan  →  system notification added
+      →  response includes { "adapted": true }
+      →  frontend shows toast "追跡戦略が更新されました"
+
+  Key constraint:
+    notifier.py has NO reference to tracking_plans.
+    All adaptation logic must live in burilar_api.py's feedback endpoint,
+    which has access to both tracker.notifier and tracker.tracking_plans.
+
+-----------------------------------------------------------------------------
+TASK D1.1 - Add Feedback Counter to TrackingPlan Model
+-----------------------------------------------------------------------------
+Status: COMPLETE
+Effort: Tiny (~15 min)
+File: backend/models/tracking.py
+
+What to add:
+
+  In __init__:
+    self.consecutive_not_useful = 0   # resets on "useful" or after adaptation
+
+  In to_dict():
+    'consecutive_not_useful': self.consecutive_not_useful
+
+  In from_dict():
+    plan.consecutive_not_useful = data.get('consecutive_not_useful', 0)
+
+Why:
+  The counter is stored per-plan, persisted in burilar_tracking_data.json.
+  It resets to 0 on any "useful" feedback or after adaptation fires.
+
+-----------------------------------------------------------------------------
+TASK D1.2 - Add refine_from_feedback() to architect.py
+-----------------------------------------------------------------------------
+Status: COMPLETE
+Effort: Small (~30 min)
+File: backend/services/architect.py
+Depends on: D1.1
+
+Add new method:
+
+  def refine_from_feedback(self, plan) -> dict:
+    """
+    Regenerate search queries and strategy when user repeatedly marks
+    updates as not_useful. Returns updated strategy dict.
+    """
+    Prompt:
+      "The user found the following tracking updates unhelpful.
+       Topic: {plan.topic}
+       Current search queries: {plan.strategy.get('search_queries', [])}
+       Current keywords: {plan.keywords}
+
+       The user needs more relevant, specific, or different information.
+       Regenerate the tracking strategy with fresh angles and better queries.
+
+       Return JSON:
+       {
+         'search_queries': ['...'],       // 3-5 new queries, different from current
+         'keywords': ['...'],             // updated keywords
+         'structure_items': [...],
+         'missing_points': [...],
+         'notification_triggers': [...],
+         'change_summary': 'one sentence explaining what changed'
+       }"
+
+    Parse JSON from response, return the dict.
+    On parse failure: raise ValueError with the raw response.
+
+-----------------------------------------------------------------------------
+TASK D1.3 - Wire Adaptation in Feedback Endpoint (burilar_api.py)
+-----------------------------------------------------------------------------
+Status: COMPLETE
+Effort: Medium (~1 hour)
+File: burilar_api.py
+Depends on: D1.1, D1.2
+
+Update: POST /api/notifications/{notification_id}/feedback
+
+Current code (lines ~289-301):
+  success = tracker.notifier.submit_feedback(notification_id, feedback)
+  if success:
+      return jsonify({"status": "success"})
+
+New logic after submit_feedback():
+
+  1. Find the notification to get its plan_id:
+       notification = next(
+           (n for n in tracker.notifier.notifications
+            if n["id"] == notification_id), None
+       )
+       plan_id = notification.get("plan_id") if notification else None
+
+  2. If plan_id exists and plan_id in tracker.tracking_plans:
+       plan = tracker.tracking_plans[plan_id]
+
+       if feedback == "useful":
+           plan.consecutive_not_useful = 0
+           tracker.save_tracking_plans()
+
+       elif feedback == "not_useful":
+           plan.consecutive_not_useful += 1
+           tracker.save_tracking_plans()
+
+           if plan.consecutive_not_useful >= 3:
+               try:
+                   updated = tracker.architect.refine_from_feedback(plan)
+                   # Apply updates
+                   plan.strategy.update({
+                       'search_queries': updated.get('search_queries', []),
+                       'structure_items': updated.get('structure_items', []),
+                       'missing_points': updated.get('missing_points', []),
+                       'notification_triggers': updated.get('notification_triggers', [])
+                   })
+                   if updated.get('keywords'):
+                       plan.keywords = updated['keywords']
+                   plan.consecutive_not_useful = 0
+                   tracker.save_tracking_plans()
+
+                   # Add system notification
+                   tracker.notifier.add_notification(
+                       title="追跡戦略が更新されました",
+                       message=updated.get('change_summary',
+                           "フィードバックに基づき、より関連性の高い情報を追跡するよう戦略を更新しました。"),
+                       type="info",
+                       plan_id=plan_id
+                   )
+
+                   return jsonify({
+                       "status": "success",
+                       "adapted": True,
+                       "message": updated.get('change_summary', '戦略を更新しました')
+                   })
+               except Exception as e:
+                   print(f"[adaptive] Refinement failed: {e}")
+                   # Fall through to standard success response
+
+  3. Return standard: jsonify({"status": "success", "adapted": False})
+
+Note:
+  tracker.architect is not currently attached to tracker.
+  Check if tracker has an architect attribute. If not, import and instantiate
+  TrackingArchitect inside the except block or at the top of burilar_api.py.
+  (See TASK D1.3a below)
+
+-----------------------------------------------------------------------------
+TASK D1.3a - Attach architect to tracker (if not already there)
+-----------------------------------------------------------------------------
+Status: COMPLETE (self.architect = TrackingArchitect() was already present)
+Effort: Tiny (~10 min)
+File: backend/core/tracker.py
+
+Check if BurilarTracker already has self.architect.
+If not, add in __init__:
+  from backend.services.architect import TrackingArchitect
+  self.architect = TrackingArchitect()
+
+Also verify tracker.py imports match (it currently imports executor, extractor,
+notifier - just add architect the same way).
+
+-----------------------------------------------------------------------------
+TASK D1.4 - Frontend: Show Toast on Adaptation
+-----------------------------------------------------------------------------
+Status: COMPLETE (handleFeedback wrapper + adaptationToast state in App.tsx)
+Effort: Small (~30 min)
+File: src/hooks/useNotifications.ts
+Depends on: D1.3
+
+In submitFeedback() (lines ~52-71), after receiving the response:
+
+Current:
+  await fetch(`/api/notifications/${id}/feedback`, { ... })
+  // optimistic update only
+
+New:
+  const data = await response.json();
+  if (data.adapted) {
+      // Show a prominent toast or banner
+      // Option A: use a toast state exposed from the hook
+      // Option B: return { adapted: true, message: data.message } from submitFeedback
+      //           and let the caller (App.tsx) show the toast
+  }
+
+Recommendation - Option B (cleaner):
+  - Change submitFeedback() to return the response object
+  - In App.tsx (or wherever notifications.submitFeedback is called from UpdatePanel):
+      const result = await notifications.submitFeedback(id, feedback)
+      if (result?.adapted) {
+          // Show toast using existing toast mechanism
+      }
+
+Check: Does App.tsx have an existing toast system?
+  Search for "toast" or "setToast" in App.tsx to find the existing toast pattern.
+  Use that same pattern - do not introduce a new toast library.
+
+-----------------------------------------------------------------------------
+TASK D1.5 - Verification Test
+-----------------------------------------------------------------------------
+Status: COMPLETE (verify_adaptive.py — all checks passed end-to-end)
+Effort: Tiny (~15 min)
+
+Manual test steps:
+  1. Start the backend (python burilar_api.py)
+  2. Search for a topic → start tracking
+  3. Manually trigger execution → generate 3+ notifications
+  4. Mark 3 notifications from the SAME plan as "not_useful"
+  5. Verify:
+       - 4th feedback call returns {"adapted": true}
+       - A new "追跡戦略が更新されました" notification appears in the notification list
+       - burilar_tracking_data.json shows updated search_queries for that plan
+       - Frontend shows a toast/banner confirming the update
+  6. Execute the tracking again → results should differ from before
+
+=============================================================================
+TASK ORDER FOR PHASE D
+=============================================================================
+
+  [D1.1] Add consecutive_not_useful counter to TrackingPlan   ~15 min
+  [D1.3a] Attach architect to tracker                         ~10 min
+  [D1.2] Add refine_from_feedback() to architect.py           ~30 min
+  [D1.3] Wire adaptation in feedback endpoint                  ~1 hour
+  [D1.4] Frontend toast on adaptation                         ~30 min
+  [D1.5] Verify end-to-end                                    ~15 min
+
+  Total: ~2.5 hours (original estimate was 4-5 hours because refinement
+  chat endpoint D2.3 was considered part of this - that's now done)
+
+=============================================================================
+SECTION 5: DEFERRED / OPTIONAL
+=============================================================================
+
+- Google OAuth (backend/routes/auth.py currently mocks with hardcoded email)
+  Needs: Real Google OAuth app credentials + OAuth flow implementation
+  Planned for Phase E7 before public launch
+
+- File attachments in chat (useChat.ts line 196: explicitly not sent to backend)
+  Needs: Multipart form upload endpoint + Perplexity image vision API integration
+  Low priority unless users request it
+
+- Refresh token rotation (currently using 7-day JWT with no refresh)
+  Low security risk for MVP, add before scaling past 1000 users
+
+- TrackingSuggestionCard generateTheme() improvement
+  Currently just truncates query. Could call a quick LLM to generate a topic label.
+  Nice to have, not critical.
+
+- Re-enable Perplexity for web_search tasks (TASK 0.4)
+  Add PERPLEXITY_API_KEY, route web_search tasks to Perplexity in call_ai()
+  Improves live tracking accuracy significantly
+
+=============================================================================
+SECTION 6: HOSTING & PRODUCTION INFRASTRUCTURE
+=============================================================================
+
+Last Updated: 2026-02-27
+
+-----------------------------------------------------------------------------
+ARCHITECTURE OVERVIEW
+-----------------------------------------------------------------------------
+
+  burilar.com / www.burilar.com  →  Vercel (React SPA, free tier)
+  api.burilar.com                →  Railway (Flask + gunicorn)
+  Database                       →  Supabase PostgreSQL (paid, already owned)
+  DNS / SSL / DDoS               →  Cloudflare (free tier)
+  Redis / Job Cache              →  Upstash (free tier at launch, paid at scale)
+
+DNS Flow:
+  burilar.com nameservers → Cloudflare
+  burilar.com        → Vercel (A record / CNAME)
+  api.burilar.com    → Railway (CNAME)
+
+-----------------------------------------------------------------------------
+CRITICAL ISSUE: JSON FILE STORAGE (Must fix before launch)
+-----------------------------------------------------------------------------
+
+  Current state: ALL data stored in flat JSON files on disk
+    burilar_tracking_data.json    → tracking plans
+    burilar_notifications.json    → notifications
+    data/users.json               → user accounts
+    data/chats.json               → chat history
+    burilar_notification_settings.json → settings
+
+  Problem: Railway (and all PaaS platforms) wipe the filesystem on every
+  deploy or restart. ALL user data will be permanently lost.
+
+  Solution: Migrate to Supabase PostgreSQL (Phase E1 — do before any users)
+
+  Tables to create:
+    users                 (id, email, password_hash, created_at, ...)
+    tracking_plans        (id, user_id, topic, strategy JSON, ...)
+    notifications         (id, plan_id, title, message, feedback, ...)
+    chats                 (id, user_id, messages JSON, created_at)
+    notification_settings (user_id, email_enabled, push_enabled, ...)
+
+-----------------------------------------------------------------------------
+SCALE REALITY CHECK
+-----------------------------------------------------------------------------
+
+  At 10,000 active users with continuous tracking:
+
+  Load estimate:
+    10,000 users × 2 avg plans = 20,000 tracking plans
+    20,000 plans / 12hr avg frequency = ~1,700 Gemini calls/hour
+    = ~28 Gemini calls/minute running concurrently
+
+  Current bottleneck:
+    background_checker() is a SINGLE Python thread checking all plans
+    sequentially. At 20,000 plans × 5 sec/execution = 27 hours per cycle.
+    Completely breaks at scale.
+
+  Solution: Celery job queue (Phase E2 — add when ~500 active users)
+
+  Gemini API cost at scale:
+    ~1,700 calls/hour × $0.01-0.02/call = ~$400-800/month at 10K users
+    Caching identical queries in Redis cuts this by 30-50% (Phase E4)
+
+-----------------------------------------------------------------------------
+GROWTH LADDER & WHEN TO UPGRADE
+-----------------------------------------------------------------------------
+
+  STAGE 1: Launch (0–500 users)
+    Railway:   Hobby plan ($5/month) — always-on, custom domain
+    Redis:     Upstash free tier (10K req/day)
+    Database:  Supabase paid (already owned)
+    Vercel:    Free tier
+    Total:     ~$5/month + Gemini usage (~$20-50 at low volume)
+
+  STAGE 2: Early Growth (500–2,000 users)
+    Railway:   Hobby → larger instance (~$20-40/month)
+    Redis:     Upstash Pay-as-you-go (~$10/month)
+    Add:       Rate limiting on /api/search (protect Gemini costs)
+    Total:     ~$30-60/month + Gemini (~$100-200/month)
+
+  STAGE 3: Scale (2,000–5,000 users)
+    Railway:   Pro ($20 base + usage) — add Celery worker service
+    Redis:     Railway Redis plugin or Upstash (~$20/month)
+    Add:       Celery background workers (16 concurrent)
+               Remove in-memory tracking_plans dict
+               Gemini response caching
+    Total:     ~$100-200/month + Gemini (~$200-400/month)
+
+  STAGE 4: Full Scale (5,000–10,000+ users)
+    Railway:   Pro, 2+ web instances + worker service + Redis
+    Add:       Horizontal scaling, connection pooling, monitoring
+    Total:     ~$500-950/month (Gemini dominates)
+
+-----------------------------------------------------------------------------
+PHASE E — PRODUCTION READINESS TASKS
+-----------------------------------------------------------------------------
+
+TASK E1 - Migrate JSON Storage to Supabase PostgreSQL
+-----------------------------------------------------------------------------
+Status: NOT STARTED
+Effort: ~3-4 hours
+Priority: CRITICAL — do before first user, data loss guaranteed without this
+
+  Files to change:
+    backend/core/tracker.py       replace load/save JSON with DB queries
+    burilar_api.py                replace JSON settings load/save
+    backend/routes/auth.py        replace data/users.json with users table
+    backend/routes/chats.py       replace data/chats.json with chats table
+    backend/services/notifier.py  replace notifications JSON with DB
+
+  Add to requirements.txt:
+    psycopg2-binary>=2.9.0
+    sqlalchemy>=2.0.0
+
+  Environment variable to add:
+    DATABASE_URL=postgresql://... (from Supabase project settings)
+
+  Migration script: create migrate_to_db.py in project root
+    Reads existing JSON files → inserts into Supabase tables
+    Run once before switching over
+
+TASK E2 - Replace Background Thread with Celery Job Queue
+-----------------------------------------------------------------------------
+Status: NOT STARTED
+Effort: ~4-6 hours
+Priority: HIGH — add when ~500 active users, before that the thread is fine
+Depends on: E1
+
+  Add to requirements.txt:
+    celery>=5.3.0
+    redis>=5.0.0
+
+  New files:
+    tasks.py         Celery app + execute_tracking_plan task
+    celery_config.py broker/backend config pointing to Upstash Redis
+
+  Changes:
+    burilar_api.py   remove background_checker thread
+                     /api/tracking/{id}/execute enqueues task instead of
+                     running inline
+    Celery Beat      replaces time.sleep(300) loop, schedules per-plan
+                     based on next_search_time from DB
+
+  Railway services (add to render.yaml / Railway config):
+    web:    gunicorn burilar_api:app --workers 4 --timeout 60
+    worker: celery -A tasks worker --concurrency 16 --loglevel info
+    beat:   celery -A tasks beat --loglevel info
+
+TASK E3 - Remove In-Memory tracking_plans Dict
+-----------------------------------------------------------------------------
+Status: NOT STARTED
+Effort: ~2-3 hours
+Priority: HIGH — required before running 2+ Railway instances
+Depends on: E1
+
+  Problem: tracker.tracking_plans is a Python dict in RAM.
+  Multiple Railway instances each have their own copy → data diverges.
+
+  Solution: Every read/write goes directly to Supabase.
+  BurilarTracker no longer holds state — it becomes a stateless service class.
+
+TASK E4 - Gemini Response Caching
+-----------------------------------------------------------------------------
+Status: NOT STARTED
+Effort: ~1-2 hours
+Priority: MEDIUM — add when Gemini bill becomes noticeable
+Depends on: Upstash Redis connection
+
+  Cache key: hash of the search query
+  TTL: 1 hour for /api/search results, 30 min for tracking executions
+  Storage: Upstash Redis
+  Savings: 30-50% reduction in Gemini API costs
+
+  Add to requirements.txt:
+    upstash-redis>=1.0.0  (or use standard redis client)
+
+TASK E5 - Rate Limiting
+-----------------------------------------------------------------------------
+Status: NOT STARTED
+Effort: ~1 hour
+Priority: HIGH — add before launch to prevent Gemini cost abuse
+
+  Add to requirements.txt:
+    flask-limiter>=3.5.0
+
+  Limits:
+    /api/search                  10 requests/hour per user/IP
+    /api/tracking/{id}/execute   5 requests/hour per plan
+    /api/tracking/start          20 requests/hour per user
+
+  Storage backend: Redis (Upstash)
+
+TASK E6 - Deploy: Vercel + Railway Hobby + Cloudflare
+-----------------------------------------------------------------------------
+Status: NOT STARTED
+Effort: ~1-2 hours
+Depends on: E1 (DB migration must be done first)
+
+  Step 1 — Cloudflare DNS setup:
+    Point burilar.com nameservers to Cloudflare
+    (See domain migration guide at bottom of this file)
+
+  Step 2 — Vercel (frontend):
+    Connect GitHub repo to Vercel
+    Build command:  npm run build
+    Output dir:     dist
+    Env var:        VITE_API_URL=https://api.burilar.com
+    Add domain:     burilar.com and www.burilar.com
+    Vercel adds CNAME in Cloudflare automatically or manually add:
+      CNAME  www   →  cname.vercel-dns.com
+      A      @     →  76.76.21.21  (Vercel IP)
+
+  Step 3 — Railway (backend):
+    New project → deploy from GitHub
+    Start command: gunicorn burilar_api:app --workers 4 --timeout 60
+    Add env vars:
+      GEMINI_API_KEY=...
+      DATABASE_URL=...        (from Supabase)
+      JWT_SECRET=...          (generate a strong random string)
+      UPSTASH_REDIS_URL=...   (from Upstash)
+      CORS_ORIGIN=https://burilar.com
+    Add custom domain: api.burilar.com
+    Railway gives you a CNAME target → add in Cloudflare:
+      CNAME  api  →  <railway-provided>.up.railway.app
+
+  Step 4 — Update CORS in burilar_api.py:
+    Change: CORS(app)
+    To:     CORS(app, origins=["https://burilar.com", "https://www.burilar.com"])
+
+  Step 5 — Build frontend and deploy:
+    npm run build
+    Push to GitHub → Vercel auto-deploys
+
+TASK E7 - Real Google OAuth
+-----------------------------------------------------------------------------
+Status: NOT STARTED
+Effort: ~2 hours
+Priority: MEDIUM — users will expect Google login
+
+  Steps:
+    1. Go to console.cloud.google.com → New project "Burilar"
+    2. APIs & Services → Credentials → OAuth 2.0 Client ID
+    3. Authorized redirect URI: https://api.burilar.com/auth/google/callback
+    4. Add to Railway env vars: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+    5. Implement real OAuth flow in backend/routes/auth.py
+       (replace mock hardcoded email with real token verification)
+
+TASK E8 - Monitoring
+-----------------------------------------------------------------------------
+Status: NOT STARTED
+Effort: ~1 hour
+Priority: MEDIUM — add after launch
+
+  Sentry (free tier):
+    pip install sentry-sdk[flask]
+    Add SENTRY_DSN to Railway env vars
+    Captures all unhandled exceptions with full stack traces
+
+  Railway built-in metrics:
+    CPU, RAM, request count visible in Railway dashboard
+    Set alert: notify if RAM > 80% or CPU > 90% for 5 min
+
+-----------------------------------------------------------------------------
+PHASE E TASK ORDER
+-----------------------------------------------------------------------------
+
+  [E1] JSON → Supabase migration          ~3-4 hours  ← BEFORE ANY USERS
+  [E5] Rate limiting (flask-limiter)       ~1 hour     ← BEFORE LAUNCH
+  [E6] Deploy Vercel + Railway + CF DNS   ~1-2 hours  ← LAUNCH
+  [E7] Real Google OAuth                   ~2 hours    ← BEFORE LAUNCH
+  [E8] Monitoring (Sentry)                 ~1 hour     ← AFTER LAUNCH
+  [E3] Remove in-memory state              ~2-3 hours  ← AT ~500 USERS
+  [E4] Gemini response caching             ~1-2 hours  ← WHEN BILL HURTS
+  [E2] Celery + Redis job queue            ~4-6 hours  ← AT ~500 USERS
+
+=============================================================================
+SECTION 7: DOMAIN MIGRATION GUIDE (burilar.com)
+=============================================================================
+
+Goal: Move burilar.com from current host → point to Vercel (frontend)
+      and api.burilar.com → Railway (backend)
+
+IMPORTANT: DNS changes take 0–48 hours to propagate globally (usually
+under 1 hour with Cloudflare). Your old site stays live during propagation.
+Do this during low traffic hours.
+
+-----------------------------------------------------------------------------
+STEP 1 — Find your domain registrar
+-----------------------------------------------------------------------------
+
+  Your domain is registered somewhere (GoDaddy, Namecheap, Google Domains,
+  Porkbun, etc.). Log in to that registrar's dashboard.
+
+  If you don't know which registrar:
+    Go to https://lookup.icann.org and search burilar.com
+    Look for "Registrar" in the results
+
+-----------------------------------------------------------------------------
+STEP 2 — Add burilar.com to Cloudflare
+-----------------------------------------------------------------------------
+
+  1. Go to cloudflare.com → Sign up (free) or log in
+  2. Add a site → enter: burilar.com
+  3. Select Free plan
+  4. Cloudflare scans your existing DNS records — REVIEW THEM CAREFULLY
+     Make sure any records for your current site are still there before
+     changing nameservers (Cloudflare usually imports them automatically)
+  5. Cloudflare gives you 2 nameservers, e.g.:
+       ada.ns.cloudflare.com
+       bob.ns.cloudflare.com
+  6. DO NOT change nameservers yet — complete Step 3 first
+
+-----------------------------------------------------------------------------
+STEP 3 — Set up DNS records in Cloudflare BEFORE switching
+-----------------------------------------------------------------------------
+
+  While Cloudflare imported your old records, now ADD the new ones:
+
+  For Vercel (main site — burilar.com):
+    Type: A       Name: @    Value: 76.76.21.21      Proxy: ON
+    Type: CNAME   Name: www  Value: cname.vercel-dns.com  Proxy: ON
+
+  For Railway (API — api.burilar.com):
+    Type: CNAME   Name: api  Value: <your-app>.up.railway.app  Proxy: ON
+    (Railway gives you this CNAME when you add a custom domain)
+
+  Keep any records for your OLD site until you confirm the new site works.
+  You can delete old records after verifying burilar.com loads correctly.
+
+-----------------------------------------------------------------------------
+STEP 4 — Switch nameservers at your registrar
+-----------------------------------------------------------------------------
+
+  Go back to your domain registrar → find "Nameservers" or "DNS" settings
+  Replace current nameservers with Cloudflare's two nameservers
+  Save changes
+
+  Registrar-specific instructions:
+    GoDaddy:    My Products → DNS → Nameservers → Enter my own nameservers
+    Namecheap:  Domain List → Manage → Nameservers → Custom DNS
+    Google Domains / Squarespace: DNS → Use custom name servers
+    Porkbun:    Domain Management → Authoritative Nameservers
+
+-----------------------------------------------------------------------------
+STEP 5 — Verify in Cloudflare
+-----------------------------------------------------------------------------
+
+  Cloudflare dashboard will show "Active" once nameservers are confirmed
+  Usually takes 5–30 minutes after registrar change
+
+  Test:
+    curl -I https://burilar.com           → should serve Vercel frontend
+    curl https://api.burilar.com/api/notifications  → should reach Railway
+
+-----------------------------------------------------------------------------
+STEP 6 — Disconnect from old host (after confirming new site works)
+-----------------------------------------------------------------------------
+
+  Only do this AFTER you've confirmed burilar.com loads your new app.
+
+  What to do at old host:
+    - Delete or suspend the old site/service there
+    - Cancel the plan if you were paying for it
+    - Remove old DNS records from Cloudflare (A/CNAME pointing to old host)
+
+  What NOT to do:
+    - Don't delete DNS records at old host before Cloudflare is active
+    - Don't cancel old host plan until new site is confirmed working
+
+-----------------------------------------------------------------------------
+CURRENT HOSTING STATUS
+-----------------------------------------------------------------------------
+  burilar.com currently:  pointing to [UNKNOWN — confirm before starting]
+  Target:                 Vercel (frontend) + Railway (backend)
+  Status:                 NOT STARTED
+
+  Before starting the migration, confirm:
+    1. Where is burilar.com currently registered? (registrar name)
+    2. What is currently hosted at burilar.com? (so we know what to preserve)
+    3. Are there any subdomains (mail.burilar.com, etc.) that must stay live?
+
+=============================================================================
+SECTION 5: DEFERRED / OPTIONAL
+=============================================================================
+
+- File attachments in chat (useChat.ts line 196: explicitly not sent to backend)
+  Needs: Multipart form upload endpoint + Perplexity image vision API integration
+  Low priority unless users request it
+
+- Refresh token rotation (currently using 7-day JWT with no refresh)
+  Low security risk for MVP, add before scaling past 1000 users
+
+- TrackingSuggestionCard generateTheme() improvement
+  Currently just truncates query. Could call a quick LLM to generate a topic label.
+  Nice to have, not critical.
+
+- Re-enable Perplexity for web_search tasks (TASK 0.4)
+  Add PERPLEXITY_API_KEY, route web_search tasks to Perplexity in call_ai()
+  Improves live tracking accuracy significantly
+
+=============================================================================
+SUMMARY: TASK ORDER
+=============================================================================
+
+Phase 0 - API Foundation: COMPLETE
+  [0.1] ✓ Create backend/utils/ai_client.py with call_gemini() + call_ai()
+  [0.2] ✓ Replace call_perplexity() with call_ai() in all services
+  [0.3] ✓ Verify all endpoints work with Gemini (verify_api.py exists)
+  [0.4]   Re-enable Perplexity for web_search tasks              DEFERRED
+
+Phase A - Quick Wins: COMPLETE
+  [A1] ✓ TASK 1.1 - Wire feedback buttons (was already done)
+  [A2] ✓ TASK 2.1 - Dynamic scenario in TrackingDetail / DefaultModeTrackingDetail
+
+Phase B - Small Backend Additions: COMPLETE
+  [B1] ✓ TASK 1.3 - GET+PUT /api/notifications/settings/global
+  [B2] ✓ TASK 3.1 - PATCH /api/tracking/{id} (frequency + active)
+  [B3] ✓ TASK 1.2 - POST /api/tracking/{id}/execute + planId flow + spinner
+
+Phase C - Core Feature Completions: COMPLETE
+  [C1] ✓ TASK 3.2 - Clarification chips + not_feasible/no_sources messages
+  [C2] ✓ TASK 2.2 - Dynamic home suggestions (GET /api/suggestions + skeleton)
+  [C3] ✓ TASK 2.3 - POST /api/tracking/{id}/refine + real refinement chat
+
+Phase D - Adaptive Learning: COMPLETE
+  [D1.1] ✓ Add consecutive_not_useful counter to TrackingPlan
+  [D1.3a] ✓ Attach architect to tracker (was already present)
+  [D1.2] ✓ Add refine_from_feedback() to architect.py
+  [D1.3] ✓ Wire adaptation logic in feedback endpoint
+  [D1.4] ✓ Frontend toast on adaptation (adaptationToast in App.tsx)
+  [D1.5] ✓ Verify end-to-end (verify_adaptive.py passes)
+
+Phase E - Production & Hosting (NEXT):
+  [E1] JSON → Supabase PostgreSQL migration        BEFORE ANY USERS
+  [E5] Rate limiting (flask-limiter)               BEFORE LAUNCH
+  [E6] Deploy Vercel + Railway Hobby + Cloudflare  LAUNCH
+  [E7] Real Google OAuth                           BEFORE LAUNCH
+  [E8] Monitoring (Sentry + Railway metrics)       AFTER LAUNCH
+  [E3] Remove in-memory tracking_plans dict        AT ~500 USERS
+  [E4] Gemini response caching (Upstash Redis)     WHEN BILL HURTS
+  [E2] Celery + Redis job queue                    AT ~500 USERS
+
+Phase F - Mobile App (after Phase E is stable):
+  Expo (React Native) — reuse all hooks, types, API calls
+  UI components need React Native versions
+  Navigation: React Navigation
+  Push notifications: Expo Notifications
+  Timeline: ~4-6 weeks
+
+=============================================================================
+COST PROJECTIONS
+=============================================================================
+
+  Launch (0-500 users):
+    Railway Hobby:  $5/month
+    Supabase:       already paid
+    Vercel:         free
+    Upstash Redis:  free tier
+    Gemini API:     ~$20-50/month (low volume)
+    TOTAL:          ~$25-55/month
+
+  Growth (500-2,000 users):
+    Railway Hobby+: ~$20-40/month
+    Upstash:        ~$10/month
+    Gemini API:     ~$100-200/month
+    TOTAL:          ~$130-250/month
+
+  Scale (2,000-5,000 users):
+    Railway Pro:    ~$100-200/month
+    Gemini API:     ~$200-400/month
+    TOTAL:          ~$300-600/month
+
+  Full Scale (5,000-10,000+ users):
+    Railway Pro:    ~$150-300/month
+    Gemini API:     ~$400-800/month (caching reduces this ~40%)
+    TOTAL:          ~$550-1,100/month
+
+=============================================================================
+TOTAL ESTIMATED EFFORT: ~19-26 hours (features) + ~15-20 hours (infra)
+STATUS: Features complete (Phase 0-D). Infrastructure Phase E is next.
+Last verified: 2026-02-27
+=============================================================================
+
+Files touched across all tasks:
+  Backend:
+    backend/utils/ai_client.py            (NEW - Gemini + call_ai abstraction)
+    backend/services/architect.py         (swap to call_ai, add refine_from_feedback)
+    backend/services/analyzer.py          (swap to call_ai)
+    backend/services/executor.py          (swap to call_ai, tag as web_search)
+    backend/services/extractor.py         (swap to call_ai)
+    backend/core/tracker.py               (swap to call_ai, tag as web_search)
+    burilar_api.py                        (new routes: /execute, /refine,
+                                           /suggestions, PATCH /tracking/{id},
+                                           /notifications/settings/global,
+                                           adaptive feedback logic)
+    backend/models/tracking.py            (consecutive_not_useful counter)
+    requirements.txt                      (google-generativeai, psycopg2, celery
+                                           flask-limiter, sentry-sdk — planned)
+
+  Frontend:
+    src/App.tsx
+    src/hooks/useChat.ts
+    src/hooks/useNotifications.ts
+    src/hooks/useTracking.ts
+    src/components/HomePage.tsx
+    src/components/UpdatePanel.tsx
+    src/components/TrackingDetail.tsx
+    src/components/DefaultModeTrackingDetail.tsx
+    src/components/TrackingRefinementChat.tsx
+    src/components/NotificationSettings.tsx
+    src/components/TrackingSuggestionCard.tsx
+    src/api/trackings.ts                  (executeTracking function)
+
+=============================================================================

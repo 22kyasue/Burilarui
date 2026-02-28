@@ -1,6 +1,6 @@
 import json
 from typing import Dict, Any, Optional
-from backend.services.perplexity import call_perplexity
+from backend.utils.ai_client import call_ai
 
 class InformationExtractor:
     """
@@ -33,7 +33,7 @@ Respond with ONLY the JSON object.
 """
         messages = [{"role": "user", "content": prompt}]
         try:
-            response_text = call_perplexity(messages, model="sonar")
+            response_text = call_ai(messages, task="generation")
             return self._parse_json(response_text)
         except Exception as e:
             print(f"Extractor Error: {str(e)}")

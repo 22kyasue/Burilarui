@@ -4,7 +4,7 @@ import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 from backend.models.tracking import TrackingPlan
-from backend.services.perplexity import call_perplexity
+from backend.utils.ai_client import call_ai
 from backend.services.analyzer import TrackingAnalyzer
 from backend.services.architect import TrackingArchitect
 from backend.services.executor import TrackingExecutor
@@ -106,7 +106,7 @@ class BurilarTracker:
             }
         ]
         
-        return call_perplexity(messages, model="sonar")
+        return call_ai(messages, task="web_search")
 
     def search_with_ai_enhanced(self, query: str) -> Dict:
         """Perform a web search using Perplexity AI, returning images if available."""
@@ -122,7 +122,7 @@ class BurilarTracker:
         ]
 
         # Use return_images=True to get images
-        result = call_perplexity(messages, model="sonar", return_images=True)
+        result = call_ai(messages, task="web_search", return_images=True)
 
         if isinstance(result, dict):
             return result
@@ -156,8 +156,8 @@ Respond with ONLY "Completed" or "In Progress" on the first line, followed by ON
             {"role": "user", "content": assessment_prompt}
         ]
         
-        content = call_perplexity(messages, model="sonar")
-        
+        content = call_ai(messages, task="generation")
+
         # Extract just the status and first sentence
         lines = content.strip().split('\n')
         status_line = lines[0] if lines else content
@@ -215,8 +215,8 @@ If there are no significant changes, respond with only "NO_CHANGE".
             {"role": "user", "content": diff_prompt}
         ]
         
-        result = call_perplexity(messages, model="sonar")
-        
+        result = call_ai(messages, task="generation")
+
         if result.startswith("UPDATE:"):
             return result.replace("UPDATE:", "").strip()
         return None
@@ -394,25 +394,50 @@ If there are no significant changes, respond with only "NO_CHANGE".
         return updates_found
     
     def save_tracking_plans(self):
-        """Save tracking plans to file."""
-        data = {plan_id: plan.to_dict() for plan_id, plan in self.tracking_plans.items()}
-        with open(self.data_file, 'w') as f:
-            json.dump(data, f, indent=2)
-    
-    def load_tracking_plans(self):
-        """Load tracking plans from file."""
-        if os.path.exists(self.data_file):
+        """Persist all tracking plans (Supabase or JSON fallback)."""
+        from backend.db import is_db_available, get_supabase
+        if is_db_available():
             try:
-                with open(self.data_file, 'r') as f:
-                    data = json.load(f)
-                    for plan_id, plan_dict in data.items():
-                        try:
-                            plan = TrackingPlan.from_dict(plan_dict)
-                            self.tracking_plans[plan_id] = plan
-                        except Exception as e:
-                            print(f"Error loading plan {plan_id}: {str(e)}")
+                db = get_supabase()
+                for plan_id, plan in self.tracking_plans.items():
+                    plan_dict = plan.to_dict()
+                    # Upsert: insert or update if id already exists
+                    db.table("tracking_plans").upsert(plan_dict).execute()
             except Exception as e:
-                print(f"Error loading tracking plans: {str(e)}")
+                print(f"[tracker] DB save failed: {e}")
+        else:
+            data = {plan_id: plan.to_dict() for plan_id, plan in self.tracking_plans.items()}
+            with open(self.data_file, 'w') as f:
+                json.dump(data, f, indent=2)
+
+    def load_tracking_plans(self):
+        """Load all tracking plans into memory (Supabase or JSON fallback)."""
+        from backend.db import is_db_available, get_supabase
+        if is_db_available():
+            try:
+                db = get_supabase()
+                res = db.table("tracking_plans").select("*").execute()
+                for plan_dict in (res.data or []):
+                    try:
+                        plan = TrackingPlan.from_dict(plan_dict)
+                        self.tracking_plans[plan.id] = plan
+                    except Exception as e:
+                        print(f"[tracker] Error loading plan {plan_dict.get('id')}: {e}")
+            except Exception as e:
+                print(f"[tracker] DB load failed: {e}")
+        else:
+            if os.path.exists(self.data_file):
+                try:
+                    with open(self.data_file, 'r') as f:
+                        data = json.load(f)
+                        for plan_id, plan_dict in data.items():
+                            try:
+                                plan = TrackingPlan.from_dict(plan_dict)
+                                self.tracking_plans[plan_id] = plan
+                            except Exception as e:
+                                print(f"Error loading plan {plan_id}: {str(e)}")
+                except Exception as e:
+                    print(f"Error loading tracking plans: {str(e)}")
 
     def get_user_plans(self, user_id: str) -> List[TrackingPlan]:
         """Get all tracking plans for a specific user."""

@@ -1,51 +1,57 @@
 """
 User Storage
-Handles user data persistence using JSON file storage.
+Picks Supabase when env vars are set, otherwise falls back to JSON file.
 """
 
-from .base import JSONFileStorage
-from typing import Optional, Dict
 import os
+from typing import Optional, Dict
+from backend.db import is_db_available
 
-# Storage file path
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
 USERS_FILE = os.path.join(DATA_DIR, 'users.json')
 
 
-class UserStorage(JSONFileStorage):
-    """User-specific storage with email lookup."""
+class UserStorage:
+    """User storage with email lookup. Backend-agnostic."""
 
     def __init__(self):
-        super().__init__(USERS_FILE, id_field='id')
+        if is_db_available():
+            from .supabase_storage import SupabaseStorage
+            self._backend = SupabaseStorage("users")
+        else:
+            from .base import JSONFileStorage
+            self._backend = JSONFileStorage(USERS_FILE, id_field="id")
+
+    def get(self, key: str) -> Optional[Dict]:
+        return self._backend.get(key)
+
+    def get_all(self):
+        return self._backend.get_all()
 
     def get_by_email(self, email: str) -> Optional[Dict]:
-        """Get a user by email address."""
-        users = self.query({'email': email.lower()})
+        users = self._backend.query({"email": email.lower()})
         return users[0] if users else None
 
     def create(self, data: Dict) -> Dict:
-        """Create a new user with email normalization."""
-        # Normalize email to lowercase
-        if 'email' in data:
-            data['email'] = data['email'].lower()
-
-        # Check for duplicate email
-        if self.get_by_email(data.get('email', '')):
-            raise ValueError('Email already registered')
-
-        return super().create(data)
+        if "email" in data:
+            data["email"] = data["email"].lower()
+        if self.get_by_email(data.get("email", "")):
+            raise ValueError("Email already registered")
+        return self._backend.create(data)
 
     def update(self, key: str, data: Dict) -> Optional[Dict]:
-        """Update user with email normalization."""
-        if 'email' in data:
-            data['email'] = data['email'].lower()
-            # Check if new email is taken by another user
-            existing = self.get_by_email(data['email'])
-            if existing and existing.get('id') != key:
-                raise ValueError('Email already registered')
+        if "email" in data:
+            data["email"] = data["email"].lower()
+            existing = self.get_by_email(data["email"])
+            if existing and existing.get("id") != key:
+                raise ValueError("Email already registered")
+        return self._backend.update(key, data)
 
-        return super().update(key, data)
+    def delete(self, key: str) -> bool:
+        return self._backend.delete(key)
+
+    def query(self, filters):
+        return self._backend.query(filters)
 
 
-# Singleton instance
 user_storage = UserStorage()

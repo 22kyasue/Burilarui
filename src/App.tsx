@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sidebar } from "./components/Sidebar";
 import { CollapsedSidebar } from "./components/CollapsedSidebar";
@@ -86,10 +86,14 @@ function AppContent() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isUpdatePanelOpen, setIsUpdatePanelOpen] = useState(false);
   const [dismissedToastIds, setDismissedToastIds] = useState<string[]>([]);
+  const [adaptationToast, setAdaptationToast] = useState<string | null>(null);
   const [demoStatus, setDemoStatus] = useState<string | null>(null);
 
   // Demo State
   const [currentScenario, setCurrentScenario] = useState<RefinementScenario | undefined>(undefined);
+
+  // Clarification state for ambiguous queries
+  const [clarificationQuestions, setClarificationQuestions] = useState<string[]>([]);
 
   // Hooks
   const tracking = useTracking();
@@ -101,6 +105,15 @@ function AppContent() {
     tracking.setActiveTracking,
     tracking.addTrackingSuggestion
   );
+
+  // Feedback handler — shows adaptation toast when strategy is auto-updated
+  const handleFeedback = useCallback(async (id: string, feedback: 'useful' | 'not_useful') => {
+    const result = await submitFeedback(id, feedback);
+    if (result?.adapted) {
+      setAdaptationToast(result.message ?? '追跡戦略が更新されました');
+      setTimeout(() => setAdaptationToast(null), 5000);
+    }
+  }, [submitFeedback]);
 
   // Custom Logic that needs both hooks or local state
   const handleCreateNotebook = (
@@ -270,11 +283,27 @@ https://research.example.org/paper`;
                     setDismissedToastIds(prev => [...prev, activeNotification.id]);
                   }
                 }}
-                onFeedback={submitFeedback}
+                onFeedback={handleFeedback}
                 theme={theme}
               />
             );
           })()}
+
+          {/* Adaptation Toast */}
+          <AnimatePresence>
+            {adaptationToast && (
+              <motion.div
+                key="adaptation-toast"
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl shadow-2xl border backdrop-blur-xl flex items-center gap-2 text-sm font-medium ${theme === 'dark' ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-900'}`}
+              >
+                <span className="text-blue-500">✦</span>
+                {adaptationToast}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
 
           <AnimatePresence mode="wait">
@@ -293,6 +322,8 @@ https://research.example.org/paper`;
                   }
                   theme={theme}
                   onSendMessage={async (message, attachments = []) => {
+                    // Clear any pending clarification questions when user sends a new message
+                    setClarificationQuestions([]);
                     // Logic for home page new chat creation (complex, mostly duplicated from original App.tsx)
                     // We can reuse chat.setChats but logic is specific to home page new chat flow
                     // Re-implementing logic here for now
@@ -351,7 +382,21 @@ https://research.example.org/paper`;
 
                       let responseContent = '';
                       if (data.needs_clarification) {
-                        responseContent = `${data.reason}\n\n**確認が必要な点:**\n${data.clarification_questions?.map((q: string) => `- ${q}`).join('\n') || ''}`;
+                        const status = data.status;
+                        if (status === 'not_feasible') {
+                          responseContent = `このトピックは既に完結した出来事または静的な情報のようです。継続的な追跡には向いていません。\n\n別のトピックで試してみてください。例えば「今後発売予定の製品」や「進行中のイベント」などはトラッキングに適しています。`;
+                        } else if (status === 'no_sources') {
+                          responseContent = `このトピックについて信頼性の高い情報源が見つかりませんでした。\n\nトピックをより具体的に指定するか、別の表現で試してみてください。`;
+                        } else {
+                          // ambiguous - show questions as text and also as clickable chips
+                          responseContent = `クエリについて確認が必要です。\n\n以下のいずれかを選択するか、詳しく教えてください：`;
+                          setClarificationQuestions(data.clarification_questions || []);
+                        }
+                      } else if (data.status === 'completed') {
+                        responseContent = data.search_result || '';
+                        if (data.status_explanation) {
+                          responseContent = `${data.search_result}\n\n---\n📌 ${data.status_explanation}`;
+                        }
                       } else if (data.search_result) {
                         responseContent = data.search_result;
                       } else if (data.error) {
@@ -393,8 +438,12 @@ https://research.example.org/paper`;
                             messageId: userMessage.id,
                             query: message,
                             accepted: false,
+                            planId: data.proposed_plan.plan_id,
                             suggestedPrompt: data.proposed_plan.suggested_prompt,
                             imageUrl: data.proposed_plan.image_url,
+                            structureItems: data.proposed_plan.structure_items,
+                            missingPoints: data.proposed_plan.missing_points,
+                            notificationTriggers: data.proposed_plan.notification_triggers
                           },
                         ]);
                       } else {
@@ -432,12 +481,30 @@ https://research.example.org/paper`;
                     });
 
                     // Determine and set the current scenario
-                    if (theme === "Apple Intelligence" || theme === "Apple Intelligenceの2024〜2025年の最新動向") {
+                    // First, try to find the suggestion that matches this theme/query
+                    const suggestion = tracking.trackingSuggestions.find(s => s.query === theme || s.suggestedPrompt?.includes(theme));
+
+                    if (suggestion && suggestion.structureItems && suggestion.structureItems.length > 0) {
+                      // Use dynamic data from API
+                      setCurrentScenario({
+                        id: `dynamic-${Date.now()}`,
+                        title: `${theme}の動向追跡`,
+                        theme: theme,
+                        topic: "最新動向",
+                        status: "active",
+                        priority: "高",
+                        recommendedPrompt: suggestion.suggestedPrompt || "",
+                        structureItems: suggestion.structureItems,
+                        missingPoints: suggestion.missingPoints || [],
+                        notificationTriggers: suggestion.notificationTriggers || []
+                      } as RefinementScenario);
+                    } else if (theme === "Apple Intelligence" || theme === "Apple Intelligenceの2024〜2025年の最新動向") {
                       setCurrentScenario(demoScenarios["Apple Intelligence"]);
                     } else if (theme === "Tesla Competitor Analysis" || theme === "テスラの競合分析") {
                       setCurrentScenario(demoScenarios["Tesla Competitor Analysis"]);
                     } else {
-                      setCurrentScenario(undefined); // Use default or nothing
+                      // Fallback for unknown themes without dynamic data
+                      setCurrentScenario(undefined);
                     }
 
                     // Demo Data Definition
@@ -878,7 +945,10 @@ https://research.example.org/paper`;
                     {tracking.isTrackingDetailOpen ? (
                       <TrackingRefinementChat
                         refinementMessages={chat.refinementMessages}
-                        onSendMessage={chat.handleRefinementMessage}
+                        onSendMessage={(content) => {
+                          const planId = tracking.trackingSuggestions.find((s) => s.accepted)?.planId;
+                          chat.handleRefinementMessage(content, planId);
+                        }}
                         currentMode={currentMode}
                         onModeChange={setCurrentMode}
                       />
@@ -889,10 +959,11 @@ https://research.example.org/paper`;
                         }`}>
                         <DefaultModeTrackingDetail
                           query={
-                            tracking.trackingSuggestions.find((s) => s.accepted)?.query ||
-                            "Apple Intelligenceの2024〜2025年の動向についてキャッチアップしたい。最新の動向教えてください。"
+                            tracking.trackingSuggestions.find((s) => s.accepted)?.query || ""
                           }
+                          planId={tracking.trackingSuggestions.find((s) => s.accepted)?.planId}
                           frequency={tracking.activeTracking?.frequency || "毎日 9:00"}
+                          scenario={currentScenario}
                           onExecute={() => {
                             if (chat.currentChatId) {
                               chat.setChats((prevChats) =>
@@ -1081,9 +1152,28 @@ https://research.example.org/paper`;
                           ) : null}
                         </div>
 
+                        {clarificationQuestions.length > 0 && (
+                          <div className="px-4 pb-2 flex flex-wrap gap-2">
+                            {clarificationQuestions.map((q, i) => (
+                              <button
+                                key={i}
+                                onClick={() => {
+                                  setClarificationQuestions([]);
+                                  chat.handleSendMessage(q);
+                                }}
+                                className="px-3 py-1.5 rounded-full border border-indigo-300 bg-indigo-50 text-indigo-700 text-sm hover:bg-indigo-100 transition-colors"
+                              >
+                                {q}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                         {chat.currentChat && (
                           <ChatInput
-                            onSendMessage={chat.handleSendMessage}
+                            onSendMessage={(msg, att) => {
+                              setClarificationQuestions([]);
+                              chat.handleSendMessage(msg, att);
+                            }}
                             isHome={false}
                             currentMode={currentMode}
                             onModeChange={setCurrentMode}
@@ -1133,7 +1223,7 @@ https://research.example.org/paper`;
           theme={theme}
           notifications={notifications}
           markAsRead={markAsRead}
-          onFeedback={submitFeedback}
+          onFeedback={handleFeedback}
         />
 
         <SettingsModal
@@ -1163,7 +1253,7 @@ https://research.example.org/paper`;
 
             // Step 2: Create Chat
             setDemoStatus("1. 新規チャットの作成：分析テーマ用のスペースを準備中...");
-            const newChatId = chat.handleNewChat();
+            const newChatId = await chat.handleNewChat();
             await delay(1500);
 
             // Step 3: User Typing

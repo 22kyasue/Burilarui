@@ -179,7 +179,7 @@ def delete_chat(chat_id):
 @auth_required
 def add_message(chat_id):
     """Add a message to a chat and generate AI response."""
-    from backend.utils.ai import call_perplexity
+    from backend.utils.ai_client import call_ai
     import time
     
     user = get_current_user()
@@ -223,8 +223,8 @@ def add_message(chat_id):
             })
             
         try:
-            # Call Perplexity
-            ai_content = call_perplexity(messages, model="sonar")
+            # Call AI
+            ai_content = call_ai(messages, task="generation")
             
             # Create Assistant Message
             assistant_message = {

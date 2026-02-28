@@ -4,8 +4,20 @@ interface TrackingSuggestion {
     messageId: string;
     query: string;
     accepted: boolean;
+    planId?: string;
     suggestedPrompt?: string;
     imageUrl?: string;
+    structureItems?: {
+        color: string;
+        title: string;
+        description: string;
+    }[];
+    missingPoints?: {
+        text: string;
+    }[];
+    notificationTriggers?: {
+        text: string;
+    }[];
 }
 
 export function useTracking() {
