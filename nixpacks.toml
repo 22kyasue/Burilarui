@@ -8,5 +8,8 @@ cmds = [
   "/opt/venv/bin/pip install -r requirements.txt"
 ]
 
+[phases.build]
+cmds = []
+
 [start]
 cmd = "/opt/venv/bin/gunicorn burilar_api:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
