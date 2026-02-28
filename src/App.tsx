@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sidebar } from "./components/Sidebar";
 import { CollapsedSidebar } from "./components/CollapsedSidebar";
@@ -88,6 +88,7 @@ function AppContent() {
   const [dismissedToastIds, setDismissedToastIds] = useState<string[]>([]);
   const [adaptationToast, setAdaptationToast] = useState<string | null>(null);
   const [demoStatus, setDemoStatus] = useState<string | null>(null);
+  const [paymentToast, setPaymentToast] = useState<string | null>(null);
 
   // Demo State
   const [currentScenario, setCurrentScenario] = useState<RefinementScenario | undefined>(undefined);
@@ -107,6 +108,19 @@ function AppContent() {
   );
 
   // Feedback handler — shows adaptation toast when strategy is auto-updated
+  // Handle Stripe payment redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const payment = params.get('payment');
+    if (payment === 'success') {
+      setPaymentToast('Pro プランへのアップグレードが完了しました！');
+      setTimeout(() => setPaymentToast(null), 6000);
+      window.history.replaceState({}, '', '/');
+    } else if (payment === 'cancel') {
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
+
   const handleFeedback = useCallback(async (id: string, feedback: 'useful' | 'not_useful') => {
     const result = await submitFeedback(id, feedback);
     if (result?.adapted) {
@@ -305,6 +319,22 @@ https://research.example.org/paper`;
             )}
           </AnimatePresence>
 
+
+          {/* Payment Success Toast */}
+          <AnimatePresence>
+            {paymentToast && (
+              <motion.div
+                key="payment-toast"
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl shadow-2xl border backdrop-blur-xl flex items-center gap-2 text-sm font-medium bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-indigo-400"
+              >
+                <span>👑</span>
+                {paymentToast}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <AnimatePresence mode="wait">
             {currentView === "home" ? (
@@ -875,10 +905,8 @@ https://research.example.org/paper`;
                 className="flex-1 flex flex-col overflow-hidden"
               >
                 <PlanSelection
-                  onBack={() => {
-                    setCurrentView("home");
-                  }}
-
+                  onBack={() => setCurrentView("home")}
+                  currentPlan={user?.plan || 'free'}
                 />
               </motion.div>
             ) : currentView === "planManagement" ? (

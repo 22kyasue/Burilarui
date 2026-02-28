@@ -10,3 +10,4 @@ bcrypt==4.1.2
 PyJWT==2.8.0
 supabase==2.3.0
 storage3==0.7.0
+stripe==8.0.0

@@ -2,8 +2,13 @@ import json
 import os
 import time
 import threading
+import stripe
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
+
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_PRICE_ID = os.environ.get('STRIPE_PRICE_ID', 'price_1T5siHCz1e4cUhjReDJWhMcz')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
 
 from backend.core.tracker import BurilarTracker
 from backend.models.tracking import TrackingPlan
@@ -618,6 +623,71 @@ def debug_notification():
         details=data.get('details')
     )
     return jsonify({'status': 'ok'})
+
+@app.route('/api/stripe/create-checkout-session', methods=['POST'])
+@auth_required
+def create_checkout_session():
+    """Create a Stripe Checkout session for Pro plan upgrade."""
+    user = get_current_user()
+    if not user:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    app_url = os.environ.get('APP_URL', 'https://burilarui-x6av.onrender.com')
+
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{'price': STRIPE_PRICE_ID, 'quantity': 1}],
+            mode='subscription',
+            customer_email=user['email'],
+            metadata={'user_id': user['id']},
+            success_url=f"{app_url}/?payment=success",
+            cancel_url=f"{app_url}/?payment=cancel",
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/stripe/webhook', methods=['POST'])
+def stripe_webhook():
+    """Handle Stripe webhook events."""
+    payload = request.get_data()
+    sig_header = request.headers.get('Stripe-Signature', '')
+
+    try:
+        if STRIPE_WEBHOOK_SECRET:
+            event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+        else:
+            event = json.loads(payload)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        user_id = session.get('metadata', {}).get('user_id')
+        if user_id:
+            from backend.storage import user_storage
+            user_storage.update(user_id, {'plan': 'pro'})
+
+    elif event['type'] in ('customer.subscription.deleted', 'customer.subscription.paused'):
+        # Downgrade back to free when subscription is cancelled
+        sub = event['data']['object']
+        customer_id = sub.get('customer')
+        if customer_id:
+            try:
+                customer = stripe.Customer.retrieve(customer_id)
+                email = customer.get('email')
+                if email:
+                    from backend.storage import user_storage
+                    user = user_storage.get_by_email(email)
+                    if user:
+                        user_storage.update(user['id'], {'plan': 'free'})
+            except Exception:
+                pass
+
+    return jsonify({'status': 'ok'})
+
 
 if __name__ == '__main__':
     # Use stat reloader instead of watchdog to avoid watching site-packages

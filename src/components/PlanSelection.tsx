@@ -1,13 +1,40 @@
-import { ArrowLeft, Check, Sparkles, Zap, Crown } from 'lucide-react';
+import { ArrowLeft, Check, Sparkles, Zap, Crown, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { getAuthToken } from '../api/client';
 
 interface PlanSelectionProps {
   onBack: () => void;
-
+  currentPlan?: string;
 }
 
-export function PlanSelection({ onBack }: PlanSelectionProps) {
+export function PlanSelection({ onBack, currentPlan = 'free' }: PlanSelectionProps) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  const handleUpgrade = async (planId: string) => {
+    if (planId === 'free' || planId === currentPlan) return;
+    setLoadingPlan(planId);
+    try {
+      const token = getAuthToken();
+      const res = await fetch('/api/stripe/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'エラーが発生しました');
+      }
+    } catch {
+      alert('エラーが発生しました');
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
 
   const plans = [
     {
@@ -22,7 +49,7 @@ export function PlanSelection({ onBack }: PlanSelectionProps) {
         '標準的な回答速度',
         'コミュニティサポート',
       ],
-      current: true,
+      current: currentPlan === 'free',
     },
     {
       id: 'pro',
@@ -185,15 +212,18 @@ export function PlanSelection({ onBack }: PlanSelectionProps) {
 
                 {/* CTA Button */}
                 <button
-                  disabled={plan.current}
-                  className={`w-full py-3 rounded-lg font-medium text-sm transition-all ${plan.current
+                  disabled={plan.current || loadingPlan === plan.id}
+                  onClick={() => handleUpgrade(plan.id)}
+                  className={`w-full py-3 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${plan.current
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                       : plan.popular
                         ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                         : 'border border-indigo-600 text-indigo-600 hover:bg-indigo-50'
                     }`}
                 >
-                  {plan.current ? '現在のプラン' : 'アップグレード'}
+                  {loadingPlan === plan.id ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" />処理中...</>
+                  ) : plan.current ? '現在のプラン' : 'アップグレード'}
                 </button>
               </div>
             );
