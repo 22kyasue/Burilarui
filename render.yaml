@@ -3,7 +3,15 @@ services:
     name: burilar-ui
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn burilar_api:app
+    startCommand: gunicorn burilar_api:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: PYTHON_VERSION
-        value: 3.9.18
+        value: 3.11.0
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SECRET_KEY
+        sync: false
