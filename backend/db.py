@@ -15,11 +15,14 @@ def get_supabase():
     if _client is not None:
         return _client
 
-    url = os.environ.get("SUPABASE_URL")
-    key = os.environ.get("SUPABASE_KEY")
+    url = (os.environ.get("SUPABASE_URL") or "").strip()
+    key = (os.environ.get("SUPABASE_KEY") or "").strip()
 
     if not url or not key:
         return None
+
+    import sys
+    print(f"[DB] Connecting to Supabase. URL={url[:30]}... KEY starts with={key[:10]}... len={len(key)}", file=sys.stderr)
 
     from supabase import create_client
     _client = create_client(url, key)
