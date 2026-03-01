@@ -1265,6 +1265,10 @@ https://research.example.org/paper`;
             setCurrentView("trackingSettings");
             setIsSettingsModalOpen(false);
           }}
+          onViewPlanManagement={() => {
+            setCurrentView("planSelection");
+            setIsSettingsModalOpen(false);
+          }}
           theme={theme}
           onThemeChange={(newTheme) => setTheme(newTheme)}
           onLoadDemoData={chat.loadDemoData}
