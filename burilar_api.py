@@ -6,9 +6,13 @@ import stripe
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 
-stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', '')
 STRIPE_PRICE_ID = os.environ.get('STRIPE_PRICE_ID', 'price_1T5siHCz1e4cUhjReDJWhMcz')
 STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+
+
+def get_stripe_key():
+    """Read Stripe key at request time so env var changes take effect without restart."""
+    return os.environ.get('STRIPE_SECRET_KEY', '')
 
 from backend.core.tracker import BurilarTracker
 from backend.models.tracking import TrackingPlan
@@ -632,6 +636,7 @@ def create_checkout_session():
     if not user:
         return jsonify({'error': 'Unauthorized'}), 401
 
+    stripe.api_key = get_stripe_key()
     app_url = os.environ.get('APP_URL', 'https://burilar.com')
 
     try:
@@ -652,6 +657,7 @@ def create_checkout_session():
 @app.route('/api/stripe/webhook', methods=['POST'])
 def stripe_webhook():
     """Handle Stripe webhook events."""
+    stripe.api_key = get_stripe_key()
     payload = request.get_data()
     sig_header = request.headers.get('Stripe-Signature', '')
 
