@@ -74,6 +74,7 @@ def auth_required(f):
             'email': user['email'],
             'name': user['name'],
             'plan': user.get('plan', 'free'),
+            'avatar': user.get('avatar'),
         }
 
         return f(*args, **kwargs)
@@ -108,6 +109,7 @@ def auth_optional(f):
                             'email': user['email'],
                             'name': user['name'],
                             'plan': user.get('plan', 'free'),
+                            'avatar': user.get('avatar'),
                         }
 
         return f(*args, **kwargs)
