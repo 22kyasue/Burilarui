@@ -1,77 +1,82 @@
 """
 Chat Storage
-Picks Supabase when env vars are set, otherwise falls back to JSON file.
+Handles chat/conversation data persistence using JSON file storage.
 """
 
-import os
+from .base import JSONFileStorage
 from typing import List, Dict, Optional
-from backend.db import is_db_available
+import os
 
+# Storage file path
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
 CHATS_FILE = os.path.join(DATA_DIR, 'chats.json')
 
 
-class ChatStorage:
-    """Chat storage with user filtering. Backend-agnostic."""
+class ChatStorage(JSONFileStorage):
+    """Chat-specific storage with user filtering."""
 
     def __init__(self):
-        if is_db_available():
-            from .supabase_storage import SupabaseStorage
-            self._backend = SupabaseStorage("chats")
-        else:
-            from .base import JSONFileStorage
-            self._backend = JSONFileStorage(CHATS_FILE, id_field="id")
+        super().__init__(CHATS_FILE, id_field='id')
 
     def get_by_user(self, user_id: str) -> List[Dict]:
-        chats = self._backend.query({"user_id": user_id})
-        chats.sort(key=lambda x: x.get("updated_at", ""), reverse=True)
+        """Get all chats for a specific user, sorted by updated_at desc."""
+        chats = self.query({'user_id': user_id})
+        # Sort by updated_at descending
+        chats.sort(key=lambda x: x.get('updated_at', ''), reverse=True)
         return chats
 
     def get_user_chat(self, user_id: str, chat_id: str) -> Optional[Dict]:
-        chat = self._backend.get(chat_id)
-        if chat and chat.get("user_id") == user_id:
+        """Get a specific chat only if it belongs to the user."""
+        chat = self.get(chat_id)
+        if chat and chat.get('user_id') == user_id:
             return chat
         return None
 
     def create_chat(self, user_id: str, data: Dict) -> Dict:
+        """Create a new chat for a user."""
         chat_data = {
-            "user_id": user_id,
-            "title": data.get("title", "New Chat"),
-            "messages": data.get("messages", []),
-            "pinned": data.get("pinned", False),
-            "is_tracking": data.get("is_tracking", False),
-            "tracking_active": data.get("tracking_active", False),
-            "update_count": data.get("update_count", 0),
-            "tracking_frequency": data.get("tracking_frequency"),
-            "notification_enabled": data.get("notification_enabled", False),
-            "notification_granularity": data.get("notification_granularity", "update"),
-            "thumbnail": data.get("thumbnail"),
+            'user_id': user_id,
+            'title': data.get('title', 'New Chat'),
+            'messages': data.get('messages', []),
+            'pinned': data.get('pinned', False),
         }
-        return self._backend.create(chat_data)
+        return self.create(chat_data)
 
     def update_chat(self, user_id: str, chat_id: str, data: Dict) -> Optional[Dict]:
-        chat = self._backend.get(chat_id)
-        if not chat or chat.get("user_id") != user_id:
+        """Update a chat only if it belongs to the user."""
+        chat = self.get(chat_id)
+        if not chat or chat.get('user_id') != user_id:
             return None
-        data.pop("user_id", None)
-        return self._backend.update(chat_id, data)
+
+        # Don't allow changing user_id
+        if 'user_id' in data:
+            del data['user_id']
+
+        return self.update(chat_id, data)
 
     def delete_chat(self, user_id: str, chat_id: str) -> bool:
-        chat = self._backend.get(chat_id)
-        if not chat or chat.get("user_id") != user_id:
+        """Delete a chat only if it belongs to the user."""
+        chat = self.get(chat_id)
+        if not chat or chat.get('user_id') != user_id:
             return False
-        return self._backend.delete(chat_id)
+        return self.delete(chat_id)
 
     def add_message(self, user_id: str, chat_id: str, message: Dict) -> Optional[Dict]:
+        """Add a message to a chat."""
         chat = self.get_user_chat(user_id, chat_id)
         if not chat:
             return None
-        messages = chat.get("messages", [])
+
+        messages = chat.get('messages', [])
         messages.append(message)
-        update_data = {"messages": messages}
-        if chat.get("title") == "New Chat" and message.get("role") == "user":
-            update_data["title"] = message.get("content", "")[:50]
-        return self._backend.update(chat_id, update_data)
+
+        # Update title from first user message if not set
+        if chat.get('title') == 'New Chat' and message.get('role') == 'user':
+            title = message.get('content', '')[:50]
+            return self.update(chat_id, {'messages': messages, 'title': title})
+
+        return self.update(chat_id, {'messages': messages})
 
 
+# Singleton instance
 chat_storage = ChatStorage()

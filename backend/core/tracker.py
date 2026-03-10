@@ -1,444 +1,406 @@
+"""
+BurilarTracker — Core Orchestrator
+Thin singleton that coordinates services and storage. No file I/O.
+"""
+
 import json
-import os
-import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-from backend.models.tracking import TrackingPlan
-from backend.utils.ai_client import call_ai
+
+from backend.storage import tracking_storage
+from backend.services.perplexity import call_perplexity
 from backend.services.analyzer import TrackingAnalyzer
 from backend.services.architect import TrackingArchitect
 from backend.services.executor import TrackingExecutor
 from backend.services.extractor import InformationExtractor
-from backend.services.notifier import NotificationManager
+from backend.services.notifier import NotificationService
+from backend.services.differ import UpdateDiffer
+
+
+def _hours_to_frequency(hours: int) -> tuple:
+    """Convert frequency_hours to (frequency_name, custom_hours)."""
+    if hours <= 1:
+        return ('hourly', None)
+    elif hours <= 24:
+        return ('daily', None)
+    elif hours <= 168:
+        return ('weekly', None)
+    else:
+        return ('custom', hours)
+
+
+def _frequency_to_hours(frequency: str, custom_hours: Optional[int] = None) -> int:
+    """Convert named frequency to hours."""
+    mapping = {'realtime': 0.5, 'hourly': 1, 'daily': 24, 'weekly': 168}
+    if frequency == 'custom' and custom_hours:
+        return custom_hours
+    return mapping.get(frequency, 24)
+
 
 class BurilarTracker:
     """
-    Core logic for the Burilar tracking system.
-    Orchestrates the 'Brain' (Analyzer), 'Architect', 'Analyst' (Executor/Extractor), and 'Broadcaster' (Notifier).
+    Core orchestrator for the Burilar tracking system.
+    Coordinates Analyzer, Architect, Executor, Extractor, Differ, and Notifier.
     """
-    
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+
     def __init__(self):
-        self.tracking_plans: Dict[str, TrackingPlan] = {}
-        self.data_file = "burilar_tracking_data.json"
-        
-        # Services
         self.analyzer = TrackingAnalyzer()
         self.architect = TrackingArchitect()
         self.executor = TrackingExecutor()
         self.extractor = InformationExtractor()
-        self.notifier = NotificationManager()
-        
-        self.load_tracking_plans()
-    
+        self.notifier = NotificationService()
+        self.differ = UpdateDiffer()
+
+    # ------------------------------------------------------------------
+    # Query Processing
+    # ------------------------------------------------------------------
+
     def process_query(self, raw_query: str, chat_history: Optional[List[Dict]] = None) -> Dict:
         """
         Orchestrate the analysis pipeline:
-        1. Normalize
-        2. Resolve Context
-        3. Check Feasibility
-        4. Resolve Ambiguity
+        normalize -> resolve context -> feasibility -> source probe -> ambiguity
+        Returns dict with resolved_query, needs_clarification, questions, status.
         """
-        # 1. Normalize
         query = self.analyzer.normalize_input(raw_query)
-        
-        # 2. Resolve Context
         resolved_query = self.analyzer.resolve_context(query, chat_history or [])
-        
-        # 3. Check Feasibility (Static/Dynamic)
+
+        # Feasibility check
         feasibility = self.analyzer.check_feasibility(resolved_query)
         if not feasibility.get('is_feasible', True):
             return {
-                "original_query": raw_query,
+                "query": raw_query,
                 "resolved_query": resolved_query,
                 "needs_clarification": True,
                 "reason": f"Not feasible: {feasibility.get('reason')}",
-                "clarification_questions": ["This topic seems static or historical. Do you want to search for it once instead?"],
-                "status": "not_feasible"
+                "questions": ["This topic seems static or historical. Do you want to search for it once instead?"],
+                "status": "not_feasible",
             }
 
-        # 3.1 Check Source Availability (The Gatekeeper)
+        # Source availability
         source_probe = self.analyzer.probe_sources(resolved_query)
         if not source_probe.get('available', True):
             return {
-                "original_query": raw_query,
+                "query": raw_query,
                 "resolved_query": resolved_query,
                 "needs_clarification": True,
-                "reason": f"No reliable sources finding: {source_probe.get('reason')}",
-                "clarification_questions": ["I couldn't find public information on this. Could you double-check the name?"],
-                "status": "no_sources"
+                "reason": f"No reliable sources: {source_probe.get('reason')}",
+                "questions": ["I couldn't find public information on this. Could you double-check the name?"],
+                "status": "no_sources",
             }
 
-        # 4. Check Ambiguity
+        # Ambiguity check
         ambiguity = self.analyzer.resolve_ambiguity(resolved_query)
         if ambiguity.get('is_ambiguous'):
             interpretations = ambiguity.get('interpretations', [])
             questions = [f"Did you mean: {i['label']}?" for i in interpretations]
             return {
-                "original_query": raw_query,
+                "query": raw_query,
                 "resolved_query": resolved_query,
                 "needs_clarification": True,
                 "reason": "Query is ambiguous",
-                "clarification_questions": questions if questions else ["Could you be more specific?"],
-                "status": "ambiguous"
+                "questions": questions if questions else ["Could you be more specific?"],
+                "status": "ambiguous",
             }
-            
+
         return {
-            "original_query": raw_query,
+            "query": raw_query,
             "resolved_query": resolved_query,
             "needs_clarification": False,
-            "status": "ready"
+            "status": "ready",
         }
-    
-    def check_needs_clarification(self, query: str) -> Dict:
-        # Legacy wrapper - prefer process_query
-        return self.process_query(query)
-    
-    def search_with_ai(self, query: str) -> str:
-        """Perform a web search using Perplexity AI (Legacy direct call)."""
+
+    # ------------------------------------------------------------------
+    # One-shot Search
+    # ------------------------------------------------------------------
+
+    def search(self, query: str) -> Dict:
+        """
+        One-shot search: query Perplexity, assess status, return results.
+        No tracking is created.
+        """
         messages = [
             {
                 "role": "system",
-                "content": "You are a helpful research assistant. Provide comprehensive and accurate information based on current web sources. IMPORTANT: Always include the actual source URLs at the end of your response in a 'Sources:' section, listing each source with its full URL."
+                "content": (
+                    "You are a helpful research assistant. Provide comprehensive and accurate "
+                    "information based on current web sources. Respond in Japanese. "
+                    "IMPORTANT: Always include the actual source URLs at the end of your response "
+                    "in a 'Sources:' section."
+                ),
             },
             {
                 "role": "user",
-                "content": f"{query}\n\nPlease include all source URLs at the end of your response in a clear 'Sources:' section."
-            }
-        ]
-        
-        return call_ai(messages, task="web_search")
-
-    def search_with_ai_enhanced(self, query: str) -> Dict:
-        """Perform a web search using Perplexity AI, returning images if available."""
-        messages = [
-            {
-                "role": "system",
-                "content": "You are a helpful research assistant. Provide comprehensive and accurate information based on current web sources. Respond in Japanese. IMPORTANT: Always include the actual source URLs at the end of your response in a 'Sources:' section, listing each source with its full URL."
+                "content": f"{query}\n\nPlease include all source URLs at the end of your response.",
             },
-            {
-                "role": "user",
-                "content": f"{query}\n\nPlease include all source URLs at the end of your response in a clear 'Sources:' section."
-            }
         ]
-
-        # Use return_images=True to get images
-        result = call_ai(messages, task="web_search", return_images=True)
+        result = call_perplexity(messages, model="sonar", return_images=True)
 
         if isinstance(result, dict):
-            return result
-        # Fallback if error occurred
-        return {"content": result, "images": []}
-    
-    def assess_topic_status(self, search_result: str) -> Dict:
-        """Determine if a topic is 'Completed' or 'In Progress'."""
-        assessment_prompt = f"""You are analyzing whether a topic needs ongoing tracking or if it's already resolved.
+            content = result.get("content", "")
+            images = result.get("images", [])
+        else:
+            content = result
+            images = []
 
-Search Result:
-{search_result}
+        status_info = self.analyzer.assess_topic_status(content)
 
-Your task is to be VERY STRICT about what qualifies as "In Progress". Most questions should be "Completed".
+        return {
+            "content": content,
+            "status": status_info["status"],
+            "explanation": status_info["explanation"],
+            "images": images,
+        }
 
-"Completed" - Choose this if:
-- The question has been definitively answered with a clear outcome
-- An event has concluded with a final result (elections with declared winners, trials with verdicts, etc.)
-- Historical information or past events where all facts are established
-- Product launches, releases, or announcements that already happened
+    # ------------------------------------------------------------------
+    # Tracking CRUD
+    # ------------------------------------------------------------------
 
-"In Progress" - ONLY choose this if:
-- A significant, ongoing process with major milestones still expected
-- Future events that haven't occurred yet (upcoming elections, product launches not yet happened)
-- Active investigations/trials WITHOUT a final verdict/conclusion
-- Developing situations where the PRIMARY question remains unanswered
-
-Respond with ONLY "Completed" or "In Progress" on the first line, followed by ONE concise sentence (max 20 words) explaining why."""
-        
-        messages = [
-            {"role": "user", "content": assessment_prompt}
-        ]
-        
-        content = call_ai(messages, task="generation")
-
-        # Extract just the status and first sentence
-        lines = content.strip().split('\n')
-        status_line = lines[0] if lines else content
-        explanation_line = lines[1] if len(lines) > 1 else ""
-        
-        # Clean up the explanation to be concise
-        explanation = explanation_line.strip()
-        if not explanation and len(lines) > 0:
-            explanation = status_line
-            
-        status = "completed" if "Completed" in status_line else "in_progress"
-        return {"status": status, "explanation": explanation}
-    
-    def generate_tracking_plan(self, user_prompt: str, search_result: str) -> TrackingPlan:
+    def create_tracking(self, user_id: str, query: str,
+                        search_result: Optional[str] = None,
+                        frequency: str = "daily",
+                        custom_frequency_hours: Optional[int] = None,
+                        notification_enabled: bool = True) -> Dict:
         """
-        Generate a detailed tracking plan using the Brain (Analyzer) and Architect.
-        Phase 1: Analyze Intent
-        Phase 2: Generate Strategy
+        Create a new tracking: analyze intent -> architect strategy -> save to storage.
+        Optionally accepts a prior search_result to skip the initial search.
         """
-        # Phase 1: Analyze Intent
-        analysis = self.analyzer.analyze_intent(user_prompt)
+        # Analyze intent
+        analysis = self.analyzer.analyze_intent(query)
         entities = analysis.get("entities", [])
-        
-        # Phase 2: Architect Strategy
-        strategy = self.architect.generate_strategy(user_prompt, analysis, search_result)
 
-        # Create basic plan
-        plan = TrackingPlan(
-            topic=user_prompt,
-            objective=f"Track {analysis.get('category')} for {', '.join(entities)}",
-            frequency_hours=strategy.get("frequency_hours", 24), # Frequency from Architect
-            keywords=strategy.get("search_queries", []), # Use generated queries as keywords for now
-            status="pending",
-            strategy=strategy # Store full strategy
-        )
-        plan.suggested_prompt = f"Tracking {user_prompt} based on {len(strategy.get('priority_sources', []))} priority sources."
-        return plan
-    
-    def detect_differences(self, old_result: str, new_result: str, keywords: List[str]) -> Optional[str]:
-        """Legacy Compare: Text-based."""
-        diff_prompt = f"""Compare these two search results and identify if there are SIGNIFICANT new developments.
+        # If no prior search result, do one now
+        if not search_result:
+            search_data = self.search(query)
+            search_result = search_data.get("content", "")
 
-Previous Result:
-{old_result[:1000]}
+        # Architect strategy
+        strategy = self.architect.generate_strategy(query, analysis, search_result)
 
-New Result:
-{new_result[:1000]}
+        # Determine frequency
+        if frequency == "custom" and custom_frequency_hours:
+            freq_hours = custom_frequency_hours
+        elif strategy.get("frequency_hours"):
+            freq_hours = strategy["frequency_hours"]
+            frequency, custom_frequency_hours = _hours_to_frequency(freq_hours)
+        else:
+            freq_hours = _frequency_to_hours(frequency)
 
-Important Keywords to Watch: {', '.join(keywords)}
-
-If there are meaningful updates (new facts, events, or milestones), respond with "UPDATE:" followed by a summary.
-If there are no significant changes, respond with only "NO_CHANGE".
-"""
-        messages = [
-            {"role": "user", "content": diff_prompt}
-        ]
-        
-        result = call_ai(messages, task="generation")
-
-        if result.startswith("UPDATE:"):
-            return result.replace("UPDATE:", "").strip()
-        return None
-
-    
-    def _detect_structured_diff(self, old_data: Dict, new_data: Dict, schema_type: str) -> Optional[Dict]:
-        """
-        Compare two structured JSON objects.
-        Returns a detailed update object if there is a meaningful update, else None.
-        structure: { "summary": str, "changes": List[str], "sources": List[Dict] }
-        """
-        if not old_data or not new_data:
-            return None
-            
-        changes = []
-        summary = ""
-        
-        if schema_type == "release_watch":
-            # Check Status or Date change
-            if old_data.get("status") != new_data.get("status"):
-                changes.append(f"Status changed from {old_data.get('status')} to {new_data.get('status')}")
-            if old_data.get("date") != new_data.get("date"):
-                changes.append(f"Release date updated from {old_data.get('date')} to {new_data.get('date')}")
-            
-            if changes:
-                summary = "Release information has been updated."
-
-        elif schema_type == "metric_tracking":
-            # Check Value change > 5% (heuristic)
-            try:
-                old_val = float(old_data.get("value", 0))
-                new_val = float(new_data.get("value", 0))
-                if old_val != 0:
-                    pct_change = abs((new_val - old_val) / old_val)
-                    if pct_change > 0.05: # 5% threshold
-                        direction = "up" if new_val > old_val else "down"
-                        changes.append(f"Value moved {direction} by {pct_change:.1%} ({old_val} -> {new_val})")
-                        summary = f"Significant value change detected ({direction} {pct_change:.1%})."
-            except:
-                pass # Fallback if values aren't numbers
-                
-        # Fallback: Check summary text similarity if structured check didn't trigger
-        if not changes and old_data.get("latest_update_summary") != new_data.get("latest_update_summary"):
-             # Use LLM to verify if the summary difference is meaningful
-             diff_text = self.detect_differences(
-                 str(old_data), 
-                 str(new_data), 
-                 []
-             )
-             if diff_text:
-                 summary = diff_text
-                 changes.append("General update detected in summary.")
-        
-        if summary or changes:
-            return {
-                "summary": summary if summary else "New updates detected.",
-                "changes": changes,
-                "sources": new_data.get("sources", []) # Assuming extractor puts sources here or we merge them later
-            }
-             
-        return None
-    
-    def start_tracking(self, plan: TrackingPlan):
-        """Add a tracking plan to active tracking."""
-        self.tracking_plans[plan.id] = plan
-        plan.active = True
-        plan.status = "tracking"
-        plan.next_search_time = datetime.now() + timedelta(hours=plan.frequency_hours)
-        
-        # Phase 3: Initial Execution to set baseline
-        if not plan.last_search_result:
-             print(f"Running initial execution for plan {plan.id}...")
-             search_content = self.executor.execute_plan(plan)
-             # FIX: Extract string content if search_content is a dict
-             content_text = search_content.get("content", "") if isinstance(search_content, dict) else search_content
-             schema_type = plan.strategy.get("schema_type", "topic_watch")
-             structured_data = self.extractor.extract_data(content_text, schema_type)
-             plan.last_search_result = structured_data # Store JSON
-             plan.last_search_time = datetime.now()
-
-        self.save_tracking_plans()
-    
-    def check_tracking_updates(self):
-        """Check all active tracking plans for updates."""
         now = datetime.now()
+
+        # Extract initial structured data
+        schema_type = strategy.get("schema_type", "topic_watch")
+        structured_data = self.extractor.extract_data(search_result, schema_type)
+
+        tracking = tracking_storage.create_tracking(user_id, {
+            "title": query,
+            "query": query,
+            "description": f"Track {analysis.get('category', 'topic')} for {', '.join(entities)}",
+            "is_active": True,
+            "frequency": frequency,
+            "custom_frequency_hours": custom_frequency_hours,
+            "notification_enabled": notification_enabled,
+            "status": "tracking",
+            "strategy": strategy,
+            "keywords": strategy.get("search_queries", []),
+            "last_search_result": structured_data,
+            "last_executed_at": now.isoformat(),
+            "next_execute_at": (now + timedelta(hours=freq_hours)).isoformat(),
+            "image_url": "",
+        })
+
+        return tracking
+
+    # ------------------------------------------------------------------
+    # Execution & Update Detection
+    # ------------------------------------------------------------------
+
+    def execute_tracking(self, user_id: str, tracking_id: str) -> Optional[Dict]:
+        """
+        Run the tracking pipeline for a single tracking:
+        execute -> extract -> diff -> notify.
+        Returns update dict if found, else None.
+        """
+        tracking = tracking_storage.get_user_tracking(user_id, tracking_id)
+        if not tracking:
+            return None
+
+        # Execute search
+        search_content = self.executor.execute_plan(tracking)
+        content_text = search_content.get("content", "") if isinstance(search_content, dict) else search_content
+
+        # Extract structured data
+        schema_type = tracking.get("strategy", {}).get("schema_type", "topic_watch")
+        new_data = self.extractor.extract_data(content_text, schema_type)
+
+        # Diff against previous
+        update_obj = None
+        old_data = tracking.get("last_search_result")
+
+        if old_data and isinstance(old_data, dict):
+            update_obj = self.differ.detect_structured_diff(old_data, new_data, schema_type)
+        elif old_data:
+            diff_text = self.differ.detect_text_diff(
+                str(old_data), str(new_data), tracking.get("keywords", [])
+            )
+            if diff_text:
+                update_obj = {"summary": diff_text, "changes": [], "sources": []}
+
+        # Add citation sources if available
+        if update_obj and isinstance(search_content, dict) and "citations" in search_content:
+            update_obj["sources"] = [
+                {"id": str(i), "title": f"Source {i}", "url": cite}
+                for i, cite in enumerate(search_content.get("citations", []), 1)
+            ]
+
+        now = datetime.now()
+        freq_hours = _frequency_to_hours(
+            tracking.get("frequency", "daily"),
+            tracking.get("custom_frequency_hours"),
+        )
+
+        # Update tracking state
+        tracking_storage.update_tracking(user_id, tracking_id, {
+            "last_search_result": new_data,
+            "last_executed_at": now.isoformat(),
+            "next_execute_at": (now + timedelta(hours=freq_hours)).isoformat(),
+        })
+
+        if update_obj:
+            # Save update entry
+            update_entry = {
+                "title": update_obj["summary"][:80],
+                "content": update_obj["summary"],
+                "sources": update_obj.get("sources", []),
+                "details": update_obj,
+            }
+            tracking_storage.add_update(user_id, tracking_id, update_entry)
+
+            # Notify user
+            if tracking.get("notification_enabled", True):
+                self.notifier.notify_update(
+                    user_id=user_id,
+                    tracking_id=tracking_id,
+                    title=f"Update: {tracking.get('title', '')}",
+                    message=update_obj["summary"],
+                    details=update_obj,
+                )
+
+            return update_entry
+
+        return None
+
+    # ------------------------------------------------------------------
+    # Background Check
+    # ------------------------------------------------------------------
+
+    def check_all_updates(self):
+        """Check all active trackings that are due for an update."""
+        now = datetime.now()
+        active_trackings = tracking_storage.get_active_trackings()
         updates_found = []
-        
-        for plan_id, plan in self.tracking_plans.items():
-            if not plan.active:
-                continue
-            
-            if plan.next_search_time and now >= plan.next_search_time:
-                print(f"Checking updates for {plan.topic}...")
-                
-                # Phase 3: Execute & Extract
-                search_content = self.executor.execute_plan(plan)
-                
-                # FIX: Extract string content from dict
-                content_text = search_content.get("content", "") if isinstance(search_content, dict) else search_content
-                
-                schema_type = plan.strategy.get("schema_type", "topic_watch")
-                new_structured_data = self.extractor.extract_data(content_text, schema_type)
-                
-                # Compare with previous result
-                update_obj = None
-                if plan.last_search_result:
-                    # Check if last_result is dict (migrated) or str (legacy)
-                    if isinstance(plan.last_search_result, dict):
-                         # If search_content is dict (from new executor), extract content string for extractor
-                         content_text = search_content.get("content", "") if isinstance(search_content, dict) else search_content
-                         
-                         structured_diff = self._detect_structured_diff(
-                             plan.last_search_result,
-                             new_structured_data,
-                             schema_type
-                         )
-                         if structured_diff:
-                             update_obj = structured_diff
-                             # Add citations if available from executor
-                             if isinstance(search_content, dict) and "citations" in search_content:
-                                 # Setup sources for the UI
-                                 update_obj["sources"] = []
-                                 for idx, cite in enumerate(search_content.get("citations", []), 1):
-                                     update_obj["sources"].append({
-                                         "id": str(idx),
-                                         "title": "Source " + str(idx), # Perplexity citations might be just URLs?
-                                         "url": cite
-                                     })
 
+        for tracking in active_trackings:
+            next_execute = tracking.get("next_execute_at")
+            if next_execute and now >= datetime.fromisoformat(next_execute):
+                user_id = tracking.get("user_id")
+                tracking_id = tracking.get("id")
 
-                    else:
-                        # Legacy fallback
-                        diff_text = self.detect_differences(
-                            str(plan.last_search_result),
-                            str(new_structured_data),
-                            plan.keywords
-                        )
-                        if diff_text:
-                            update_obj = {
-                                "summary": diff_text,
-                                "changes": [],
-                                "sources": []
-                            }
-                    
-                    if update_obj:
-                        update_entry = {
-                            'timestamp': now.isoformat(),
-                            'update': update_obj['summary'], # Legacy compat
-                            'details': update_obj,           # New rich data
-                            'data': new_structured_data 
-                        }
-                        plan.updates.append(update_entry)
-                        
-                        # Phase 4: Notify User
-                        self.notifier.add_notification(
-                            title=f"Update: {plan.topic}",
-                            message=update_obj['summary'],
-                            type="update",
-                            plan_id=plan_id,
-                            details=update_obj # Pass rich details
-                        )
-                        
-                        updates_found.append({
-                            'plan_id': plan_id,
-                            'topic': plan.topic,
-                            'update': update_obj['summary']
-                        })
-                
-                # Update tracking plan
-                plan.last_search_result = new_structured_data
-                plan.last_search_time = now
-                plan.next_search_time = now + timedelta(hours=plan.frequency_hours)
-                self.save_tracking_plans()
-        
-        return updates_found
-    
-    def save_tracking_plans(self):
-        """Persist all tracking plans (Supabase or JSON fallback)."""
-        from backend.db import is_db_available, get_supabase
-        if is_db_available():
-            try:
-                db = get_supabase()
-                for plan_id, plan in self.tracking_plans.items():
-                    plan_dict = plan.to_dict()
-                    # Upsert: insert or update if id already exists
-                    db.table("tracking_plans").upsert(plan_dict).execute()
-            except Exception as e:
-                print(f"[tracker] DB save failed: {e}")
-        else:
-            data = {plan_id: plan.to_dict() for plan_id, plan in self.tracking_plans.items()}
-            with open(self.data_file, 'w') as f:
-                json.dump(data, f, indent=2)
+                if not user_id or not tracking_id:
+                    continue
 
-    def load_tracking_plans(self):
-        """Load all tracking plans into memory (Supabase or JSON fallback)."""
-        from backend.db import is_db_available, get_supabase
-        if is_db_available():
-            try:
-                db = get_supabase()
-                res = db.table("tracking_plans").select("*").execute()
-                for plan_dict in (res.data or []):
-                    try:
-                        plan = TrackingPlan.from_dict(plan_dict)
-                        self.tracking_plans[plan.id] = plan
-                    except Exception as e:
-                        print(f"[tracker] Error loading plan {plan_dict.get('id')}: {e}")
-            except Exception as e:
-                print(f"[tracker] DB load failed: {e}")
-        else:
-            if os.path.exists(self.data_file):
                 try:
-                    with open(self.data_file, 'r') as f:
-                        data = json.load(f)
-                        for plan_id, plan_dict in data.items():
-                            try:
-                                plan = TrackingPlan.from_dict(plan_dict)
-                                self.tracking_plans[plan_id] = plan
-                            except Exception as e:
-                                print(f"Error loading plan {plan_id}: {str(e)}")
+                    print(f"Checking updates for: {tracking.get('title', tracking_id)}")
+                    update = self.execute_tracking(user_id, tracking_id)
+                    if update:
+                        updates_found.append({
+                            "tracking_id": tracking_id,
+                            "title": tracking.get("title", ""),
+                            "update": update.get("content", ""),
+                        })
                 except Exception as e:
-                    print(f"Error loading tracking plans: {str(e)}")
+                    print(f"Error checking tracking {tracking_id}: {e}")
 
-    def get_user_plans(self, user_id: str) -> List[TrackingPlan]:
-        """Get all tracking plans for a specific user."""
-        return [plan for plan in self.tracking_plans.values() if plan.user_id == user_id]
+        return updates_found
+
+    # ------------------------------------------------------------------
+    # Feedback & Adaptive Learning
+    # ------------------------------------------------------------------
+
+    def handle_feedback(self, user_id: str, tracking_id: str,
+                        notification_id: str, feedback: str) -> Dict:
+        """
+        Handle user feedback on a notification.
+        If 'not_useful', trigger adaptive learning to adjust the tracking strategy.
+        """
+        if feedback != "not_useful":
+            return {"status": "noted"}
+
+        tracking = tracking_storage.get_user_tracking(user_id, tracking_id)
+        if not tracking:
+            return {"error": "Tracking not found"}
+
+        feedback_summary = self.notifier.get_feedback_summary(tracking_id)
+        if not feedback_summary.get("not_useful"):
+            return {"message": "No negative feedback to analyze"}
+
+        not_useful_examples = [f"- {f['message']}" for f in feedback_summary["not_useful"]]
+
+        adjustment_prompt = f"""You are the 'Adaptive Learning Engine' for Burilar.
+The user has marked several updates as 'not useful' for the following tracking:
+
+Topic: {tracking.get('title', '')}
+Description: {tracking.get('description', '')}
+Current Keywords: {', '.join(tracking.get('keywords', []))}
+Current Frequency: {tracking.get('frequency', 'daily')}
+
+Recent 'Not Useful' Updates:
+{chr(10).join(not_useful_examples)}
+
+Task: Analyze why these updates are not useful and suggest improvements.
+Respond in JSON format:
+{{
+  "thought": "brief analysis",
+  "adjustments": {{
+    "frequency": "daily",
+    "keywords": ["new", "keywords"],
+    "description": "new description"
+  }}
+}}"""
+
+        messages = [{"role": "user", "content": adjustment_prompt + "\n\nRespond with ONLY the JSON object."}]
+
+        try:
+            response_text = call_perplexity(messages, model="sonar")
+            start_idx = response_text.find('{')
+            end_idx = response_text.rfind('}') + 1
+            adjustment_data = json.loads(response_text[start_idx:end_idx])
+
+            adjustments = adjustment_data.get("adjustments", {})
+            update_data = {}
+
+            if "frequency" in adjustments:
+                update_data["frequency"] = adjustments["frequency"]
+            if "keywords" in adjustments:
+                update_data["keywords"] = adjustments["keywords"]
+            if "description" in adjustments:
+                update_data["description"] = adjustments["description"]
+
+            if update_data:
+                tracking_storage.update_tracking(user_id, tracking_id, update_data)
+
+            return {
+                "status": "adjusted",
+                "thought": adjustment_data.get("thought"),
+                "applied_changes": adjustments,
+            }
+
+        except Exception as e:
+            print(f"Adaptive Learning Error: {e}")
+            return {"error": str(e)}

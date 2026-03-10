@@ -1,23 +1,25 @@
 /**
  * API Module
- * Re-exports all API utilities and types
+ * Re-exports all API utilities
  */
 
 // Core client
-export { api, ApiClientError, setAuthToken, getAuthToken } from './client';
-export { useApi, useMutation } from './hooks';
+export { api, ApiClientError, setAuthToken, getAuthToken, clearAuthTokens } from './client';
 
-// Chat API
+// Auth API
 export {
-  getChats,
-  getChat,
-  createChat,
-  sendMessage,
-  updateChat,
-  togglePinChat,
-  deleteChat,
+  login,
+  loginWithGoogle,
+  loginWithApple,
+  logout,
+  refreshToken,
+  getCurrentUser,
+  register,
+} from './auth';
 
-} from './chats';
+// Search API
+export { search } from './search';
+export type { SearchRequest, SearchResponse } from './search';
 
 // Tracking API
 export {
@@ -27,7 +29,6 @@ export {
   updateTracking,
   toggleTrackingActive,
   toggleTrackingPin,
-  updateTrackingFrequency,
   executeTracking,
   deleteTracking,
   markUpdatesAsRead,
@@ -40,55 +41,10 @@ export {
   getNotifications,
   getUnreadCount,
   markNotificationAsRead,
-  markNotificationsAsRead,
   markAllNotificationsAsRead,
   deleteNotification,
-  clearAllNotifications,
-  getNotificationSettings,
-  getGlobalSettings,
-  updateGlobalSettings,
-  getTrackingNotificationSettings,
-  updateTrackingNotificationSettings,
-  resetTrackingNotificationSettings,
-  sendTestNotification,
+  submitNotificationFeedback,
 } from './notifications';
-
-// Integrations API
-export {
-  getIntegrations,
-  getIntegration,
-  connectIntegration,
-  handleOAuthCallback,
-  disconnectIntegration,
-  updateIntegration,
-  toggleSubApp,
-  syncIntegration,
-  getSyncStatus,
-  refreshIntegrationToken,
-} from './integrations';
-
-// User & Plan API
-export {
-  getCurrentUser,
-  updateUser,
-  deleteAccount,
-  getUserSettings,
-  updateUserSettings,
-  getPlans,
-  getPlan,
-  getSubscription,
-  createSubscription,
-  updateSubscription,
-  cancelSubscription,
-  reactivateSubscription,
-  getUsage,
-  getBillingHistory,
-  getInvoiceUrl,
-  getPaymentMethods,
-  addPaymentMethod,
-  setDefaultPaymentMethod,
-  removePaymentMethod,
-} from './user';
 
 // Types
 export type {

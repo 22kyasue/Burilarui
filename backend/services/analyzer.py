@@ -147,6 +147,47 @@ Respond in JSON format:
 """
         return self._get_json_response(prompt)
 
+    def assess_topic_status(self, search_result: str) -> Dict:
+        """
+        Determine if a topic is 'completed' or 'in_progress' based on search results.
+        Moved from BurilarTracker.
+        """
+        assessment_prompt = f"""You are analyzing whether a topic needs ongoing tracking or if it's already resolved.
+
+Search Result:
+{search_result[:3000]}
+
+Your task is to be VERY STRICT about what qualifies as "In Progress". Most questions should be "Completed".
+
+"Completed" - Choose this if:
+- The question has been definitively answered with a clear outcome
+- An event has concluded with a final result (elections with declared winners, trials with verdicts, etc.)
+- Historical information or past events where all facts are established
+- Product launches, releases, or announcements that already happened
+
+"In Progress" - ONLY choose this if:
+- A significant, ongoing process with major milestones still expected
+- Future events that haven't occurred yet (upcoming elections, product launches not yet happened)
+- Active investigations/trials WITHOUT a final verdict/conclusion
+- Developing situations where the PRIMARY question remains unanswered
+
+Respond with ONLY "Completed" or "In Progress" on the first line, followed by ONE concise sentence (max 20 words) explaining why."""
+
+        messages = [{"role": "user", "content": assessment_prompt}]
+
+        content = call_perplexity(messages, model="sonar")
+
+        lines = content.strip().split('\n')
+        status_line = lines[0] if lines else content
+        explanation_line = lines[1] if len(lines) > 1 else ""
+
+        explanation = explanation_line.strip()
+        if not explanation and len(lines) > 0:
+            explanation = status_line
+
+        status = "completed" if "Completed" in status_line else "in_progress"
+        return {"status": status, "explanation": explanation}
+
     def _get_json_response(self, prompt: str) -> Dict:
         """Helper to call AI and parse JSON."""
         messages = [{"role": "user", "content": prompt + "\n\nRespond with ONLY the JSON object."}]

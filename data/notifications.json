@@ -1,1 +1,1009 @@
-[]
+[
+  {
+    "id": "1771142095021",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Long Content",
+    "message": "Start of long message.\n\n- Item 1\n- Item 2\n- Item 3\n- Item 4\n- Item 5\n- Item 6\n- Item 7\n- Item 8\n- Item 9\n- Item 10\n\nMiddle of message.\n\nEnd of long message. Verify scroll.",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "created_at": "2026-02-15T16:54:55.021414",
+    "updated_at": "2026-02-15T16:54:55.021414"
+  },
+  {
+    "id": "1771142086900",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Test Notification with Markdown",
+    "message": "This is a **bold** statement.\n\nHere is a list:\n- Item 1\n- Item 2\n\n[Link to Google](https://google.com)\n\nVerify that this renders correctly and scrolls if too long.",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "created_at": "2026-02-15T16:54:46.900744",
+    "updated_at": "2026-02-15T16:54:46.900744"
+  },
+  {
+    "id": "1770707624976",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Python 3.14 release date",
+    "message": "Significant new developments since the previous results (both covering only Python 3.14.0 release on 2025-10-07): Python 3.14.1 was released on Dec. 2, 2025, as the first maintenance release with ~558 bugfixes, build improvements, documentation changes, and new features like PEP 779 (free-threaded Python support), PEP 649 (deferred annotations), PEP 750 (template string literals), PEP 734 (multiple interpreters), PEP 784 (compression.zstd module), and others including official macOS/Windows binaries with experimental JIT, Android binaries, and no more PGP signatures[2][3][5]. Python 3.14.2 is now the latest stable release as of January 2026[5]. Python 3.9.25 was the final security release on Oct. 31, 2025, marking end-of-life for 3.9[1]. Python 3.15 development is underway with alpha 1 including PEP 686 (UTF-8 default) and PEP 799 (profiling API), final release scheduled for Oct. 2026[1][3].\n\n**Sources:**\n[1] https://realpython.com/python-news-november-2025/\n[2] https://www.python.org/downloads/release/python-3141/\n[3] https://peps.python.org/pep-0745/\n[4] https://github.com/astral-sh/ruff/issues/19467\n[5] https://en.wikipedia.org/wiki/History_of_Python\n[6] https://dailypythonprojects.substack.com/p/what-a-developer-should-do-when-a\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://www.liquidweb.com/blog/latest-python-version/",
+    "tracking_id": "1770482987346",
+    "read": false,
+    "feedback": "useful",
+    "details": {
+      "summary": "Significant new developments since the previous results (both covering only Python 3.14.0 release on 2025-10-07): Python 3.14.1 was released on Dec. 2, 2025, as the first maintenance release with ~558 bugfixes, build improvements, documentation changes, and new features like PEP 779 (free-threaded Python support), PEP 649 (deferred annotations), PEP 750 (template string literals), PEP 734 (multiple interpreters), PEP 784 (compression.zstd module), and others including official macOS/Windows binaries with experimental JIT, Android binaries, and no more PGP signatures[2][3][5]. Python 3.14.2 is now the latest stable release as of January 2026[5]. Python 3.9.25 was the final security release on Oct. 31, 2025, marking end-of-life for 3.9[1]. Python 3.15 development is underway with alpha 1 including PEP 686 (UTF-8 default) and PEP 799 (profiling API), final release scheduled for Oct. 2026[1][3].\n\n**Sources:**\n[1] https://realpython.com/python-news-november-2025/\n[2] https://www.python.org/downloads/release/python-3141/\n[3] https://peps.python.org/pep-0745/\n[4] https://github.com/astral-sh/ruff/issues/19467\n[5] https://en.wikipedia.org/wiki/History_of_Python\n[6] https://dailypythonprojects.substack.com/p/what-a-developer-should-do-when-a\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://www.liquidweb.com/blog/latest-python-version/",
+      "changes": [
+        "General update detected in summary."
+      ],
+      "sources": []
+    },
+    "created_at": "2026-02-10T16:13:44.976569",
+    "updated_at": "2026-02-10T16:13:44.976569"
+  },
+  {
+    "id": "1770622271485",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Apple Intelligence\u306e\u65e5\u672c\u5c55\u958b\u3068\u6a5f\u80fd\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8",
+    "message": "Significant new developments include iOS 26.4 beta planned for late February 2026 (week of Feb 23) with initial components of the long-awaited smarter, AI-powered Siri (deeper personal understanding, screen awareness) teased at WWDC 2024, relying on Google-developed Apple Foundation Models v10 (1.2T parameters); full Siri rebuild still slated for 2026 possibly in iOS 27 with chatbot interface[2][3]; entry-level iPad 12 (A18 chip, 8GB RAM) gaining Apple Intelligence support this year, alongside iPad Air M4 refresh[4]; June 2025 announcement of new features like Live Translation, visual intelligence, Image Playground/Genmoji enhancements, developer access to on-device foundation model, Reminders/Wallet integrations (available fall 2025)[1]. Latest update now February 2026, advancing beyond prior September 2025 summary[1][2][3][4].\n\n**Sources:**\n[1] https://www.apple.com/newsroom/2025/06/apple-intelligence-gets-even-more-powerful-with-new-capabilities-across-apple-devices/\n[2] https://www.techradar.com/ai-platforms-assistants/apple-intelligence/apples-smarter-long-promised-ai-powered-siri-might-be-arriving-in-a-few-months-according-to-a-new-report\n[3] https://www.macrumors.com/2026/02/08/ios-26-4-beta-release-date-revealed/\n[4] https://9to5mac.com/2026/02/06/apples-cheapest-ipad-to-get-apple-intelligence-support-at-just-the-right-time/\n[5] https://www.apple.com/os/ios/",
+    "tracking_id": "sample_apple_intelligence_jp",
+    "read": false,
+    "feedback": "useful",
+    "details": {
+      "summary": "Significant new developments include iOS 26.4 beta planned for late February 2026 (week of Feb 23) with initial components of the long-awaited smarter, AI-powered Siri (deeper personal understanding, screen awareness) teased at WWDC 2024, relying on Google-developed Apple Foundation Models v10 (1.2T parameters); full Siri rebuild still slated for 2026 possibly in iOS 27 with chatbot interface[2][3]; entry-level iPad 12 (A18 chip, 8GB RAM) gaining Apple Intelligence support this year, alongside iPad Air M4 refresh[4]; June 2025 announcement of new features like Live Translation, visual intelligence, Image Playground/Genmoji enhancements, developer access to on-device foundation model, Reminders/Wallet integrations (available fall 2025)[1]. Latest update now February 2026, advancing beyond prior September 2025 summary[1][2][3][4].\n\n**Sources:**\n[1] https://www.apple.com/newsroom/2025/06/apple-intelligence-gets-even-more-powerful-with-new-capabilities-across-apple-devices/\n[2] https://www.techradar.com/ai-platforms-assistants/apple-intelligence/apples-smarter-long-promised-ai-powered-siri-might-be-arriving-in-a-few-months-according-to-a-new-report\n[3] https://www.macrumors.com/2026/02/08/ios-26-4-beta-release-date-revealed/\n[4] https://9to5mac.com/2026/02/06/apples-cheapest-ipad-to-get-apple-intelligence-support-at-just-the-right-time/\n[5] https://www.apple.com/os/ios/",
+      "changes": [
+        "General update detected in summary."
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://smhn.info/202502-apple-ai-japanese"
+        },
+        {
+          "id": "2",
+          "title": "Source 2",
+          "url": "https://gigazine.net/news/20250308-apple-delays-intelligence-siri/"
+        },
+        {
+          "id": "3",
+          "title": "Source 3",
+          "url": "https://studioforme.jp/?p=13"
+        },
+        {
+          "id": "4",
+          "title": "Source 4",
+          "url": "https://note.com/yasutoshiai/n/nd8685dacca4e"
+        },
+        {
+          "id": "5",
+          "title": "Source 5",
+          "url": "https://www.infoatmackers.jp/weblog/apple-is-slow-but-not-in-a-hurry-in-2026-they-will-pursue-apple-intelligence-_20260101/"
+        },
+        {
+          "id": "6",
+          "title": "Source 6",
+          "url": "https://www.businessinsider.jp/article/2601-apple-2026-expected-product-launches/"
+        },
+        {
+          "id": "7",
+          "title": "Source 7",
+          "url": "https://jbpress.ismedia.jp/articles/-/92786"
+        },
+        {
+          "id": "8",
+          "title": "Source 8",
+          "url": "https://ledge.ai/articles/apple_nextgen_ai_platform_gemini_adoption"
+        },
+        {
+          "id": "9",
+          "title": "Source 9",
+          "url": "https://www.watch.impress.co.jp/docs/series/nishida/2075331.html"
+        }
+      ]
+    },
+    "created_at": "2026-02-09T16:31:11.485260",
+    "updated_at": "2026-02-09T16:31:11.485260"
+  },
+  {
+    "id": "1770620967071",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Python 3.14 release date",
+    "message": "Since the previous results (both focused on Python 3.14.0 release on 2025-10-07), significant new developments include multiple maintenance releases: 3.14.1 (Dec 2, 2025) as the first with ~558 bugfixes and new features like free-threaded support (PEP 779); 3.14.2 (Dec 5, 2025); and 3.14.3 (Feb 3, 2026, now the latest stable).[2][4][5][3] Python 3.15 alphas are also underway (e.g., 3.15.0a5 in Jan 2026), and Python 3.9 support ended Oct 31, 2025.[1][6]\n\n**Sources:**\n[1] https://realpython.com/python-news-november-2025/\n[2] https://www.python.org/downloads/release/python-3141/\n[3] https://peps.python.org/pep-0745/\n[4] https://www.python.org/doc/versions/\n[5] https://www.python.org/downloads/\n[6] https://www.python.org/downloads/source/\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://en.wikipedia.org/wiki/History_of_Python\n[9] https://www.liquidweb.com/blog/latest-python-version/",
+    "tracking_id": "1770482987346",
+    "read": false,
+    "feedback": "useful",
+    "details": {
+      "summary": "Since the previous results (both focused on Python 3.14.0 release on 2025-10-07), significant new developments include multiple maintenance releases: 3.14.1 (Dec 2, 2025) as the first with ~558 bugfixes and new features like free-threaded support (PEP 779); 3.14.2 (Dec 5, 2025); and 3.14.3 (Feb 3, 2026, now the latest stable).[2][4][5][3] Python 3.15 alphas are also underway (e.g., 3.15.0a5 in Jan 2026), and Python 3.9 support ended Oct 31, 2025.[1][6]\n\n**Sources:**\n[1] https://realpython.com/python-news-november-2025/\n[2] https://www.python.org/downloads/release/python-3141/\n[3] https://peps.python.org/pep-0745/\n[4] https://www.python.org/doc/versions/\n[5] https://www.python.org/downloads/\n[6] https://www.python.org/downloads/source/\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://en.wikipedia.org/wiki/History_of_Python\n[9] https://www.liquidweb.com/blog/latest-python-version/",
+      "changes": [
+        "General update detected in summary."
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://peps.python.org/pep-0745/"
+        },
+        {
+          "id": "2",
+          "title": "Source 2",
+          "url": "https://realpython.com/python-news-november-2025/"
+        },
+        {
+          "id": "3",
+          "title": "Source 3",
+          "url": "https://www.developer-tech.com/news/python-3-14-slithers-closer-with-rc1-arrival/"
+        },
+        {
+          "id": "4",
+          "title": "Source 4",
+          "url": "https://community.ibm.com/community/user/blogs/jc-yao/2025/11/10/announcing-ibm-open-enterprise-sdk-for-python-314"
+        },
+        {
+          "id": "5",
+          "title": "Source 5",
+          "url": "https://www.python.org/downloads/release/python-3140/"
+        },
+        {
+          "id": "6",
+          "title": "Source 6",
+          "url": "https://www.python.org/downloads/release/python-3141/"
+        },
+        {
+          "id": "7",
+          "title": "Source 7",
+          "url": "https://peps.python.org/pep-0745/"
+        },
+        {
+          "id": "8",
+          "title": "Source 8",
+          "url": "https://realpython.com/python-news-november-2025/"
+        },
+        {
+          "id": "9",
+          "title": "Source 9",
+          "url": "https://docs.python.org/3/whatsnew/3.14.html"
+        },
+        {
+          "id": "10",
+          "title": "Source 10",
+          "url": "https://www.python.org/downloads/release/python-3140/"
+        },
+        {
+          "id": "11",
+          "title": "Source 11",
+          "url": "https://devguide.python.org/versions/"
+        },
+        {
+          "id": "12",
+          "title": "Source 12",
+          "url": "https://www.python.org/downloads/release/python-3143/"
+        },
+        {
+          "id": "13",
+          "title": "Source 13",
+          "url": "https://www.liquidweb.com/blog/latest-python-version/"
+        }
+      ]
+    },
+    "created_at": "2026-02-09T16:09:27.071452",
+    "updated_at": "2026-02-09T16:09:27.071452"
+  },
+  {
+    "id": "1770620954438",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Python 3.14 release date",
+    "message": "The new result adds that Python 3.14 is now in the bugfix phase, with **3.14.3 released on February 3, 2026**, alongside prior bugfix releases 3.14.1 (Dec 2, 2025) and 3.14.2 (Dec 5, 2025), confirmed across official sources including python.org release pages, PEP 745 schedule, and documentation.[1][3][4][6][8]\n\n**Sources:**\n[1] https://peps.python.org/pep-0745/\n[2] https://www.developer-tech.com/news/python-3-14-slithers-closer-with-rc1-arrival/\n[3] https://www.python.org/doc/versions/\n[4] https://www.python.org/downloads/source/\n[5] https://en.wikipedia.org/wiki/Python_(programming_language)\n[6] https://www.python.org/downloads/\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://www.python.org/downloads/release/python-3143/\n[9] https://docs.python.org/3/whatsnew/changelog.html\n[10] https://www.liquidweb.com/blog/latest-python-version/",
+    "tracking_id": "1770482853149",
+    "read": false,
+    "feedback": "useful",
+    "details": {
+      "summary": "The new result adds that Python 3.14 is now in the bugfix phase, with **3.14.3 released on February 3, 2026**, alongside prior bugfix releases 3.14.1 (Dec 2, 2025) and 3.14.2 (Dec 5, 2025), confirmed across official sources including python.org release pages, PEP 745 schedule, and documentation.[1][3][4][6][8]\n\n**Sources:**\n[1] https://peps.python.org/pep-0745/\n[2] https://www.developer-tech.com/news/python-3-14-slithers-closer-with-rc1-arrival/\n[3] https://www.python.org/doc/versions/\n[4] https://www.python.org/downloads/source/\n[5] https://en.wikipedia.org/wiki/Python_(programming_language)\n[6] https://www.python.org/downloads/\n[7] https://docs.python.org/3/whatsnew/3.14.html\n[8] https://www.python.org/downloads/release/python-3143/\n[9] https://docs.python.org/3/whatsnew/changelog.html\n[10] https://www.liquidweb.com/blog/latest-python-version/",
+      "changes": [
+        "General update detected in summary."
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://peps.python.org/pep-0745/"
+        },
+        {
+          "id": "2",
+          "title": "Source 2",
+          "url": "https://realpython.com/python-news-november-2025/"
+        },
+        {
+          "id": "3",
+          "title": "Source 3",
+          "url": "https://dev.to/mechcloud_academy/python-314-has-arrived-a-deep-dive-into-the-new-features-56pn"
+        },
+        {
+          "id": "4",
+          "title": "Source 4",
+          "url": "https://www.python.org/downloads/release/python-3140rc3/"
+        },
+        {
+          "id": "5",
+          "title": "Source 5",
+          "url": "https://www.python.org/downloads/release/python-3140rc2/"
+        },
+        {
+          "id": "6",
+          "title": "Source 6",
+          "url": "https://www.python.org/downloads/release/python-3140/"
+        },
+        {
+          "id": "7",
+          "title": "Source 7",
+          "url": "https://www.liquidweb.com/blog/latest-python-version/"
+        },
+        {
+          "id": "8",
+          "title": "Source 8",
+          "url": "https://peps.python.org/pep-0745/"
+        },
+        {
+          "id": "9",
+          "title": "Source 9",
+          "url": "https://realpython.com/python-news-november-2025/"
+        },
+        {
+          "id": "10",
+          "title": "Source 10",
+          "url": "https://www.python.org/downloads/release/python-3140/"
+        },
+        {
+          "id": "11",
+          "title": "Source 11",
+          "url": "https://conda-forge.org/blog/2026/01/15/100-days-python314/"
+        },
+        {
+          "id": "12",
+          "title": "Source 12",
+          "url": "https://devguide.python.org/versions/"
+        },
+        {
+          "id": "13",
+          "title": "Source 13",
+          "url": "https://www.python.org/downloads/release/python-3143/"
+        },
+        {
+          "id": "14",
+          "title": "Source 14",
+          "url": "https://www.liquidweb.com/blog/latest-python-version/"
+        }
+      ]
+    },
+    "created_at": "2026-02-09T16:09:14.438376",
+    "updated_at": "2026-02-09T16:09:14.438376"
+  },
+  {
+    "id": "1770570026836",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Notification Test Topic",
+    "message": "The new result provides a detailed **latest_update_summary** on 2026 push notification best practices, listing **key_developments** like separating transactional/promotional notifications, user-controlled channels (3\u20135), behavior-based timing, personalization, rich media, and strategic permission requests\u2014advancing beyond the previous vague 'phase_1' status.[new_result][1][3][4]\n\n**Sources:**\n[1] https://appbot.co/blog/app-push-notifications-2026-best-practices/\n[2] https://openforge.io/6-push-notifications-best-practices-with-real-examples/\n[3] https://www.jotform.com/blog/push-notification-best-practices/\n[4] https://www.pushwoosh.com/blog/android-push-notifications/\n[5] https://community.braze.com/discussions/orchestration/best-practices-for-crafting-effective-push-notifications/3553\n[6] https://reteno.com/blog/push-notification-best-practices-ultimate-guide-for-2026\n[7] https://www.adjust.com/blog/how-to-develop-a-successfull-push-notification-strategy/\n[8] https://www.reactiv.ai/post/try-these-top-10-push-notification-best-practices",
+    "tracking_id": "1770483518592",
+    "read": true,
+    "feedback": "useful",
+    "details": {
+      "summary": "The new result provides a detailed **latest_update_summary** on 2026 push notification best practices, listing **key_developments** like separating transactional/promotional notifications, user-controlled channels (3\u20135), behavior-based timing, personalization, rich media, and strategic permission requests\u2014advancing beyond the previous vague 'phase_1' status.[new_result][1][3][4]\n\n**Sources:**\n[1] https://appbot.co/blog/app-push-notifications-2026-best-practices/\n[2] https://openforge.io/6-push-notifications-best-practices-with-real-examples/\n[3] https://www.jotform.com/blog/push-notification-best-practices/\n[4] https://www.pushwoosh.com/blog/android-push-notifications/\n[5] https://community.braze.com/discussions/orchestration/best-practices-for-crafting-effective-push-notifications/3553\n[6] https://reteno.com/blog/push-notification-best-practices-ultimate-guide-for-2026\n[7] https://www.adjust.com/blog/how-to-develop-a-successfull-push-notification-strategy/\n[8] https://www.reactiv.ai/post/try-these-top-10-push-notification-best-practices",
+      "changes": [
+        "General update detected in summary."
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://appbot.co/blog/app-push-notifications-2026-best-practices/"
+        },
+        {
+          "id": "2",
+          "title": "Source 2",
+          "url": "https://openforge.io/6-push-notifications-best-practices-with-real-examples/"
+        },
+        {
+          "id": "3",
+          "title": "Source 3",
+          "url": "https://www.jotform.com/blog/push-notification-best-practices/"
+        },
+        {
+          "id": "4",
+          "title": "Source 4",
+          "url": "https://www.pushwoosh.com/blog/android-push-notifications/"
+        },
+        {
+          "id": "5",
+          "title": "Source 5",
+          "url": "https://community.braze.com/discussions/orchestration/best-practices-for-crafting-effective-push-notifications/3553"
+        },
+        {
+          "id": "6",
+          "title": "Source 6",
+          "url": "https://reteno.com/blog/push-notification-best-practices-ultimate-guide-for-2026"
+        },
+        {
+          "id": "7",
+          "title": "Source 7",
+          "url": "https://netcorecloud.com/blog/push-notifications-examples/"
+        },
+        {
+          "id": "8",
+          "title": "Source 8",
+          "url": "https://www.adjust.com/blog/how-to-develop-a-successfull-push-notification-strategy/"
+        },
+        {
+          "id": "9",
+          "title": "Source 9",
+          "url": "https://www.reactiv.ai/post/try-these-top-10-push-notification-best-practices"
+        },
+        {
+          "id": "10",
+          "title": "Source 10",
+          "url": "https://www.knovial.com/push-notification-best-practices-engagement-without-annoyance/"
+        },
+        {
+          "id": "11",
+          "title": "Source 11",
+          "url": "https://contextsdk.com/blogposts/avoiding-push-fatigue-common-user-turn-offs"
+        },
+        {
+          "id": "12",
+          "title": "Source 12",
+          "url": "https://www.magicbell.com/blog/real-time-notifications-enhance-user-engagement"
+        },
+        {
+          "id": "13",
+          "title": "Source 13",
+          "url": "https://www.pugpig.com/2025/07/04/staying-relevant-but-not-overwhelming-how-to-balance-push-notifications/"
+        },
+        {
+          "id": "14",
+          "title": "Source 14",
+          "url": "https://www.cognitivesystems.com/too-many-notifications-too-little-value-how-to-optimize-wi-fi-sensing-alerts/"
+        },
+        {
+          "id": "15",
+          "title": "Source 15",
+          "url": "https://www.infoq.com/news/2025/09/instagram-notification-ranking/"
+        },
+        {
+          "id": "16",
+          "title": "Source 16",
+          "url": "https://www.hcamag.com/au/specialisation/employee-engagement/notification-fatigue-is-hr-being-too-noisy/531456"
+        },
+        {
+          "id": "17",
+          "title": "Source 17",
+          "url": "https://blog.logrocket.com/ux-design/notification-blindness-ux-strategies/"
+        }
+      ]
+    },
+    "created_at": "2026-02-09T02:00:26.836896",
+    "updated_at": "2026-02-09T02:00:26.836896"
+  },
+  {
+    "id": "1770569998361",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Notification Test Topic",
+    "message": "The AppState-ALERT emergency notification system test has been **rescheduled from February 4 to February 11, 2026, at 11:55 a.m.**[1] This represents a one-week delay from the originally planned date. The rescheduled test will include a full system check across multiple notification methods\u2014email, voice and text messaging, and the Alertus desktop notification system\u2014for both the Boone and Hickory campus communities[1].\n\n**Sources:**\n[1] https://today.appstate.edu/2026/02/02/appstate-alert\n[2] https://today.appstate.edu/2025/01/28/appstate-alert\n[3] https://www.appstatealert.com\n[4] https://appcares.appstate.edu/messages/id/114\n[5] https://emergency.appstate.edu\n[6] https://today.appstate.edu",
+    "tracking_id": "1770483462605",
+    "read": true,
+    "feedback": "useful",
+    "details": {
+      "summary": "The AppState-ALERT emergency notification system test has been **rescheduled from February 4 to February 11, 2026, at 11:55 a.m.**[1] This represents a one-week delay from the originally planned date. The rescheduled test will include a full system check across multiple notification methods\u2014email, voice and text messaging, and the Alertus desktop notification system\u2014for both the Boone and Hickory campus communities[1].\n\n**Sources:**\n[1] https://today.appstate.edu/2026/02/02/appstate-alert\n[2] https://today.appstate.edu/2025/01/28/appstate-alert\n[3] https://www.appstatealert.com\n[4] https://appcares.appstate.edu/messages/id/114\n[5] https://emergency.appstate.edu\n[6] https://today.appstate.edu",
+      "changes": [
+        "General update detected in summary."
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://appbot.co/blog/app-push-notifications-2026-best-practices/"
+        },
+        {
+          "id": "2",
+          "title": "Source 2",
+          "url": "https://today.appstate.edu/2026/02/02/appstate-alert"
+        },
+        {
+          "id": "3",
+          "title": "Source 3",
+          "url": "https://dailyreporter.com/2026/01/02/muted-notifications-not-recommended-federal-ai-regulation/"
+        },
+        {
+          "id": "4",
+          "title": "Source 4",
+          "url": "https://www.consumerfinanceandfintechblog.com/2025/12/sec-releases-2026-examination-priorities-highlighting-compliance-information-security-and-emerging-technology/"
+        },
+        {
+          "id": "5",
+          "title": "Source 5",
+          "url": "https://www.sashido.io/en/blog/best-push-notification-service-platforms-2026"
+        },
+        {
+          "id": "6",
+          "title": "Source 6",
+          "url": "https://reteno.com/blog/push-notification-best-practices-ultimate-guide-for-2026"
+        },
+        {
+          "id": "7",
+          "title": "Source 7",
+          "url": "https://www.cdflaborlaw.com/blog/key-new-2026-employment-laws-for-california-employers"
+        },
+        {
+          "id": "8",
+          "title": "Source 8",
+          "url": "https://www.accgov.com/CivicAlerts.aspx?AID=6772"
+        },
+        {
+          "id": "9",
+          "title": "Source 9",
+          "url": "https://appbot.co/blog/app-push-notifications-2026-best-practices/"
+        },
+        {
+          "id": "10",
+          "title": "Source 10",
+          "url": "https://www.federalreserve.gov/newsevents/pressreleases/files/bcreg20260204a2.pdf"
+        },
+        {
+          "id": "11",
+          "title": "Source 11",
+          "url": "https://testomat.io/blog/software-testing-trends/"
+        },
+        {
+          "id": "12",
+          "title": "Source 12",
+          "url": "https://reteno.com/blog/push-notification-best-practices-ultimate-guide-for-2026"
+        },
+        {
+          "id": "13",
+          "title": "Source 13",
+          "url": "https://www.getxray.app/blog/top-5-software-testing-trends-2026"
+        },
+        {
+          "id": "14",
+          "title": "Source 14",
+          "url": "https://www.testresults.io/articles/software-testing-trends-for-enterprises-in-2026-whats-broken-whats-next"
+        },
+        {
+          "id": "15",
+          "title": "Source 15",
+          "url": "https://idratherbewriting.com/blog/tech-comm-predictions-for-2026"
+        },
+        {
+          "id": "16",
+          "title": "Source 16",
+          "url": "https://blog.qatestlab.com/2025/12/24/software-quality-trends-in-2026-key-changes-shaping-modern-qa/"
+        }
+      ]
+    },
+    "created_at": "2026-02-09T01:59:58.361119",
+    "updated_at": "2026-02-09T01:59:58.361119"
+  },
+  {
+    "id": "1770526291468",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Python 3.14 release date",
+    "message": "The new result adds a significant development: **Python 3.14.3 was released on February 3, 2026**, representing the third maintenance release of the 3.14 series[1]. This is a meaningful milestone beyond the initial 3.14.0 release, indicating the version has progressed through the bugfix/maintenance phase with multiple updates (3.14.1 on December 2, 2025, 3.14.2 on December 5, 2025, and 3.14.3 on February 3, 2026)[6]. The new result also specifies that the release occurred \"on schedule with no delays,\" providing additional context about the release timeline's reliability.\n\n**Sources:**\n[1] https://blog.python.org/?m=0\n[2] https://www.python.org/downloads/release/python-3140/\n[3] https://devguide.python.org/versions/\n[4] https://realpython.com/python-news-november-2025/\n[5] https://cloudsmith.com/blog/python-3-14-what-you-need-to-know\n[6] https://www.python.org/downloads/\n[7] https://docs.python.org/3/whatsnew/index.html\n[8] https://www.liquidweb.com/blog/latest-python-version/",
+    "tracking_id": "1770482853149",
+    "read": true,
+    "feedback": "useful",
+    "details": {
+      "summary": "The new result adds a significant development: **Python 3.14.3 was released on February 3, 2026**, representing the third maintenance release of the 3.14 series[1]. This is a meaningful milestone beyond the initial 3.14.0 release, indicating the version has progressed through the bugfix/maintenance phase with multiple updates (3.14.1 on December 2, 2025, 3.14.2 on December 5, 2025, and 3.14.3 on February 3, 2026)[6]. The new result also specifies that the release occurred \"on schedule with no delays,\" providing additional context about the release timeline's reliability.\n\n**Sources:**\n[1] https://blog.python.org/?m=0\n[2] https://www.python.org/downloads/release/python-3140/\n[3] https://devguide.python.org/versions/\n[4] https://realpython.com/python-news-november-2025/\n[5] https://cloudsmith.com/blog/python-3-14-what-you-need-to-know\n[6] https://www.python.org/downloads/\n[7] https://docs.python.org/3/whatsnew/index.html\n[8] https://www.liquidweb.com/blog/latest-python-version/",
+      "changes": [
+        "General update detected in summary."
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://peps.python.org/pep-0745/"
+        },
+        {
+          "id": "2",
+          "title": "Source 2",
+          "url": "https://realpython.com/python-news-november-2025/"
+        },
+        {
+          "id": "3",
+          "title": "Source 3",
+          "url": "https://www.developer-tech.com/news/python-3-14-slithers-closer-with-rc1-arrival/"
+        },
+        {
+          "id": "4",
+          "title": "Source 4",
+          "url": "https://community.ibm.com/community/user/blogs/jc-yao/2025/11/10/announcing-ibm-open-enterprise-sdk-for-python-314"
+        },
+        {
+          "id": "5",
+          "title": "Source 5",
+          "url": "https://www.python.org/downloads/release/python-3140/"
+        },
+        {
+          "id": "6",
+          "title": "Source 6",
+          "url": "https://www.python.org/downloads/release/python-3141/"
+        },
+        {
+          "id": "7",
+          "title": "Source 7",
+          "url": "https://peps.python.org/pep-0745/"
+        },
+        {
+          "id": "8",
+          "title": "Source 8",
+          "url": "https://realpython.com/python-news-november-2025/"
+        },
+        {
+          "id": "9",
+          "title": "Source 9",
+          "url": "https://docs.python.org/3/whatsnew/3.14.html"
+        },
+        {
+          "id": "10",
+          "title": "Source 10",
+          "url": "https://www.python.org/downloads/release/python-3140/"
+        },
+        {
+          "id": "11",
+          "title": "Source 11",
+          "url": "https://devguide.python.org/versions/"
+        },
+        {
+          "id": "12",
+          "title": "Source 12",
+          "url": "https://www.python.org/downloads/release/python-3143/"
+        },
+        {
+          "id": "13",
+          "title": "Source 13",
+          "url": "https://www.liquidweb.com/blog/latest-python-version/"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T13:51:31.468909",
+    "updated_at": "2026-02-08T13:51:31.468909"
+  },
+  {
+    "id": "1770488596890",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test Final",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": "useful",
+    "details": {
+      "summary": "This is the final verification of the rich update system.",
+      "changes": [
+        "Toast notifications now show summaries",
+        "Update Panel does not auto-read on dismiss",
+        "Cleaned up interaction logic"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Verification Plan",
+          "url": "https://example.com/plan"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:23:16.890883",
+    "updated_at": "2026-02-08T03:23:16.890883"
+  },
+  {
+    "id": "1770488447203",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:20:47.203424",
+    "updated_at": "2026-02-08T03:20:47.203424"
+  },
+  {
+    "id": "1770488409044",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test Duo",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "Summary in details",
+      "changes": [
+        "Change 1",
+        "Change 2"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://example.com"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:20:09.044681",
+    "updated_at": "2026-02-08T03:20:09.044681"
+  },
+  {
+    "id": "1770488390254",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:19:50.254738",
+    "updated_at": "2026-02-08T03:19:50.254738"
+  },
+  {
+    "id": "1770488318204",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:18:38.204475",
+    "updated_at": "2026-02-08T03:18:38.204475"
+  },
+  {
+    "id": "1770488255601",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:17:35.601022",
+    "updated_at": "2026-02-08T03:17:35.601022"
+  },
+  {
+    "id": "1770488010324",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:13:30.324178",
+    "updated_at": "2026-02-08T03:13:30.324178"
+  },
+  {
+    "id": "1770487947202",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:12:27.202489",
+    "updated_at": "2026-02-08T03:12:27.202489"
+  },
+  {
+    "id": "1770487889437",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:11:29.437892",
+    "updated_at": "2026-02-08T03:11:29.437892"
+  },
+  {
+    "id": "1770487842282",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:10:42.282584",
+    "updated_at": "2026-02-08T03:10:42.282584"
+  },
+  {
+    "id": "1770487758186",
+    "user_id": null,
+    "type": "update",
+    "title": "Rich Update Test",
+    "message": "Fallback message",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": {
+      "summary": "The protocol has been upgraded to v2.0 with significant performance improvements.",
+      "changes": [
+        "Throughput increased by 50%",
+        "Legacy API endpoints deprecated",
+        "New authentication flow implemented"
+      ],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Official Blog",
+          "url": "https://example.com/blog/v2"
+        },
+        {
+          "id": "2",
+          "title": "Release Notes",
+          "url": "https://example.com/releases/v2"
+        }
+      ]
+    },
+    "created_at": "2026-02-08T03:09:18.186175",
+    "updated_at": "2026-02-08T03:09:18.186175"
+  },
+  {
+    "id": "1770486293679",
+    "user_id": null,
+    "type": "warning",
+    "title": "Urgent Update",
+    "message": "Something happened! Check the update panel.",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "created_at": "2026-02-08T02:44:53.679499",
+    "updated_at": "2026-02-08T02:44:53.679499"
+  },
+  {
+    "id": "1770486288670",
+    "user_id": null,
+    "type": "info",
+    "title": "Welcome to Burilar!",
+    "message": "This is a test notification to verify the toast system.",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "created_at": "2026-02-08T02:44:48.670312",
+    "updated_at": "2026-02-08T02:44:48.670312"
+  },
+  {
+    "id": "1770485882633",
+    "user_id": null,
+    "type": "warning",
+    "title": "Urgent Update",
+    "message": "Something happened! Check the update panel.",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "created_at": "2026-02-08T02:38:02.633503",
+    "updated_at": "2026-02-08T02:38:02.633503"
+  },
+  {
+    "id": "1770485877625",
+    "user_id": null,
+    "type": "info",
+    "title": "Welcome to Burilar!",
+    "message": "This is a test notification to verify the toast system.",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "created_at": "2026-02-08T02:37:57.625981",
+    "updated_at": "2026-02-08T02:37:57.625981"
+  },
+  {
+    "id": "1770483532351",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Notification Test Topic",
+    "message": "Significant change detected: Phase 2 started.",
+    "tracking_id": "1770483518592",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "created_at": "2026-02-08T01:58:52.351426",
+    "updated_at": "2026-02-08T01:58:52.351426"
+  },
+  {
+    "id": "1770483472901",
+    "user_id": null,
+    "type": "update",
+    "title": "Update: Notification Test Topic",
+    "message": "Significant change detected: Phase 2 started.",
+    "tracking_id": "1770483462605",
+    "read": true,
+    "feedback": "useful",
+    "details": null,
+    "created_at": "2026-02-08T01:57:52.901109",
+    "updated_at": "2026-02-08T01:57:52.901109"
+  },
+  {
+    "id": "1770483432407",
+    "user_id": null,
+    "type": "info",
+    "title": "API Test",
+    "message": "Running API test.",
+    "tracking_id": null,
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "created_at": "2026-02-08T01:57:12.407576",
+    "updated_at": "2026-02-08T01:57:12.407576"
+  }
+]

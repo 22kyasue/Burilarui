@@ -1,146 +1,41 @@
 /**
  * Notifications API Functions
- * Endpoints for notifications and notification settings
+ * Endpoints aligned with backend Phase 3 routes
  */
 
 import { api } from './client';
-import type {
+import type { NotificationListResponse, UnreadCountResponse } from '../types/notifications';
 
-  NotificationListResponse,
-  NotificationSettingsResponse,
-  GlobalNotificationSettings,
-  TrackingNotificationSettings,
-  UpdateGlobalSettingsRequest,
-  UpdateTrackingNotificationRequest,
-  UnreadCountResponse,
-} from '../types/notifications';
+const BASE = '/notifications';
 
-const NOTIFICATIONS_ENDPOINT = '/notifications';
-
-/**
- * Fetch all notifications for the current user
- */
 export async function getNotifications(options?: {
   unreadOnly?: boolean;
   limit?: number;
   offset?: number;
 }): Promise<NotificationListResponse> {
-  return api.get<NotificationListResponse>(NOTIFICATIONS_ENDPOINT, {
-    params: options,
-  });
+  return api.get<NotificationListResponse>(BASE, { params: options });
 }
 
-/**
- * Get unread notification count
- */
 export async function getUnreadCount(): Promise<number> {
-  const response = await api.get<UnreadCountResponse>(
-    `${NOTIFICATIONS_ENDPOINT}/unread-count`
-  );
+  const response = await api.get<UnreadCountResponse>(`${BASE}/unread-count`);
   return response.count;
 }
 
-/**
- * Mark a notification as read
- */
-export async function markNotificationAsRead(notificationId: string): Promise<void> {
-  await api.patch(`${NOTIFICATIONS_ENDPOINT}/${notificationId}/read`);
+export async function markNotificationAsRead(id: string): Promise<void> {
+  await api.patch(`${BASE}/${id}/read`);
 }
 
-/**
- * Mark multiple notifications as read
- */
-export async function markNotificationsAsRead(notificationIds: string[]): Promise<void> {
-  await api.post(`${NOTIFICATIONS_ENDPOINT}/mark-read`, { notificationIds });
-}
-
-/**
- * Mark all notifications as read
- */
 export async function markAllNotificationsAsRead(): Promise<void> {
-  await api.post(`${NOTIFICATIONS_ENDPOINT}/mark-all-read`);
+  await api.post(`${BASE}/mark-all-read`);
 }
 
-/**
- * Delete a notification
- */
-export async function deleteNotification(notificationId: string): Promise<void> {
-  await api.delete(`${NOTIFICATIONS_ENDPOINT}/${notificationId}`);
+export async function deleteNotification(id: string): Promise<void> {
+  await api.delete(`${BASE}/${id}`);
 }
 
-/**
- * Clear all notifications
- */
-export async function clearAllNotifications(): Promise<void> {
-  await api.delete(`${NOTIFICATIONS_ENDPOINT}/all`);
-}
-
-// ============================================
-// Notification Settings
-// ============================================
-
-/**
- * Get all notification settings (global + tracking overrides)
- */
-export async function getNotificationSettings(): Promise<NotificationSettingsResponse> {
-  return api.get<NotificationSettingsResponse>(`${NOTIFICATIONS_ENDPOINT}/settings`);
-}
-
-/**
- * Get global notification settings
- */
-export async function getGlobalSettings(): Promise<GlobalNotificationSettings> {
-  return api.get<GlobalNotificationSettings>(`${NOTIFICATIONS_ENDPOINT}/settings/global`);
-}
-
-/**
- * Update global notification settings
- */
-export async function updateGlobalSettings(
-  data: UpdateGlobalSettingsRequest
-): Promise<GlobalNotificationSettings> {
-  return api.put<GlobalNotificationSettings>(
-    `${NOTIFICATIONS_ENDPOINT}/settings/global`,
-    data
-  );
-}
-
-/**
- * Get notification settings for a specific tracking
- */
-export async function getTrackingNotificationSettings(
-  trackingId: string
-): Promise<TrackingNotificationSettings> {
-  return api.get<TrackingNotificationSettings>(
-    `${NOTIFICATIONS_ENDPOINT}/settings/tracking/${trackingId}`
-  );
-}
-
-/**
- * Update notification settings for a specific tracking
- */
-export async function updateTrackingNotificationSettings(
-  trackingId: string,
-  data: UpdateTrackingNotificationRequest
-): Promise<TrackingNotificationSettings> {
-  return api.put<TrackingNotificationSettings>(
-    `${NOTIFICATIONS_ENDPOINT}/settings/tracking/${trackingId}`,
-    data
-  );
-}
-
-/**
- * Reset tracking notification settings to global defaults
- */
-export async function resetTrackingNotificationSettings(
-  trackingId: string
+export async function submitNotificationFeedback(
+  id: string,
+  feedback: 'useful' | 'not_useful'
 ): Promise<void> {
-  await api.delete(`${NOTIFICATIONS_ENDPOINT}/settings/tracking/${trackingId}`);
-}
-
-/**
- * Test notification delivery (sends a test notification)
- */
-export async function sendTestNotification(channel: 'email' | 'push'): Promise<void> {
-  await api.post(`${NOTIFICATIONS_ENDPOINT}/test`, { channel });
+  await api.post(`${BASE}/${id}/feedback`, { feedback });
 }

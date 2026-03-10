@@ -1,25 +1,36 @@
-from typing import List, Dict, Optional
-from backend.utils.ai_client import call_ai
+"""
+Tracking Executor
+Executes search plans, aggregates results, and prepares for extraction.
+Updated to work with tracking dicts instead of TrackingPlan objects.
+"""
+
+from typing import Dict
+from backend.services.perplexity import call_perplexity
+
 
 class TrackingExecutor:
     """
     The 'Analyst' of the system.
     Responsible for executing search plans, aggregating results, and preparing for extraction.
     """
-    
-    def execute_plan(self, plan) -> Dict:
+
+    def execute_plan(self, tracking: Dict) -> Dict:
         """
         Execute the tracking plan.
+        Accepts a tracking dict (from storage) instead of a TrackingPlan object.
         Returns a dictionary containing aggregated content and source metadata.
         """
-        if not plan.strategy or not plan.strategy.get("search_queries"):
-            # Fallback for old plans without strategy
-            return self._run_single_search(plan.topic)
+        strategy = tracking.get('strategy', {})
+        queries = strategy.get('search_queries', [])
 
-        queries = plan.strategy.get("search_queries", [])
-        # Deduping logic: Pick top 2 distinct queries
-        target_queries = queries[:2] 
-        
+        if not queries:
+            # Fallback: search by title/query
+            fallback_query = tracking.get('query') or tracking.get('title', '')
+            return self._run_single_search(fallback_query)
+
+        # Pick top 2 distinct queries
+        target_queries = queries[:2]
+
         aggregated_content = []
         all_citations = []
         all_images = []
@@ -29,11 +40,11 @@ class TrackingExecutor:
             aggregated_content.append(f"--- Query: {query} ---\n{result.get('content', '')}\n")
             all_citations.extend(result.get('citations', []))
             all_images.extend(result.get('images', []))
-            
+
         return {
             "content": "\n".join(aggregated_content),
             "citations": all_citations,
-            "images": list(set(all_images)) # Dedup images
+            "images": list(set(all_images))
         }
 
     def _run_single_search(self, query: str) -> Dict:
@@ -43,9 +54,9 @@ class TrackingExecutor:
             {"role": "user", "content": query}
         ]
         try:
-            result = call_ai(messages, task="web_search", return_images=True)
+            result = call_perplexity(messages, model="sonar", return_images=True)
             if isinstance(result, str):
-                 return {"content": result, "citations": [], "images": []}
+                return {"content": result, "citations": [], "images": []}
             return result
         except Exception as e:
             print(f"Executor Error: {str(e)}")

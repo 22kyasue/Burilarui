@@ -1,12 +1,23 @@
-import { createRoot } from "react-dom/client";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import App from "./App.tsx";
-import "./index.css";
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { Toaster } from './components/ui/sonner';
+import HomePage from './pages/HomePage';
+import TrackingDetailPage from './pages/TrackingDetailPage';
+import './index.css';
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/tracking/:id" element={<TrackingDetailPage />} />
+        </Routes>
+      </BrowserRouter>
+      <Toaster />
+    </AuthProvider>
+  );
+}
 
-createRoot(document.getElementById("root")!).render(
-  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-    <App />
-  </GoogleOAuthProvider>
-);
+createRoot(document.getElementById('root')!).render(<App />);
