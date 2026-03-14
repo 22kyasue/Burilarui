@@ -1,22 +1,54 @@
 """
 Notification Storage
-Handles notification data persistence using JSON file storage.
+Handles notification data persistence. Backend-agnostic (JSON or SQLite).
 """
 
-from .base import JSONFileStorage
 from typing import List, Dict, Optional
 import os
 
-# Storage file path
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
 NOTIFICATIONS_FILE = os.path.join(DATA_DIR, 'notifications.json')
 
 
-class NotificationStorage(JSONFileStorage):
+class NotificationStorage:
     """Notification-specific storage with user filtering and read/feedback management."""
 
     def __init__(self):
-        super().__init__(NOTIFICATIONS_FILE, id_field='id')
+        use_sqlite = os.getenv('STORAGE_BACKEND', '').lower() == 'sqlite'
+        if use_sqlite:
+            from .sqlite_storage import SQLiteStorage
+            self._backend = SQLiteStorage('notifications', id_field='id')
+        else:
+            from .base import JSONFileStorage
+            self._backend = JSONFileStorage(NOTIFICATIONS_FILE, id_field='id')
+
+    # --- Delegate base methods ---
+
+    def get(self, key: str) -> Optional[Dict]:
+        return self._backend.get(key)
+
+    def get_all(self) -> List[Dict]:
+        return self._backend.get_all()
+
+    def query(self, filters: Dict) -> List[Dict]:
+        return self._backend.query(filters)
+
+    def create(self, data: Dict) -> Dict:
+        return self._backend.create(data)
+
+    def update(self, key: str, data: Dict) -> Optional[Dict]:
+        return self._backend.update(key, data)
+
+    def delete(self, key: str) -> bool:
+        return self._backend.delete(key)
+
+    def count(self, filters: Dict = None) -> int:
+        return self._backend.count(filters)
+
+    def bulk_update(self, keys: List[str], data: Dict) -> int:
+        return self._backend.bulk_update(keys, data)
+
+    # --- Domain methods ---
 
     def get_by_user(self, user_id: str, unread_only: bool = False,
                     limit: int = 50, offset: int = 0) -> List[Dict]:
@@ -52,12 +84,11 @@ class NotificationStorage(JSONFileStorage):
         notification = self.get(notification_id)
         if not notification or notification.get('user_id') != user_id:
             return False
-
         self.update(notification_id, {'read': True})
         return True
 
     def mark_all_read(self, user_id: str) -> int:
-        """Mark all notifications as read for a user. Returns count marked."""
+        """Mark all notifications as read for a user."""
         unread = self.query({'user_id': user_id, 'read': False})
         ids = [n['id'] for n in unread]
         if not ids:
@@ -76,7 +107,6 @@ class NotificationStorage(JSONFileStorage):
         notification = self.get(notification_id)
         if not notification or notification.get('user_id') != user_id:
             return False
-
         self.update(notification_id, {'feedback': feedback})
         return True
 

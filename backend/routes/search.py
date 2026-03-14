@@ -4,45 +4,27 @@ Stateless one-shot search endpoint. No tracking is created.
 """
 
 from flask import Blueprint, request, jsonify, current_app
+from backend.extensions import limiter
 from backend.middleware.auth import auth_required, get_current_user
+from backend.validation.schemas import validate_request, SEARCH_SCHEMA
+from backend.billing.usage import check_usage_limit
 
 search_bp = Blueprint('search', __name__, url_prefix='/api')
 
 
 @search_bp.route('/search', methods=['POST'])
+@limiter.limit("10/minute")
 @auth_required
+@check_usage_limit('searches_per_day')
+@validate_request(SEARCH_SCHEMA)
 def search():
     """
     Perform a one-shot search with query analysis.
 
     Input:  { "query": "...", "chatHistory"?: [...] }
-
-    Response (success):
-        {
-            "query": "...",
-            "resolvedQuery": "...",
-            "needsClarification": false,
-            "content": "...",
-            "status": "completed" | "in_progress",
-            "statusExplanation": "...",
-            "images": [...]
-        }
-
-    Response (clarification needed):
-        {
-            "query": "...",
-            "resolvedQuery": "...",
-            "needsClarification": true,
-            "reason": "...",
-            "questions": ["...", "..."]
-        }
     """
-    data = request.json or {}
-    raw_query = data.get('query', '').strip()
-    chat_history = data.get('chatHistory', [])
-
-    if not raw_query:
-        return jsonify({'error': {'code': 'VALIDATION_ERROR', 'message': 'Query is required'}}), 400
+    raw_query = request.validated['query']
+    chat_history = request.validated.get('chatHistory') or []
 
     tracker = current_app.config['tracker']
 

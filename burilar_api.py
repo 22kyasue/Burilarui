@@ -4,31 +4,66 @@ App setup, blueprint registration, and background scheduler.
 """
 
 import os
-import threading
-import time
 
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask, send_from_directory
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from backend.core.tracker import BurilarTracker
+from backend.extensions import limiter
+from backend.utils.logging_config import setup_logging
 
 # App setup
 app = Flask(__name__, static_folder='build', static_url_path='')
-CORS(app)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB request limit
+
+# CORS — restrict to frontend origin in production
+CORS(app, origins=os.getenv('CORS_ORIGINS', '*').split(','))
+
+# Rate limiter
+limiter.init_app(app)
+
+# Structured logging
+setup_logging(app)
+
+# 429 error handler
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    return jsonify({
+        'error': {
+            'code': 'RATE_LIMITED',
+            'message': 'リクエスト数の上限に達しました。しばらくしてからお試しください。',
+        }
+    }), 429
+
+import logging
+logger = logging.getLogger(__name__)
+
+# Global 500 handler — catch unhandled exceptions
+@app.errorhandler(Exception)
+def handle_unhandled_exception(e):
+    logger.exception('Unhandled exception: %s', e)
+    return jsonify({
+        'error': {
+            'code': 'INTERNAL_ERROR',
+            'message': 'サーバー内部エラーが発生しました。',
+        }
+    }), 500
 
 # Tracker singleton — shared with blueprints via app.config
 tracker = BurilarTracker.get_instance()
 app.config['tracker'] = tracker
 
 # Register blueprints
-from backend.routes import auth_bp, chats_bp, trackings_bp, notifications_bp, search_bp
+from backend.routes import auth_bp, chats_bp, trackings_bp, notifications_bp, search_bp, errors_bp, billing_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(chats_bp)
 app.register_blueprint(trackings_bp)
 app.register_blueprint(notifications_bp)
 app.register_blueprint(search_bp)
+app.register_blueprint(errors_bp)
+app.register_blueprint(billing_bp)
 
 
 # SPA fallback
@@ -46,18 +81,9 @@ def serve_static(path):
     return send_from_directory(app.static_folder, 'index.html')
 
 
-# Background scheduler
-def background_checker():
-    """Periodically check all active trackings for updates."""
-    while True:
-        time.sleep(300)  # Check every 5 minutes
-        try:
-            tracker.check_all_updates()
-        except Exception as e:
-            print(f"Background check error: {e}")
-
-
-threading.Thread(target=background_checker, daemon=True).start()
+# Background scheduler (APScheduler)
+from backend.scheduler import start_scheduler
+start_scheduler(app)
 
 
 if __name__ == '__main__':

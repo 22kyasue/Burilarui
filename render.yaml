@@ -1,17 +1,40 @@
 services:
   - type: web
-    name: burilar-ui
-    env: python
-    buildCommand: pip install -r requirements.txt
+    name: burilar
+    runtime: python
+    buildCommand: |
+      pip install -r requirements.txt &&
+      npm install &&
+      npm run build
     startCommand: gunicorn burilar_api:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    healthCheckPath: /api/billing/plans
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: GEMINI_API_KEY
+        value: "3.11.0"
+      - key: NODE_VERSION
+        value: "20.11.0"
+      # Auth
+      - key: JWT_SECRET
         sync: false
+      # AI
+      - key: PERPLEXITY_API_KEY
+        sync: false
+      # Database (Supabase)
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_KEY
         sync: false
-      - key: SECRET_KEY
+      # Stripe
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRO_PRICE_ID
+        sync: false
+      # App
+      - key: APP_URL
+        sync: false
+      - key: CORS_ORIGINS
         sync: false

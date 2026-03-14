@@ -3,7 +3,9 @@
  * Fetch wrapper with convenience methods and error handling
  */
 
+import { toast } from 'sonner';
 import type { ApiError, RequestOptions } from './types';
+import { trackError } from '../utils/errorTracker';
 
 // Configuration
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
@@ -77,13 +79,16 @@ export class ApiClientError extends Error {
   public readonly status: number;
   public readonly code: string;
   public readonly details?: Record<string, string[]>;
+  /** True if the API client already showed a toast for this error */
+  public readonly toastedByClient: boolean;
 
-  constructor(status: number, error: ApiError) {
+  constructor(status: number, error: ApiError, toastedByClient = false) {
     super(error.message);
     this.name = 'ApiClientError';
     this.status = status;
     this.code = error.code;
     this.details = error.details;
+    this.toastedByClient = toastedByClient;
   }
 }
 
@@ -133,9 +138,51 @@ function buildHeaders(customHeaders?: Record<string, string>): Headers {
 }
 
 /**
+ * Refresh the access token using the stored refresh token.
+ * Returns true if refresh succeeded, false otherwise.
+ */
+let refreshPromise: Promise<boolean> | null = null;
+
+async function refreshAccessToken(): Promise<boolean> {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return false;
+
+  // Deduplicate concurrent refresh calls
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    try {
+      const url = buildUrl('/auth/refresh');
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!res.ok) {
+        clearAuthTokens();
+        return false;
+      }
+
+      const data = await res.json();
+      setAuthToken(data.accessToken);
+      setRefreshToken(data.refreshToken);
+      return true;
+    } catch {
+      clearAuthTokens();
+      return false;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+/**
  * Handle API response
  */
-async function handleResponse<T>(response: Response): Promise<T> {
+async function handleResponse<T>(response: Response, retryFn?: () => Promise<Response>): Promise<T> {
   // Handle no content responses
   if (response.status === 204) {
     return undefined as T;
@@ -148,7 +195,33 @@ async function handleResponse<T>(response: Response): Promise<T> {
       code: 'UNKNOWN_ERROR',
       message: data.message || 'An unexpected error occurred',
     };
-    throw new ApiClientError(response.status, error);
+
+    let toasted = false;
+
+    // Try refresh on 401 (expired access token)
+    if (response.status === 401 && error.code === 'INVALID_TOKEN' && retryFn) {
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        // Retry the original request with new token
+        const retryResponse = await retryFn();
+        return handleResponse<T>(retryResponse); // No retry on second failure
+      }
+      // Refresh failed — clear tokens and show message
+      toast.error('セッションが切れました。再度ログインしてください。');
+      clearAuthTokens();
+      toasted = true;
+    } else if (response.status === 401) {
+      toast.error('セッションが切れました。再度ログインしてください。');
+      clearAuthTokens();
+      toasted = true;
+    } else if (response.status >= 500) {
+      toast.error('サーバーエラーが発生しました。しばらくしてからお試しください。');
+      toasted = true;
+    }
+
+    const apiError = new ApiClientError(response.status, error, toasted);
+    trackError(apiError, 'api', { status: response.status, code: error.code, endpoint: response.url });
+    throw apiError;
   }
 
   return data as T;
@@ -178,8 +251,25 @@ async function request<T>(
     config.body = JSON.stringify(body);
   }
 
-  const response = await fetch(url, config);
-  return handleResponse<T>(response);
+  const doFetch = () => {
+    // Rebuild headers to pick up refreshed token
+    const freshConfig = { ...config, headers: buildHeaders(options.headers) };
+    return fetch(url, freshConfig);
+  };
+
+  let response: Response;
+  try {
+    response = await fetch(url, config);
+  } catch (err) {
+    // Network failure (offline, DNS error, CORS, etc.)
+    // Don't toast if the request was intentionally aborted
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw err;
+    }
+    toast.error('ネットワーク接続を確認してください');
+    throw err;
+  }
+  return handleResponse<T>(response, doFetch);
 }
 
 /**

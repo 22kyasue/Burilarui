@@ -29,11 +29,11 @@ export default function LoginModal() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-sm space-y-6 bg-white p-8 rounded-2xl shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950 p-4">
+      <div className="w-full max-w-sm space-y-6 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Burilar</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold dark:text-gray-100">Burilar</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {isRegister ? 'Create your account' : 'Sign in to your account'}
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function LoginModal() {
           </div>
 
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-md bg-red-50 dark:bg-red-900/30 p-3 text-sm text-red-700 dark:text-red-300">
               {error}
             </div>
           )}
@@ -88,7 +88,7 @@ export default function LoginModal() {
         <div className="text-center">
           <button
             type="button"
-            className="text-sm text-gray-500 hover:text-gray-700"
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             onClick={() => {
               setIsRegister(!isRegister);
               clearError();

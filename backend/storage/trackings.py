@@ -1,24 +1,53 @@
 """
 Tracking Storage
-Handles tracking data persistence using JSON file storage.
+Handles tracking data persistence. Backend-agnostic (JSON or SQLite).
 """
 
-from .base import JSONFileStorage
 from typing import List, Dict, Optional
 from datetime import datetime
 import os
 import time
 
-# Storage file path
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
 TRACKINGS_FILE = os.path.join(DATA_DIR, 'trackings.json')
 
 
-class TrackingStorage(JSONFileStorage):
+class TrackingStorage:
     """Tracking-specific storage with user filtering and update management."""
 
     def __init__(self):
-        super().__init__(TRACKINGS_FILE, id_field='id')
+        use_sqlite = os.getenv('STORAGE_BACKEND', '').lower() == 'sqlite'
+        if use_sqlite:
+            from .sqlite_storage import SQLiteStorage
+            self._backend = SQLiteStorage('trackings', id_field='id')
+        else:
+            from .base import JSONFileStorage
+            self._backend = JSONFileStorage(TRACKINGS_FILE, id_field='id')
+
+    # --- Delegate base methods ---
+
+    def get(self, key: str) -> Optional[Dict]:
+        return self._backend.get(key)
+
+    def get_all(self) -> List[Dict]:
+        return self._backend.get_all()
+
+    def query(self, filters: Dict) -> List[Dict]:
+        return self._backend.query(filters)
+
+    def create(self, data: Dict) -> Dict:
+        return self._backend.create(data)
+
+    def update(self, key: str, data: Dict) -> Optional[Dict]:
+        return self._backend.update(key, data)
+
+    def delete(self, key: str) -> bool:
+        return self._backend.delete(key)
+
+    def count(self, filters: Dict = None) -> int:
+        return self._backend.count(filters)
+
+    # --- Domain methods ---
 
     def get_by_user(self, user_id: str) -> List[Dict]:
         """Get all trackings for a specific user, sorted by updated_at desc."""
@@ -67,10 +96,7 @@ class TrackingStorage(JSONFileStorage):
         tracking = self.get(tracking_id)
         if not tracking or tracking.get('user_id') != user_id:
             return None
-
-        # Don't allow changing user_id
         data.pop('user_id', None)
-
         return self.update(tracking_id, data)
 
     def delete_tracking(self, user_id: str, tracking_id: str) -> bool:
@@ -86,7 +112,6 @@ class TrackingStorage(JSONFileStorage):
         if not tracking:
             return None
 
-        # Generate update ID if not provided
         if 'id' not in update_data:
             update_data['id'] = str(int(time.time() * 1000))
         if 'timestamp' not in update_data:
@@ -95,7 +120,7 @@ class TrackingStorage(JSONFileStorage):
             update_data['is_read'] = False
 
         updates = tracking.get('updates', [])
-        updates.insert(0, update_data)  # Newest first
+        updates.insert(0, update_data)
 
         update_count = tracking.get('update_count', 0) + 1
         unread_count = tracking.get('unread_count', 0) + 1
@@ -107,7 +132,7 @@ class TrackingStorage(JSONFileStorage):
         })
 
     def mark_updates_read(self, user_id: str, tracking_id: str, update_ids: List[str]) -> int:
-        """Mark specific updates as read. Returns count of updates marked."""
+        """Mark specific updates as read."""
         tracking = self.get_user_tracking(user_id, tracking_id)
         if not tracking:
             return 0
@@ -129,7 +154,7 @@ class TrackingStorage(JSONFileStorage):
         return marked
 
     def mark_all_updates_read(self, user_id: str, tracking_id: str) -> int:
-        """Mark all updates as read. Returns count of updates marked."""
+        """Mark all updates as read."""
         tracking = self.get_user_tracking(user_id, tracking_id)
         if not tracking:
             return 0

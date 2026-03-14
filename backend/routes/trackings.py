@@ -4,8 +4,11 @@ CRUD and execution endpoints for trackings.
 """
 
 from flask import Blueprint, request, jsonify, current_app
+from backend.extensions import limiter
 from backend.middleware.auth import auth_required, get_current_user
 from backend.storage import tracking_storage
+from backend.validation.schemas import validate_request, CREATE_TRACKING_SCHEMA, UPDATE_TRACKING_SCHEMA
+from backend.billing.plans import get_limit
 
 trackings_bp = Blueprint('trackings', __name__, url_prefix='/api/trackings')
 
@@ -30,6 +33,10 @@ def _tracking_to_response(tracking: dict) -> dict:
         'nextExecuteAt': tracking.get('next_execute_at'),
         'createdAt': tracking.get('created_at'),
         'updatedAt': tracking.get('updated_at'),
+        'emailEnabled': tracking.get('email_enabled', True),
+        'pushEnabled': tracking.get('push_enabled', True),
+        'detailLevel': tracking.get('detail_level', 'summary'),
+        'sources': tracking.get('sources', []),
     }
 
 
@@ -67,35 +74,39 @@ def _update_to_response(update: dict) -> dict:
 # ------------------------------------------------------------------
 
 @trackings_bp.route('', methods=['POST'])
+@limiter.limit("5/minute")
 @auth_required
+@validate_request(CREATE_TRACKING_SCHEMA)
 def create_tracking():
-    """
-    Create a new tracking from a query.
-
-    Input: {
-        "query": "...",
-        "searchResult"?: "...",
-        "frequency"?: "daily",
-        "customFrequencyHours"?: 12,
-        "notificationEnabled"?: true
-    }
-    """
+    """Create a new tracking from a query."""
     user = get_current_user()
-    data = request.json or {}
-
-    query = data.get('query', '').strip()
-    if not query:
-        return jsonify({'error': {'code': 'VALIDATION_ERROR', 'message': 'Query is required'}}), 400
-
+    v = request.validated
     tracker = current_app.config['tracker']
+
+    # Check active tracking limit
+    plan = user.get('plan', 'free')
+    limit = get_limit(plan, 'active_trackings')
+    if limit >= 0:
+        existing = tracking_storage.get_by_user(user['id'])
+        active_count = sum(1 for t in existing if t.get('is_active', False))
+        if active_count >= limit:
+            return jsonify({
+                'error': {
+                    'code': 'LIMIT_EXCEEDED',
+                    'message': f'アクティブ追跡の上限（{limit}件）に達しました。プロプランにアップグレードして上限を引き上げましょう。',
+                    'limit_type': 'active_trackings',
+                    'used': active_count,
+                    'limit': limit,
+                }
+            }), 429
 
     tracking = tracker.create_tracking(
         user_id=user['id'],
-        query=query,
-        search_result=data.get('searchResult'),
-        frequency=data.get('frequency', 'daily'),
-        custom_frequency_hours=data.get('customFrequencyHours'),
-        notification_enabled=data.get('notificationEnabled', True),
+        query=v['query'],
+        search_result=v.get('searchResult'),
+        frequency=v.get('frequency', 'daily'),
+        custom_frequency_hours=v.get('customFrequencyHours'),
+        notification_enabled=v.get('notificationEnabled', True),
     )
 
     return jsonify({'tracking': _tracking_to_response(tracking)}), 201
@@ -128,31 +139,30 @@ def get_tracking(tracking_id):
 
 @trackings_bp.route('/<tracking_id>', methods=['PATCH'])
 @auth_required
+@validate_request(UPDATE_TRACKING_SCHEMA)
 def update_tracking(tracking_id):
-    """
-    Update tracking settings.
-
-    Input: { "isActive"?, "isPinned"?, "frequency"?, "customFrequencyHours"?, "notificationEnabled"? }
-    """
+    """Update tracking settings."""
     user = get_current_user()
-    data = request.json or {}
+    v = request.validated
 
-    # Map camelCase input to snake_case storage
+    # Map camelCase validated fields to snake_case storage
+    field_map = {
+        'isActive': 'is_active',
+        'isPinned': 'is_pinned',
+        'frequency': 'frequency',
+        'customFrequencyHours': 'custom_frequency_hours',
+        'notificationEnabled': 'notification_enabled',
+        'title': 'title',
+        'description': 'description',
+        'emailEnabled': 'email_enabled',
+        'pushEnabled': 'push_enabled',
+        'detailLevel': 'detail_level',
+        'sources': 'sources',
+    }
     update_data = {}
-    if 'isActive' in data:
-        update_data['is_active'] = data['isActive']
-    if 'isPinned' in data:
-        update_data['is_pinned'] = data['isPinned']
-    if 'frequency' in data:
-        update_data['frequency'] = data['frequency']
-    if 'customFrequencyHours' in data:
-        update_data['custom_frequency_hours'] = data['customFrequencyHours']
-    if 'notificationEnabled' in data:
-        update_data['notification_enabled'] = data['notificationEnabled']
-    if 'title' in data:
-        update_data['title'] = data['title']
-    if 'description' in data:
-        update_data['description'] = data['description']
+    for camel, snake in field_map.items():
+        if v.get(camel) is not None:
+            update_data[snake] = v[camel]
 
     tracking = tracking_storage.update_tracking(user['id'], tracking_id, update_data)
 
@@ -179,6 +189,7 @@ def delete_tracking(tracking_id):
 # ------------------------------------------------------------------
 
 @trackings_bp.route('/<tracking_id>/execute', methods=['POST'])
+@limiter.limit("3/minute")
 @auth_required
 def execute_tracking(tracking_id):
     """Manually trigger a tracking refresh."""
@@ -190,7 +201,10 @@ def execute_tracking(tracking_id):
         return jsonify({'error': {'code': 'NOT_FOUND', 'message': 'Tracking not found'}}), 404
 
     tracker = current_app.config['tracker']
-    update = tracker.execute_tracking(user['id'], tracking_id)
+    try:
+        update = tracker.execute_tracking(user['id'], tracking_id)
+    except Exception as e:
+        return jsonify({'error': 'Tracking execution failed', 'detail': str(e)}), 500
 
     if update:
         return jsonify({'update': _update_to_response(update)})

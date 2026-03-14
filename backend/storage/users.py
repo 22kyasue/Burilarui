@@ -1,10 +1,11 @@
 """
 User Storage
-Picks Supabase when env vars are set, otherwise falls back to JSON file.
+Picks Supabase when env vars are set, SQLite when STORAGE_BACKEND=sqlite,
+otherwise falls back to JSON file.
 """
 
 import os
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from backend.db import is_db_available
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
@@ -18,6 +19,9 @@ class UserStorage:
         if is_db_available():
             from .supabase_storage import SupabaseStorage
             self._backend = SupabaseStorage("users")
+        elif os.getenv('STORAGE_BACKEND', '').lower() == 'sqlite':
+            from .sqlite_storage import SQLiteStorage
+            self._backend = SQLiteStorage('users', id_field='id')
         else:
             from .base import JSONFileStorage
             self._backend = JSONFileStorage(USERS_FILE, id_field="id")
@@ -25,7 +29,7 @@ class UserStorage:
     def get(self, key: str) -> Optional[Dict]:
         return self._backend.get(key)
 
-    def get_all(self):
+    def get_all(self) -> List[Dict]:
         return self._backend.get_all()
 
     def get_by_email(self, email: str) -> Optional[Dict]:
@@ -50,7 +54,7 @@ class UserStorage:
     def delete(self, key: str) -> bool:
         return self._backend.delete(key)
 
-    def query(self, filters):
+    def query(self, filters) -> List[Dict]:
         return self._backend.query(filters)
 
 

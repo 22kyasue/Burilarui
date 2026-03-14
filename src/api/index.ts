@@ -36,6 +36,16 @@ export {
   getTrackingUpdates,
 } from './trackings';
 
+// Chat API
+export {
+  getChats,
+  createChat,
+  getChat,
+  updateChat,
+  deleteChat,
+  addMessage,
+} from './chats';
+
 // Notifications API
 export {
   getNotifications,

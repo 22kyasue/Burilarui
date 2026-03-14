@@ -1005,5 +1005,567 @@
     "details": null,
     "created_at": "2026-02-08T01:57:12.407576",
     "updated_at": "2026-02-08T01:57:12.407576"
+  },
+  {
+    "id": "1773215974551",
+    "user_id": "1773214016896",
+    "type": "update",
+    "title": "Claude 4.6 Opus\u304c\u30ea\u30ea\u30fc\u30b9",
+    "message": "AI\u30e2\u30c7\u30eb\u306e\u6700\u65b0\u52d5\u5411\u306b\u65b0\u3057\u3044\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8\u304c\u3042\u308a\u307e\u3059",
+    "read": false,
+    "feedback": null,
+    "tracking_id": "1773215974451",
+    "details": {
+      "summary": "Anthropic\u304cClaude 4.6 Opus\u3092\u30ea\u30ea\u30fc\u30b9",
+      "changes": [
+        "\u63a8\u8ad6\u80fd\u529b\u306e\u5927\u5e45\u5411\u4e0a",
+        "\u30b3\u30fc\u30c7\u30a3\u30f3\u30b0\u6027\u80fd\u306e\u6539\u5584"
+      ],
+      "sources": [
+        "https://anthropic.com"
+      ]
+    },
+    "created_at": "2026-03-11T14:59:34.451220",
+    "updated_at": "2026-03-11T14:59:34.451220"
+  },
+  {
+    "id": "1773215974552",
+    "user_id": "1773214016896",
+    "type": "update",
+    "title": "Vite 6.0\u304c\u30ea\u30ea\u30fc\u30b9",
+    "message": "Web\u958b\u767a\u30d5\u30ec\u30fc\u30e0\u30ef\u30fc\u30af\u306b\u65b0\u3057\u3044\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8\u304c\u3042\u308a\u307e\u3059",
+    "read": false,
+    "feedback": null,
+    "tracking_id": "1773215974452",
+    "details": {
+      "summary": "Vite 6.0\u304c\u30d3\u30eb\u30c9\u901f\u5ea6\u30922\u500d\u306b\u6539\u5584",
+      "changes": [
+        "Rolldown\u7d71\u5408",
+        "HMR\u9ad8\u901f\u5316"
+      ],
+      "sources": [
+        "https://vitejs.dev"
+      ]
+    },
+    "created_at": "2026-03-11T11:59:34.451220",
+    "updated_at": "2026-03-11T11:59:34.451220"
+  },
+  {
+    "user_id": "1773214016896",
+    "type": "update",
+    "title": "Update: AI\u30e2\u30c7\u30eb\u306e\u6700\u65b0\u52d5\u5411 2026",
+    "message": "Anthropic released **Claude Opus 4.6** on Feb 5, 2026, and **Claude Sonnet 4.6** around Feb 17, 2026, both upgrading from 4.5 versions with major advances in coding, agentic tasks, computer use, reasoning, and design. Key new features include 1M token context window (beta), 128k output tokens, adaptive thinking, context compaction, agent teams, and same pricing\u2014significant leaps beyond the prior general performance mention.[1][2][3][4][5][7][8]\n\n**Sources:**\n[1] https://www.cosmicjs.com/blog/claude-opus-46-vs-opus-45-a-real-world-comparison\n[2] https://www.tomsguide.com/ai/claude-just-upgraded-its-ai-and-it-can-now-process-entire-projects-at-once\n[3] https://www.youtube.com/watch?v=RmeqpJ71OTo\n[4] https://www.anthropic.com/news/claude-opus-4-6\n[5] https://9to5mac.com/2026/02/17/claude-sonnet-4-6-model-brings-much-improved-coding-skills-and-upgraded-free-tier/\n[6] https://www.latent.space/p/ainews-claude-sonnet-46-clean-upgrade\n[7] https://www.codecademy.com/article/anthropic-claude-opus-4-6\n[8] https://www.anthropic.com/news/claude-sonnet-4-6",
+    "tracking_id": "1773215974451",
+    "read": false,
+    "feedback": null,
+    "details": {
+      "summary": "Anthropic released **Claude Opus 4.6** on Feb 5, 2026, and **Claude Sonnet 4.6** around Feb 17, 2026, both upgrading from 4.5 versions with major advances in coding, agentic tasks, computer use, reasoning, and design. Key new features include 1M token context window (beta), 128k output tokens, adaptive thinking, context compaction, agent teams, and same pricing\u2014significant leaps beyond the prior general performance mention.[1][2][3][4][5][7][8]\n\n**Sources:**\n[1] https://www.cosmicjs.com/blog/claude-opus-46-vs-opus-45-a-real-world-comparison\n[2] https://www.tomsguide.com/ai/claude-just-upgraded-its-ai-and-it-can-now-process-entire-projects-at-once\n[3] https://www.youtube.com/watch?v=RmeqpJ71OTo\n[4] https://www.anthropic.com/news/claude-opus-4-6\n[5] https://9to5mac.com/2026/02/17/claude-sonnet-4-6-model-brings-much-improved-coding-skills-and-upgraded-free-tier/\n[6] https://www.latent.space/p/ainews-claude-sonnet-46-clean-upgrade\n[7] https://www.codecademy.com/article/anthropic-claude-opus-4-6\n[8] https://www.anthropic.com/news/claude-sonnet-4-6",
+      "changes": [],
+      "sources": [
+        {
+          "id": "1",
+          "title": "Source 1",
+          "url": "https://zenn.dev/7788/articles/af11fbce6c3379"
+        },
+        {
+          "id": "2",
+          "title": "Source 2",
+          "url": "https://note.com/luvinasoftware/n/n6625f5e29e3f"
+        },
+        {
+          "id": "3",
+          "title": "Source 3",
+          "url": "https://hblab.co.jp/blog/ai-trend-2026/"
+        },
+        {
+          "id": "4",
+          "title": "Source 4",
+          "url": "https://www.ibm.com/jp-ja/think/news/ai-tech-trends-predictions-2026"
+        },
+        {
+          "id": "5",
+          "title": "Source 5",
+          "url": "https://www.technologyreview.jp/s/375307/whats-next-for-ai-in-2026/"
+        },
+        {
+          "id": "6",
+          "title": "Source 6",
+          "url": "https://www.fujifilm.com/fb/solution/dx_column/ai/comparison-of-generative-ai"
+        },
+        {
+          "id": "7",
+          "title": "Source 7",
+          "url": "https://www.youtube.com/watch?v=-qzcBh8cysk"
+        },
+        {
+          "id": "8",
+          "title": "Source 8",
+          "url": "https://gigxit.co.jp/blog/blog-22127/"
+        },
+        {
+          "id": "9",
+          "title": "Source 9",
+          "url": "https://smart-stage.jp/blog/p208/"
+        }
+      ]
+    },
+    "id": "1773240151917",
+    "created_at": "2026-03-11T23:42:31.917306",
+    "updated_at": "2026-03-11T23:42:31.917306"
+  },
+  {
+    "user_id": "1773294472312",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294472313",
+    "created_at": "2026-03-12T14:47:52.313447",
+    "updated_at": "2026-03-12T14:47:52.314953"
+  },
+  {
+    "user_id": "1773294472691",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294472692",
+    "created_at": "2026-03-12T14:47:52.692721",
+    "updated_at": "2026-03-12T14:47:52.694560"
+  },
+  {
+    "user_id": "1773294472691",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294472693",
+    "created_at": "2026-03-12T14:47:52.693463",
+    "updated_at": "2026-03-12T14:47:52.694560"
+  },
+  {
+    "user_id": "1773294473264",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "useful",
+    "details": null,
+    "id": "1773294473265",
+    "created_at": "2026-03-12T14:47:53.265780",
+    "updated_at": "2026-03-12T14:47:53.267104"
+  },
+  {
+    "user_id": "1773294473453",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "not_useful",
+    "details": null,
+    "id": "1773294473454",
+    "created_at": "2026-03-12T14:47:53.454511",
+    "updated_at": "2026-03-12T14:47:53.455673"
+  },
+  {
+    "user_id": "1773294473647",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773294473648",
+    "created_at": "2026-03-12T14:47:53.648063",
+    "updated_at": "2026-03-12T14:47:53.648063"
+  },
+  {
+    "user_id": "1773294473835",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773294473836",
+    "created_at": "2026-03-12T14:47:53.836780",
+    "updated_at": "2026-03-12T14:47:53.836780"
+  },
+  {
+    "user_id": "1773294542642",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294542643",
+    "created_at": "2026-03-12T14:49:02.643188",
+    "updated_at": "2026-03-12T14:49:02.645174"
+  },
+  {
+    "user_id": "1773294543040",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294543041",
+    "created_at": "2026-03-12T14:49:03.041796",
+    "updated_at": "2026-03-12T14:49:03.044340"
+  },
+  {
+    "user_id": "1773294543040",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294543043",
+    "created_at": "2026-03-12T14:49:03.043046",
+    "updated_at": "2026-03-12T14:49:03.044340"
+  },
+  {
+    "user_id": "1773294543640",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "useful",
+    "details": null,
+    "id": "1773294543641",
+    "created_at": "2026-03-12T14:49:03.641576",
+    "updated_at": "2026-03-12T14:49:03.643580"
+  },
+  {
+    "user_id": "1773294543847",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "not_useful",
+    "details": null,
+    "id": "1773294543850",
+    "created_at": "2026-03-12T14:49:03.850617",
+    "updated_at": "2026-03-12T14:49:03.853468"
+  },
+  {
+    "user_id": "1773294544053",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773294544054",
+    "created_at": "2026-03-12T14:49:04.054538",
+    "updated_at": "2026-03-12T14:49:04.054538"
+  },
+  {
+    "user_id": "1773294544253",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773294544254",
+    "created_at": "2026-03-12T14:49:04.254420",
+    "updated_at": "2026-03-12T14:49:04.254420"
+  },
+  {
+    "user_id": "1773294883627",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294883628",
+    "created_at": "2026-03-12T14:54:43.628765",
+    "updated_at": "2026-03-12T14:54:43.629992"
+  },
+  {
+    "user_id": "1773294884003",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294884004",
+    "created_at": "2026-03-12T14:54:44.004377",
+    "updated_at": "2026-03-12T14:54:44.006349"
+  },
+  {
+    "user_id": "1773294884003",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773294884005",
+    "created_at": "2026-03-12T14:54:44.005215",
+    "updated_at": "2026-03-12T14:54:44.006349"
+  },
+  {
+    "user_id": "1773294884606",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "useful",
+    "details": null,
+    "id": "1773294884608",
+    "created_at": "2026-03-12T14:54:44.608144",
+    "updated_at": "2026-03-12T14:54:44.609382"
+  },
+  {
+    "user_id": "1773294884799",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "not_useful",
+    "details": null,
+    "id": "1773294884800",
+    "created_at": "2026-03-12T14:54:44.800382",
+    "updated_at": "2026-03-12T14:54:44.801624"
+  },
+  {
+    "user_id": "1773294884988",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773294884989",
+    "created_at": "2026-03-12T14:54:44.989723",
+    "updated_at": "2026-03-12T14:54:44.989723"
+  },
+  {
+    "user_id": "1773294885177",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773294885178",
+    "created_at": "2026-03-12T14:54:45.178261",
+    "updated_at": "2026-03-12T14:54:45.178261"
+  },
+  {
+    "user_id": "1773302964099",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773302964101",
+    "created_at": "2026-03-12T17:09:24.101126",
+    "updated_at": "2026-03-12T17:09:24.102494"
+  },
+  {
+    "user_id": "1773302964477",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773302964479",
+    "created_at": "2026-03-12T17:09:24.479302",
+    "updated_at": "2026-03-12T17:09:24.481408"
+  },
+  {
+    "user_id": "1773302964477",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773302964480",
+    "created_at": "2026-03-12T17:09:24.480165",
+    "updated_at": "2026-03-12T17:09:24.481408"
+  },
+  {
+    "user_id": "1773302965042",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "useful",
+    "details": null,
+    "id": "1773302965043",
+    "created_at": "2026-03-12T17:09:25.043472",
+    "updated_at": "2026-03-12T17:09:25.050925"
+  },
+  {
+    "user_id": "1773302965236",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "not_useful",
+    "details": null,
+    "id": "1773302965237",
+    "created_at": "2026-03-12T17:09:25.237771",
+    "updated_at": "2026-03-12T17:09:25.239092"
+  },
+  {
+    "user_id": "1773302965424",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773302965426",
+    "created_at": "2026-03-12T17:09:25.426067",
+    "updated_at": "2026-03-12T17:09:25.426067"
+  },
+  {
+    "user_id": "1773302965612",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773302965613",
+    "created_at": "2026-03-12T17:09:25.613912",
+    "updated_at": "2026-03-12T17:09:25.613912"
+  },
+  {
+    "user_id": "1773303002185",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773303002186",
+    "created_at": "2026-03-12T17:10:02.186586",
+    "updated_at": "2026-03-12T17:10:02.187892"
+  },
+  {
+    "user_id": "1773303002560",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773303002561",
+    "created_at": "2026-03-12T17:10:02.561516",
+    "updated_at": "2026-03-12T17:10:02.563672"
+  },
+  {
+    "user_id": "1773303002560",
+    "type": "update",
+    "title": "Test Notification",
+    "message": "Test message content",
+    "tracking_id": "tracking-1",
+    "read": true,
+    "feedback": null,
+    "details": null,
+    "id": "1773303002562",
+    "created_at": "2026-03-12T17:10:02.562401",
+    "updated_at": "2026-03-12T17:10:02.563672"
+  },
+  {
+    "user_id": "1773303003127",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "useful",
+    "details": null,
+    "id": "1773303003128",
+    "created_at": "2026-03-12T17:10:03.128866",
+    "updated_at": "2026-03-12T17:10:03.130244"
+  },
+  {
+    "user_id": "1773303003317",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": "not_useful",
+    "details": null,
+    "id": "1773303003319",
+    "created_at": "2026-03-12T17:10:03.319072",
+    "updated_at": "2026-03-12T17:10:03.320677"
+  },
+  {
+    "user_id": "1773303003508",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773303003510",
+    "created_at": "2026-03-12T17:10:03.510241",
+    "updated_at": "2026-03-12T17:10:03.510241"
+  },
+  {
+    "user_id": "1773303003696",
+    "type": "update",
+    "title": "Feedback Test",
+    "message": "Test feedback",
+    "tracking_id": null,
+    "read": false,
+    "feedback": null,
+    "details": null,
+    "id": "1773303003698",
+    "created_at": "2026-03-12T17:10:03.698204",
+    "updated_at": "2026-03-12T17:10:03.698204"
   }
 ]

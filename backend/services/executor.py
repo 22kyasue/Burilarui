@@ -4,8 +4,11 @@ Executes search plans, aggregates results, and prepares for extraction.
 Updated to work with tracking dicts instead of TrackingPlan objects.
 """
 
+import logging
 from typing import Dict
 from backend.services.perplexity import call_perplexity
+
+logger = logging.getLogger(__name__)
 
 
 class TrackingExecutor:
@@ -59,5 +62,5 @@ class TrackingExecutor:
                 return {"content": result, "citations": [], "images": []}
             return result
         except Exception as e:
-            print(f"Executor Error: {str(e)}")
+            logger.error("Executor Error: %s", e)
             return {"content": "Error retrieving search results.", "citations": [], "images": []}

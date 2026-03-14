@@ -1,8 +1,11 @@
 import json
+import logging
 import re
 from typing import Dict, List, Optional
 from urllib.parse import urlparse
 from backend.utils.ai_client import call_ai
+
+logger = logging.getLogger(__name__)
 
 class TrackingArchitect:
     """
@@ -118,7 +121,7 @@ Respond with ONLY the valid JSON object.
                 return json.loads(json_str)
             
             # Fallback if JSON parsing fails
-            print("Failed to parse JSON from Architect response")
+            logger.warning("Failed to parse JSON from Architect response")
             return {
                 "search_queries": [f"{topic} latest news"],
                 "structure_items": [],
@@ -126,7 +129,7 @@ Respond with ONLY the valid JSON object.
                 "notification_triggers": []
             }
         except Exception as e:
-            print(f"Architect Error: {str(e)}")
+            logger.error("Architect Error: %s", e)
             return {
                 "search_queries": [f"{topic} latest news"],
                 "structure_items": [],

@@ -35,6 +35,7 @@ export interface Tracking {
   lastExecutedAt?: string;
   updateCount: number;
   unreadCount: number;
+  sources?: string[];
 }
 
 export interface TrackingWithUpdates extends Tracking {
@@ -72,9 +73,14 @@ export interface CreateTrackingResponse {
 export interface UpdateTrackingRequest {
   isActive?: boolean;
   isPinned?: boolean;
+  query?: string;
   frequency?: 'realtime' | 'hourly' | 'daily' | 'weekly' | 'custom';
   customFrequencyHours?: number;
   notificationEnabled?: boolean;
+  emailEnabled?: boolean;
+  pushEnabled?: boolean;
+  detailLevel?: 'summary' | 'normal' | 'detailed';
+  sources?: string[];
 }
 
 export interface TrackingListResponse {

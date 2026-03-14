@@ -87,6 +87,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
           try {
             const refreshResponse = await authApi.refreshToken(refreshTokenVal);
             setAuthToken(refreshResponse.accessToken);
+            if (refreshResponse.refreshToken) {
+              setRefreshToken(refreshResponse.refreshToken);
+            }
             const userData = await authApi.getCurrentUser();
             setAndCacheUser({
               id: userData.id,
@@ -210,7 +213,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = useCallback(async () => {
     setIsLoading(true);
     try {
-      await authApi.logout();
+      await authApi.logout(getRefreshToken() || undefined);
     } catch {
       // Ignore logout API errors, still clear local state
     } finally {

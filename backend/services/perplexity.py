@@ -1,7 +1,10 @@
+import logging
 import os
 import time
 import requests
 from typing import Dict, List, Union, Literal, overload
+
+logger = logging.getLogger(__name__)
 
 # Perplexity API configuration
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
@@ -86,10 +89,10 @@ def call_perplexity(messages: List[Dict], model: str = "sonar", return_images: b
                 last_error = f"Perplexity API Error: {error_detail}"
             except Exception:
                 last_error = f"Perplexity API Error: {str(e)}"
-            print(last_error)
+            logger.error(last_error)
         except Exception as e:
             last_error = f"Error calling Perplexity API: {str(e)}"
-            print(last_error)
+            logger.error(last_error)
 
         # Only retry on first attempt
         if attempt == 0:

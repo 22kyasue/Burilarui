@@ -1,7 +1,11 @@
-# Burilar Backend Dependencies v1.0.0
+# Burilar Backend Dependencies v2.1.0
 flask>=2.0.0
 flask-cors>=3.0.0
+flask-limiter>=3.0.0
 requests>=2.28.0
 bcrypt>=4.0.0
 PyJWT>=2.8.0
 python-dotenv>=1.0.0
+APScheduler>=3.10.0
+stripe>=8.0.0
+gunicorn>=21.2.0

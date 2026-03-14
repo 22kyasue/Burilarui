@@ -4,8 +4,11 @@ Thin singleton that coordinates services and storage. No file I/O.
 """
 
 import json
+import logging
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 from backend.storage import tracking_storage
 from backend.services.perplexity import call_perplexity
@@ -316,7 +319,7 @@ class BurilarTracker:
                     continue
 
                 try:
-                    print(f"Checking updates for: {tracking.get('title', tracking_id)}")
+                    logger.info("Checking updates for: %s", tracking.get('title', tracking_id))
                     update = self.execute_tracking(user_id, tracking_id)
                     if update:
                         updates_found.append({
@@ -325,7 +328,7 @@ class BurilarTracker:
                             "update": update.get("content", ""),
                         })
                 except Exception as e:
-                    print(f"Error checking tracking {tracking_id}: {e}")
+                    logger.error("Error checking tracking %s: %s", tracking_id, e)
 
         return updates_found
 
@@ -402,5 +405,5 @@ Respond in JSON format:
             }
 
         except Exception as e:
-            print(f"Adaptive Learning Error: {e}")
+            logger.error("Adaptive Learning Error: %s", e)
             return {"error": str(e)}

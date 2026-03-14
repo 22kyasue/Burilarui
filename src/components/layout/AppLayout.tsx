@@ -1,52 +1,136 @@
-import { ReactNode, useState } from 'react';
+import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
-import { Menu } from 'lucide-react';
-import { Button } from '../ui/button';
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+import CollapsedSidebar from './CollapsedSidebar';
+import type { Chat } from '../../types/chat';
+
+export type AppView = 'home' | 'trackingList' | 'notificationSettings';
 
 interface AppLayoutProps {
-  children: ReactNode;
+  currentView: AppView;
+  onViewChange: (view: AppView) => void;
+  children: React.ReactNode;
+  // Update panel
+  updatePanelOpen?: boolean;
+  onToggleUpdatePanel?: () => void;
+  // Settings modal
+  settingsOpen?: boolean;
+  onToggleSettings?: () => void;
+  // Plan modal
+  onViewPlan?: () => void;
+  // Chat data
+  chats?: Chat[];
+  onSelectChat?: (id: string) => void;
 }
 
-export default function AppLayout({ children }: AppLayoutProps) {
-  const [mobileOpen, setMobileOpen] = useState(false);
+export default function AppLayout({
+  currentView,
+  onViewChange,
+  children,
+  updatePanelOpen: _updatePanelOpen,
+  onToggleUpdatePanel,
+  onViewPlan,
+  chats,
+  onSelectChat,
+}: AppLayoutProps) {
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [shouldScrollToHistory, setShouldScrollToHistory] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const handleLogoClick = useCallback(() => {
+    onViewChange('home');
+    navigate('/');
+  }, [onViewChange, navigate]);
+
+  const handleNewSearch = useCallback(() => {
+    onViewChange('home');
+    navigate('/');
+    setSidebarOpen(false);
+  }, [onViewChange, navigate]);
+
+  const handleViewTracking = useCallback(() => {
+    onViewChange('trackingList');
+    setSidebarOpen(false);
+  }, [onViewChange]);
+
+  const handleViewNotificationSettings = useCallback(() => {
+    onViewChange('notificationSettings');
+    setSidebarOpen(false);
+  }, [onViewChange]);
+
+  const handleSelectTracking = useCallback((id: string) => {
+    navigate(`/tracking/${id}`);
+    setSidebarOpen(false);
+  }, [navigate]);
+
+  const handleSelectChat = useCallback((id: string) => {
+    onSelectChat?.(id);
+    setSidebarOpen(false);
+  }, [onSelectChat]);
+
+  const handleScrollToHistory = useCallback(() => {
+    setShouldScrollToHistory(true);
+  }, []);
+
+  const handleNotificationClick = useCallback(() => {
+    onToggleUpdatePanel?.();
+  }, [onToggleUpdatePanel]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header
-        onMenuClick={() => setMobileOpen(true)}
-        menuButton={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-        }
+    <div className="min-h-screen bg-white">
+      {/* Collapsed Sidebar - always visible */}
+      <CollapsedSidebar
+        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        onNewSearch={handleNewSearch}
+        onViewTracking={handleViewTracking}
+        onViewNotificationSettings={handleViewNotificationSettings}
+        onViewSettings={() => setSettingsOpen(!settingsOpen)}
+        onScrollToHistory={handleScrollToHistory}
       />
 
-      <div className="flex">
-        {/* Desktop sidebar */}
-        <aside className="hidden md:flex w-64 border-r bg-white h-[calc(100vh-3.5rem)] sticky top-14">
-          <Sidebar />
-        </aside>
+      {/* Full Sidebar - toggle */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        onSelectTracking={handleSelectTracking}
+        onNewSearch={handleNewSearch}
+        onViewTracking={handleViewTracking}
+        onViewNotificationSettings={handleViewNotificationSettings}
+        onViewSettings={() => setSettingsOpen(!settingsOpen)}
+        shouldScrollToHistory={shouldScrollToHistory}
+        onScrollToHistoryComplete={() => setShouldScrollToHistory(false)}
+        chats={chats}
+        onSelectChat={handleSelectChat}
+      />
 
-        {/* Mobile sidebar */}
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetContent side="left" className="w-72 p-0">
-            <VisuallyHidden.Root>
-              <SheetTitle>Navigation</SheetTitle>
-            </VisuallyHidden.Root>
-            <Sidebar onNewTracking={() => setMobileOpen(false)} />
-          </SheetContent>
-        </Sheet>
+      {/* Main area - offset by collapsed sidebar */}
+      <div className="pl-16 flex flex-col min-h-screen">
+        {/* Header */}
+        <Header
+          onLogoClick={handleLogoClick}
+          onNotificationClick={handleNotificationClick}
+          onViewSettings={() => setSettingsOpen(!settingsOpen)}
+          onViewPlan={onViewPlan}
+        />
 
         {/* Main content */}
-        <main className="flex-1 min-w-0">{children}</main>
+        <main className="flex-1 flex flex-col">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentView}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="flex-1 flex flex-col"
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </main>
       </div>
     </div>
   );

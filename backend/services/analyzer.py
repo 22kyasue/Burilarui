@@ -1,6 +1,9 @@
 import json
+import logging
 from typing import Dict, List, Optional
 from backend.utils.ai_client import call_ai
+
+logger = logging.getLogger(__name__)
 
 class TrackingAnalyzer:
     """
@@ -89,7 +92,7 @@ Respond with ONLY the resolved query string.
             resolved_query = call_ai(messages, task="generation").strip().strip('"')
             return resolved_query
         except Exception as e:
-            print(f"Context Resolution Error: {str(e)}")
+            logger.error("Context Resolution Error: %s", e)
             return query
 
     def normalize_input(self, query: str) -> str:
@@ -175,7 +178,7 @@ Respond with ONLY "Completed" or "In Progress" on the first line, followed by ON
 
         messages = [{"role": "user", "content": assessment_prompt}]
 
-        content = call_perplexity(messages, model="sonar")
+        content = call_ai(messages, task="generation")
 
         lines = content.strip().split('\n')
         status_line = lines[0] if lines else content
@@ -199,5 +202,5 @@ Respond with ONLY "Completed" or "In Progress" on the first line, followed by ON
                 return json.loads(response_text[start_idx:end_idx])
             return json.loads(response_text)
         except Exception as e:
-            print(f"Analyzer Error: {str(e)}")
+            logger.error("Analyzer Error: %s", e)
             return {"error": str(e)}

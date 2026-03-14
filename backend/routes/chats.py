@@ -3,10 +3,16 @@ Chat Routes
 Handles chat/conversation CRUD operations.
 """
 
+import logging
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 from backend.storage import chat_storage
+from backend.extensions import limiter
 from backend.middleware.auth import auth_required, get_current_user
+from backend.validation.schemas import validate_request, CREATE_MESSAGE_SCHEMA
+from backend.billing.usage import check_usage_limit
+
+logger = logging.getLogger(__name__)
 
 chats_bp = Blueprint('chats', __name__, url_prefix='/api/chats')
 
@@ -34,6 +40,7 @@ def list_chats():
 
 @chats_bp.route('', methods=['POST'])
 @auth_required
+@check_usage_limit('chats_per_day')
 def create_chat():
     """Create a new chat."""
     user = get_current_user()
@@ -97,22 +104,24 @@ def delete_chat(chat_id):
 
 
 @chats_bp.route('/<chat_id>/messages', methods=['POST'])
+@limiter.limit("20/minute")
 @auth_required
+@validate_request(CREATE_MESSAGE_SCHEMA)
 def add_message(chat_id):
     """Add a message to a chat and generate AI response."""
-    from backend.services.perplexity import call_perplexity
+    from backend.utils.ai_client import call_ai
     import time
 
     user = get_current_user()
-    data = request.json or {}
+    v = request.validated
 
     user_message = {
-        'id': data.get('id'),
-        'content': data.get('content', ''),
-        'role': data.get('role', 'user'),
-        'timestamp': data.get('timestamp'),
-        'sources': data.get('sources'),
-        'images': data.get('images'),
+        'id': v.get('id'),
+        'content': v['content'],
+        'role': v.get('role', 'user'),
+        'timestamp': v.get('timestamp'),
+        'sources': v.get('sources'),
+        'images': v.get('images'),
     }
 
     chat = chat_storage.add_message(user['id'], chat_id, user_message)
@@ -130,7 +139,7 @@ def add_message(chat_id):
             messages.append({"role": msg['role'], "content": msg['content']})
 
         try:
-            ai_content = call_perplexity(messages, model="sonar")
+            ai_content = call_ai(messages, task="generation")
 
             assistant_message = {
                 'id': str(int(time.time() * 1000)),
@@ -143,7 +152,17 @@ def add_message(chat_id):
             chat = chat_storage.add_message(user['id'], chat_id, assistant_message)
 
         except Exception as e:
-            print(f"Error generating AI response: {e}")
+            logger.error("Error generating AI response: %s", e)
+            return jsonify({
+                'error': {
+                    'code': 'AI_ERROR',
+                    'message': 'Failed to generate AI response',
+                },
+                'id': chat['id'],
+                'title': chat.get('title', 'New Chat'),
+                'messages': chat.get('messages', []),
+                'updatedAt': chat.get('updated_at'),
+            }), 500
 
     return jsonify({
         'id': chat['id'],

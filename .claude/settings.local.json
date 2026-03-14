@@ -1,28 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm --version)",
-      "Bash(pip install:*)",
-      "Bash(python burilar_api.py:*)",
-      "Bash(curl:*)",
-      "Bash(cmd /c \"npm install\")",
-      "Bash(powershell.exe -Command \"cd ''C:\\\\Users\\\\kense\\\\Desktop\\\\Burilarui''; npm install\")",
-      "Bash(powershell.exe -Command \"node --version\")",
-      "Bash(npm run dev:*)",
-      "Bash(npm install)",
-      "Bash(python:*)",
-      "Bash(git add:*)",
-      "Bash(npm run build:*)",
-      "Bash(python3:*)",
-      "Bash(# Check if server is running pgrep -f \"\"burilar_api.py\"\" && echo \"\"Server running\"\" || echo \"\"Server NOT running\"\" # Test the login API directly echo \"\"\"\" echo \"\"Testing API...\"\" curl -s -X POST http://localhost:5050/api/auth/login \\\\ -H \"\"Content-Type: application/json\"\" \\\\ -d ''{\"\"email\"\": \"\"test@example.com\"\", \"\"password\"\": \"\"password123\"\"}'' 2>&1)",
-      "Bash(git push:*)",
-      "Bash(git rm:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nVersion 1.0.2: Update version number and add new features\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git commit:*)",
-      "Bash(wc:*)",
-      "Bash(lsof:*)",
-      "Bash(git checkout:*)",
-      "Bash(GIT_EDITOR=true git rebase:*)"
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Agent(*)",
+      "Skill(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "NotebookEdit(*)",
+      "mcp__claude_ai_Figma__*",
+      "mcp__ide__*"
     ]
   }
 }

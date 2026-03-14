@@ -9,10 +9,13 @@ When PERPLEXITY_API_KEY is present, web_search tasks automatically route to
 Perplexity (sonar) with Gemini as fallback.
 """
 
+import logging
 import os
 import time
 import requests
 from typing import Dict, List, Union
+
+logger = logging.getLogger(__name__)
 
 # ── Gemini ─────────────────────────────────────────────────────────────────────
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
@@ -199,31 +202,31 @@ def call_ai(
     Unified AI caller. All backend services should use this.
 
     task="generation"  → Gemini  (analysis, strategy, extraction, chat)
-    task="web_search"  → Gemini for now (Perplexity commented out until needed)
+    task="web_search"  → Perplexity (sonar) with Gemini fallback
 
     return_images=True → returns {"content": str, "images": list, "citations": list}
     """
     start = time.time()
 
-    # ── web_search via Perplexity (DISABLED - uncomment when Perplexity key is added) ──
-    # if task == "web_search" and PERPLEXITY_API_KEY:
-    #     try:
-    #         result = call_perplexity(messages, model="sonar", return_images=return_images)
-    #         print(f"[ai_client] web_search via Perplexity ({time.time() - start:.1f}s)")
-    #         return result
-    #     except AIClientError as e:
-    #         print(f"[ai_client] Perplexity failed ({e}), falling back to Gemini")
+    # ── web_search via Perplexity ────────────────────────────────────────────────
+    if task == "web_search" and PERPLEXITY_API_KEY:
+        try:
+            result = call_perplexity(messages, model="sonar", return_images=return_images)
+            logger.info("web_search via Perplexity (%.1fs)", time.time() - start)
+            return result
+        except AIClientError as e:
+            logger.warning("Perplexity failed (%s), falling back to Gemini", e)
 
     # ── all tasks: Gemini ──────────────────────────────────────────────────────
     try:
         text = call_gemini(messages)
-        print(f"[ai_client] {task} via Gemini ({time.time() - start:.1f}s)")
+        logger.info("%s via Gemini (%.1fs)", task, time.time() - start)
         if return_images:
             return {"content": text, "images": [], "citations": []}
         return text
 
     except AIClientError as e:
-        print(f"[ai_client] Gemini failed: {e}")
+        logger.error("Gemini failed: %s", e)
         error_msg = f"AI service temporarily unavailable. Please try again."
         if return_images:
             return {"content": error_msg, "images": [], "citations": []}

@@ -1827,5 +1827,384 @@
     "updates": [],
     "created_at": "2026-02-09T21:05:41.032873",
     "updated_at": "2026-02-09T21:05:41.032873"
+  },
+  {
+    "id": "1773215974451",
+    "user_id": "1773214016896",
+    "title": "AI\u30e2\u30c7\u30eb\u306e\u6700\u65b0\u52d5\u5411 2026",
+    "query": "2026\u5e74\u306eAI\u30e2\u30c7\u30eb\u958b\u767a\u306e\u6700\u65b0\u30c8\u30ec\u30f3\u30c9\u3068\u4e3b\u8981\u306a\u30ea\u30ea\u30fc\u30b9\u306b\u3064\u3044\u3066\u8ffd\u8de1",
+    "description": "AI\u696d\u754c\u306e\u6700\u65b0\u52d5\u5411\u3092\u8ffd\u8de1\u4e2d",
+    "is_active": true,
+    "is_pinned": true,
+    "frequency": "12h",
+    "custom_frequency_hours": 12,
+    "notification_enabled": true,
+    "status": "tracking",
+    "strategy": {
+      "type": "news_monitoring",
+      "focus": [
+        "AI",
+        "LLM",
+        "GPT"
+      ]
+    },
+    "keywords": [
+      "AI",
+      "LLM",
+      "\u5927\u898f\u6a21\u8a00\u8a9e\u30e2\u30c7\u30eb",
+      "Claude",
+      "GPT"
+    ],
+    "last_search_result": {},
+    "last_executed_at": "2026-03-11T23:42:31.903652",
+    "next_execute_at": "2026-03-12T23:42:31.903652",
+    "image_url": "",
+    "update_count": 4,
+    "unread_count": 3,
+    "updates": [
+      {
+        "title": "Anthropic released **Claude Opus 4.6** on Feb 5, 2026, and **Claude Sonnet 4.6**",
+        "content": "Anthropic released **Claude Opus 4.6** on Feb 5, 2026, and **Claude Sonnet 4.6** around Feb 17, 2026, both upgrading from 4.5 versions with major advances in coding, agentic tasks, computer use, reasoning, and design. Key new features include 1M token context window (beta), 128k output tokens, adaptive thinking, context compaction, agent teams, and same pricing\u2014significant leaps beyond the prior general performance mention.[1][2][3][4][5][7][8]\n\n**Sources:**\n[1] https://www.cosmicjs.com/blog/claude-opus-46-vs-opus-45-a-real-world-comparison\n[2] https://www.tomsguide.com/ai/claude-just-upgraded-its-ai-and-it-can-now-process-entire-projects-at-once\n[3] https://www.youtube.com/watch?v=RmeqpJ71OTo\n[4] https://www.anthropic.com/news/claude-opus-4-6\n[5] https://9to5mac.com/2026/02/17/claude-sonnet-4-6-model-brings-much-improved-coding-skills-and-upgraded-free-tier/\n[6] https://www.latent.space/p/ainews-claude-sonnet-46-clean-upgrade\n[7] https://www.codecademy.com/article/anthropic-claude-opus-4-6\n[8] https://www.anthropic.com/news/claude-sonnet-4-6",
+        "sources": [
+          {
+            "id": "1",
+            "title": "Source 1",
+            "url": "https://zenn.dev/7788/articles/af11fbce6c3379"
+          },
+          {
+            "id": "2",
+            "title": "Source 2",
+            "url": "https://note.com/luvinasoftware/n/n6625f5e29e3f"
+          },
+          {
+            "id": "3",
+            "title": "Source 3",
+            "url": "https://hblab.co.jp/blog/ai-trend-2026/"
+          },
+          {
+            "id": "4",
+            "title": "Source 4",
+            "url": "https://www.ibm.com/jp-ja/think/news/ai-tech-trends-predictions-2026"
+          },
+          {
+            "id": "5",
+            "title": "Source 5",
+            "url": "https://www.technologyreview.jp/s/375307/whats-next-for-ai-in-2026/"
+          },
+          {
+            "id": "6",
+            "title": "Source 6",
+            "url": "https://www.fujifilm.com/fb/solution/dx_column/ai/comparison-of-generative-ai"
+          },
+          {
+            "id": "7",
+            "title": "Source 7",
+            "url": "https://www.youtube.com/watch?v=-qzcBh8cysk"
+          },
+          {
+            "id": "8",
+            "title": "Source 8",
+            "url": "https://gigxit.co.jp/blog/blog-22127/"
+          },
+          {
+            "id": "9",
+            "title": "Source 9",
+            "url": "https://smart-stage.jp/blog/p208/"
+          }
+        ],
+        "details": {
+          "summary": "Anthropic released **Claude Opus 4.6** on Feb 5, 2026, and **Claude Sonnet 4.6** around Feb 17, 2026, both upgrading from 4.5 versions with major advances in coding, agentic tasks, computer use, reasoning, and design. Key new features include 1M token context window (beta), 128k output tokens, adaptive thinking, context compaction, agent teams, and same pricing\u2014significant leaps beyond the prior general performance mention.[1][2][3][4][5][7][8]\n\n**Sources:**\n[1] https://www.cosmicjs.com/blog/claude-opus-46-vs-opus-45-a-real-world-comparison\n[2] https://www.tomsguide.com/ai/claude-just-upgraded-its-ai-and-it-can-now-process-entire-projects-at-once\n[3] https://www.youtube.com/watch?v=RmeqpJ71OTo\n[4] https://www.anthropic.com/news/claude-opus-4-6\n[5] https://9to5mac.com/2026/02/17/claude-sonnet-4-6-model-brings-much-improved-coding-skills-and-upgraded-free-tier/\n[6] https://www.latent.space/p/ainews-claude-sonnet-46-clean-upgrade\n[7] https://www.codecademy.com/article/anthropic-claude-opus-4-6\n[8] https://www.anthropic.com/news/claude-sonnet-4-6",
+          "changes": [],
+          "sources": [
+            {
+              "id": "1",
+              "title": "Source 1",
+              "url": "https://zenn.dev/7788/articles/af11fbce6c3379"
+            },
+            {
+              "id": "2",
+              "title": "Source 2",
+              "url": "https://note.com/luvinasoftware/n/n6625f5e29e3f"
+            },
+            {
+              "id": "3",
+              "title": "Source 3",
+              "url": "https://hblab.co.jp/blog/ai-trend-2026/"
+            },
+            {
+              "id": "4",
+              "title": "Source 4",
+              "url": "https://www.ibm.com/jp-ja/think/news/ai-tech-trends-predictions-2026"
+            },
+            {
+              "id": "5",
+              "title": "Source 5",
+              "url": "https://www.technologyreview.jp/s/375307/whats-next-for-ai-in-2026/"
+            },
+            {
+              "id": "6",
+              "title": "Source 6",
+              "url": "https://www.fujifilm.com/fb/solution/dx_column/ai/comparison-of-generative-ai"
+            },
+            {
+              "id": "7",
+              "title": "Source 7",
+              "url": "https://www.youtube.com/watch?v=-qzcBh8cysk"
+            },
+            {
+              "id": "8",
+              "title": "Source 8",
+              "url": "https://gigxit.co.jp/blog/blog-22127/"
+            },
+            {
+              "id": "9",
+              "title": "Source 9",
+              "url": "https://smart-stage.jp/blog/p208/"
+            }
+          ]
+        },
+        "id": "1773240151914",
+        "timestamp": "2026-03-11T23:42:31.914220",
+        "is_read": false
+      },
+      {
+        "id": "demo_update_1",
+        "title": "Claude 4.6 Opus\u304c\u30ea\u30ea\u30fc\u30b9 - \u63a8\u8ad6\u80fd\u529b\u304c\u5927\u5e45\u5411\u4e0a",
+        "content": "Anthropic\u304cClaude 4.6 Opus\u3092\u30ea\u30ea\u30fc\u30b9\u3002\u30b3\u30fc\u30c7\u30a3\u30f3\u30b0\u3001\u6570\u5b66\u3001\u63a8\u8ad6\u30bf\u30b9\u30af\u3067\u524d\u4e16\u4ee3\u3092\u5927\u5e45\u306b\u4e0a\u56de\u308b\u6027\u80fd\u3092\u5b9f\u73fe\u3002",
+        "timestamp": "2026-03-11T14:59:34.451220",
+        "sources": [
+          {
+            "id": "1",
+            "url": "https://anthropic.com",
+            "title": "Anthropic Blog"
+          }
+        ],
+        "read": false
+      },
+      {
+        "id": "demo_update_2",
+        "title": "OpenAI\u304c\u65b0\u30e2\u30c7\u30ebGPT-5 Turbo\u3092\u767a\u8868",
+        "content": "OpenAI\u304cGPT-5 Turbo\u3092\u767a\u8868\u3002\u30de\u30eb\u30c1\u30e2\u30fc\u30c0\u30eb\u80fd\u529b\u304c\u5f37\u5316\u3055\u308c\u3001\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u63a8\u8ad6\u304c\u53ef\u80fd\u306b\u3002",
+        "timestamp": "2026-03-11T08:59:34.451220",
+        "sources": [
+          {
+            "id": "2",
+            "url": "https://openai.com",
+            "title": "OpenAI Blog"
+          }
+        ],
+        "read": false
+      },
+      {
+        "id": "demo_update_3",
+        "title": "Google DeepMind\u304cGemini 3.0\u3092\u516c\u958b",
+        "content": "Google DeepMind\u304cGemini 3.0\u3092\u767a\u8868\u3002\u79d1\u5b66\u7814\u7a76\u652f\u63f4\u306b\u7279\u5316\u3057\u305f\u65b0\u6a5f\u80fd\u3092\u642d\u8f09\u3002",
+        "timestamp": "2026-03-10T16:59:34.451220",
+        "sources": [
+          {
+            "id": "3",
+            "url": "https://deepmind.google",
+            "title": "DeepMind Blog"
+          }
+        ],
+        "read": true
+      }
+    ],
+    "sources": [
+      "https://anthropic.com",
+      "https://openai.com",
+      "https://deepmind.google"
+    ],
+    "notification_methods": {
+      "email": true,
+      "push": true,
+      "in_app": true
+    },
+    "detail_level": "detailed",
+    "created_at": "2026-03-08T16:59:34.451220",
+    "updated_at": "2026-03-11T23:42:31.914876"
+  },
+  {
+    "id": "1773215974452",
+    "user_id": "1773214016896",
+    "title": "Web\u958b\u767a\u30d5\u30ec\u30fc\u30e0\u30ef\u30fc\u30af\u306e\u30c8\u30ec\u30f3\u30c9",
+    "query": "React, Next.js, Vite\u306a\u3069\u306e\u30d5\u30ed\u30f3\u30c8\u30a8\u30f3\u30c9\u6280\u8853\u306e\u6700\u65b0\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8",
+    "description": "\u30d5\u30ed\u30f3\u30c8\u30a8\u30f3\u30c9\u6280\u8853\u306e\u52d5\u5411\u3092\u76e3\u8996",
+    "is_active": true,
+    "is_pinned": false,
+    "frequency": "1d",
+    "custom_frequency_hours": 24,
+    "notification_enabled": true,
+    "status": "tracking",
+    "strategy": {
+      "type": "tech_monitoring",
+      "focus": [
+        "React",
+        "Next.js",
+        "Vite"
+      ]
+    },
+    "keywords": [
+      "React",
+      "Next.js",
+      "Vite",
+      "TypeScript",
+      "Tailwind"
+    ],
+    "last_search_result": "React 19\u306e\u30b5\u30fc\u30d0\u30fc\u30b3\u30f3\u30dd\u30fc\u30cd\u30f3\u30c8\u6a5f\u80fd\u304c\u5b89\u5b9a\u7248\u306b\u3002Next.js 15\u304c\u30d1\u30d5\u30a9\u30fc\u30de\u30f3\u30b9\u3092\u5927\u5e45\u306b\u6539\u5584\u3002",
+    "last_executed_at": "2026-03-11T04:59:34.451220",
+    "next_execute_at": "2026-03-12T04:59:34.451220",
+    "image_url": "",
+    "update_count": 2,
+    "unread_count": 1,
+    "updates": [
+      {
+        "id": "demo_update_4",
+        "title": "Vite 6.0\u304c\u30ea\u30ea\u30fc\u30b9 - \u30d3\u30eb\u30c9\u901f\u5ea6\u304c2\u500d\u306b",
+        "content": "Vite 6.0\u304c\u6b63\u5f0f\u30ea\u30ea\u30fc\u30b9\u3002Rolldown\u7d71\u5408\u306b\u3088\u308a\u30d3\u30eb\u30c9\u901f\u5ea6\u304c\u5f93\u6765\u306e2\u500d\u306b\u5411\u4e0a\u3002HMR\u3082\u9ad8\u901f\u5316\u3002",
+        "timestamp": "2026-03-11T11:59:34.451220",
+        "sources": [
+          {
+            "id": "4",
+            "url": "https://vitejs.dev",
+            "title": "Vite Blog"
+          }
+        ],
+        "read": false
+      },
+      {
+        "id": "demo_update_5",
+        "title": "Tailwind CSS v4\u304c\u6b63\u5f0f\u30ea\u30ea\u30fc\u30b9",
+        "content": "Tailwind CSS v4\u304c\u6b63\u5f0f\u30ea\u30ea\u30fc\u30b9\u3002\u65b0\u3057\u3044\u30a8\u30f3\u30b8\u30f3\u306b\u3088\u308a\u3001\u30d3\u30eb\u30c9\u6642\u9593\u304c10\u500d\u9ad8\u901f\u5316\u3002",
+        "timestamp": "2026-03-09T16:59:34.451220",
+        "sources": [
+          {
+            "id": "5",
+            "url": "https://tailwindcss.com",
+            "title": "Tailwind Blog"
+          }
+        ],
+        "read": true
+      }
+    ],
+    "sources": [
+      "https://vitejs.dev",
+      "https://tailwindcss.com",
+      "https://react.dev"
+    ],
+    "notification_methods": {
+      "email": false,
+      "push": true,
+      "in_app": true
+    },
+    "detail_level": "summary",
+    "created_at": "2026-03-06T16:59:34.451220",
+    "updated_at": "2026-03-11T11:59:34.451220"
+  },
+  {
+    "id": "1773215974453",
+    "user_id": "1773214016896",
+    "title": "\u65e5\u672c\u306e\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u8cc7\u91d1\u8abf\u9054\u30cb\u30e5\u30fc\u30b9",
+    "query": "\u65e5\u672c\u306e\u30c6\u30c3\u30af\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u306e\u6700\u65b0\u8cc7\u91d1\u8abf\u9054\u30e9\u30a6\u30f3\u30c9\u3068IPO\u60c5\u5831",
+    "description": "\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u6295\u8cc7\u52d5\u5411\u3092\u8ffd\u8de1",
+    "is_active": false,
+    "is_pinned": false,
+    "frequency": "1d",
+    "custom_frequency_hours": 24,
+    "notification_enabled": true,
+    "status": "paused",
+    "strategy": {
+      "type": "business_monitoring",
+      "focus": [
+        "startup",
+        "funding",
+        "Japan"
+      ]
+    },
+    "keywords": [
+      "\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7",
+      "\u8cc7\u91d1\u8abf\u9054",
+      "IPO",
+      "VC",
+      "\u65e5\u672c"
+    ],
+    "last_search_result": "2026\u5e74Q1\u306e\u65e5\u672c\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u6295\u8cc7\u984d\u306f\u524d\u5e74\u540c\u671f\u6bd420%\u5897\u3002AI\u95a2\u9023\u4f01\u696d\u3078\u306e\u6295\u8cc7\u304c\u7279\u306b\u6d3b\u767a\u3002",
+    "last_executed_at": "2026-03-08T16:59:34.451220",
+    "next_execute_at": null,
+    "image_url": "",
+    "update_count": 1,
+    "unread_count": 0,
+    "updates": [
+      {
+        "id": "demo_update_6",
+        "title": "AI\u7cfb\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u304c100\u5104\u5186\u306e\u30b7\u30ea\u30fc\u30baB\u8abf\u9054",
+        "content": "\u6771\u4eac\u62e0\u70b9\u306eAI\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u304c100\u5104\u5186\u306e\u30b7\u30ea\u30fc\u30baB\u8cc7\u91d1\u8abf\u9054\u3092\u5b8c\u4e86\u3002\u81ea\u7136\u8a00\u8a9e\u51e6\u7406\u6280\u8853\u306e\u5546\u7528\u5316\u3092\u52a0\u901f\u3002",
+        "timestamp": "2026-03-08T16:59:34.451220",
+        "sources": [
+          {
+            "id": "6",
+            "url": "https://example.com",
+            "title": "TechCrunch Japan"
+          }
+        ],
+        "read": true
+      }
+    ],
+    "sources": [
+      "https://techcrunch.com",
+      "https://thebridge.jp"
+    ],
+    "notification_methods": {
+      "email": true,
+      "push": false,
+      "in_app": true
+    },
+    "detail_level": "full",
+    "created_at": "2026-03-01T16:59:34.451220",
+    "updated_at": "2026-03-08T16:59:34.451220"
+  },
+  {
+    "user_id": "1773214016896",
+    "title": "hello",
+    "query": "hello",
+    "description": "Track topic for ",
+    "is_active": true,
+    "is_pinned": false,
+    "frequency": "daily",
+    "custom_frequency_hours": null,
+    "notification_enabled": true,
+    "status": "tracking",
+    "strategy": {
+      "topic": "hello",
+      "intent": null,
+      "frequency_hours": 24,
+      "priority_sources": [
+        "ai.georgia.gov",
+        "dal.ca.libguides.com",
+        "libguides.cmich.edu",
+        "sourcely.net",
+        "libguides.colgate.edu"
+      ],
+      "search_queries": [
+        "hello latest news"
+      ],
+      "structure_items": [],
+      "missing_points": [],
+      "notification_triggers": [],
+      "schema_type": "general"
+    },
+    "keywords": [
+      "hello latest news"
+    ],
+    "last_search_result": {},
+    "last_executed_at": "2026-03-11T19:26:10.728896",
+    "next_execute_at": "2026-03-12T19:26:10.728896",
+    "image_url": "",
+    "update_count": 0,
+    "unread_count": 0,
+    "updates": [],
+    "id": "1773224770729",
+    "created_at": "2026-03-11T19:26:10.729961",
+    "updated_at": "2026-03-11T19:26:10.729961"
   }
 ]

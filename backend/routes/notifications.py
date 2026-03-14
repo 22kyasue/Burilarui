@@ -6,6 +6,7 @@ Endpoints for managing user notifications.
 from flask import Blueprint, request, jsonify, current_app
 from backend.middleware.auth import auth_required, get_current_user
 from backend.storage import notification_storage
+from backend.validation.schemas import validate_request, FEEDBACK_SCHEMA
 
 notifications_bp = Blueprint('notifications', __name__, url_prefix='/api/notifications')
 
@@ -41,8 +42,14 @@ def get_notifications():
     user = get_current_user()
 
     unread_only = request.args.get('unread_only', 'false').lower() == 'true'
-    limit = int(request.args.get('limit', 50))
-    offset = int(request.args.get('offset', 0))
+    try:
+        limit = max(1, min(int(request.args.get('limit', 50)), 100))
+    except (ValueError, TypeError):
+        limit = 50
+    try:
+        offset = max(0, int(request.args.get('offset', 0)))
+    except (ValueError, TypeError):
+        offset = 0
 
     notifications = notification_storage.get_by_user(
         user['id'], unread_only=unread_only, limit=limit, offset=offset
@@ -100,18 +107,11 @@ def delete_notification(notification_id):
 
 @notifications_bp.route('/<notification_id>/feedback', methods=['POST'])
 @auth_required
+@validate_request(FEEDBACK_SCHEMA)
 def submit_feedback(notification_id):
-    """
-    Submit feedback for a notification.
-
-    Input: { "feedback": "useful" | "not_useful" }
-    """
+    """Submit feedback for a notification."""
     user = get_current_user()
-    data = request.json or {}
-    feedback = data.get('feedback')
-
-    if feedback not in ('useful', 'not_useful'):
-        return jsonify({'error': {'code': 'VALIDATION_ERROR', 'message': 'feedback must be "useful" or "not_useful"'}}), 400
+    feedback = request.validated['feedback']
 
     if not notification_storage.submit_feedback(user['id'], notification_id, feedback):
         return jsonify({'error': {'code': 'NOT_FOUND', 'message': 'Notification not found'}}), 404

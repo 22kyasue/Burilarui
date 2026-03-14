@@ -50,17 +50,17 @@ export async function loginWithApple(token: string): Promise<AuthResponse> {
 }
 
 /**
- * Logout current session
+ * Logout current session — sends refresh token for server-side revocation
  */
-export async function logout(): Promise<void> {
-  return api.post<void>('/auth/logout');
+export async function logout(refreshToken?: string): Promise<void> {
+  return api.post<void>('/auth/logout', { refreshToken: refreshToken || '' });
 }
 
 /**
  * Refresh access token
  */
-export async function refreshToken(refreshToken: string): Promise<{ accessToken: string; expiresAt: number }> {
-  return api.post<{ accessToken: string; expiresAt: number }>('/auth/refresh', { refreshToken });
+export async function refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; expiresAt: number }> {
+  return api.post<{ accessToken: string; refreshToken: string; expiresAt: number }>('/auth/refresh', { refreshToken });
 }
 
 /**

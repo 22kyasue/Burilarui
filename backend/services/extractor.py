@@ -1,6 +1,9 @@
 import json
+import logging
 from typing import Dict, Any, Optional
 from backend.utils.ai_client import call_ai
+
+logger = logging.getLogger(__name__)
 
 class InformationExtractor:
     """
@@ -36,7 +39,7 @@ Respond with ONLY the JSON object.
             response_text = call_ai(messages, task="generation")
             return self._parse_json(response_text)
         except Exception as e:
-            print(f"Extractor Error: {str(e)}")
+            logger.error("Extractor Error: %s", e)
             return {}
 
     def _get_schema(self, schema_type: str) -> Dict:
