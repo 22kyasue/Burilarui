@@ -1855,9 +1855,14 @@
       "Claude",
       "GPT"
     ],
-    "last_search_result": {},
-    "last_executed_at": "2026-03-11T23:42:31.903652",
-    "next_execute_at": "2026-03-12T23:42:31.903652",
+    "last_search_result": {
+      "status": null,
+      "key_developments": [],
+      "latest_update_summary": null,
+      "source_url": null
+    },
+    "last_executed_at": "2026-03-15T20:29:05.152639",
+    "next_execute_at": "2026-03-16T20:29:05.152639",
     "image_url": "",
     "update_count": 4,
     "unread_count": 3,
@@ -2022,7 +2027,7 @@
     },
     "detail_level": "detailed",
     "created_at": "2026-03-08T16:59:34.451220",
-    "updated_at": "2026-03-11T23:42:31.914876"
+    "updated_at": "2026-03-15T20:29:05.156270"
   },
   {
     "id": "1773215974452",
@@ -2196,15 +2201,20 @@
     "keywords": [
       "hello latest news"
     ],
-    "last_search_result": {},
-    "last_executed_at": "2026-03-11T19:26:10.728896",
-    "next_execute_at": "2026-03-12T19:26:10.728896",
+    "last_search_result": {
+      "status": null,
+      "key_developments": null,
+      "latest_update_summary": null,
+      "source_url": null
+    },
+    "last_executed_at": "2026-03-15T20:29:10.946110",
+    "next_execute_at": "2026-03-16T20:29:10.946110",
     "image_url": "",
     "update_count": 0,
     "unread_count": 0,
     "updates": [],
     "id": "1773224770729",
     "created_at": "2026-03-11T19:26:10.729961",
-    "updated_at": "2026-03-11T19:26:10.729961"
+    "updated_at": "2026-03-15T20:29:10.947539"
   }
 ]
