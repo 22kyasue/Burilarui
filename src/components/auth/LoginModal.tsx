@@ -227,8 +227,15 @@ export default function LoginModal() {
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Fade in on mount (coming from webpage)
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.5s ease-in';
+    requestAnimationFrame(() => {
+      document.body.style.opacity = '1';
+    });
     setMounted(true);
   }, []);
 
@@ -240,6 +247,12 @@ export default function LoginModal() {
         await register(email, password, name);
       } else {
         await login(email, password);
+      }
+      // On success, fade out the login before app renders
+      if (containerRef.current) {
+        containerRef.current.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+        containerRef.current.style.opacity = '0';
+        containerRef.current.style.transform = 'scale(1.02)';
       }
     } catch {
       // Error is handled by AuthContext
@@ -256,7 +269,7 @@ export default function LoginModal() {
     }`;
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#f0f0f8] dark:bg-gray-950" style={{ fontFamily: "'Inter', 'Noto Sans JP', system-ui, sans-serif" }}>
+    <div ref={containerRef} className="min-h-screen relative overflow-hidden bg-[#f0f0f8] dark:bg-gray-950" style={{ fontFamily: "'Inter', 'Noto Sans JP', system-ui, sans-serif" }}>
       {/* Animated background */}
       <AnimatedBackground />
 

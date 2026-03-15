@@ -326,7 +326,13 @@ export default function HomePage() {
   };
 
   return (
-    <>
+    <div style={{ animation: 'app-fade-in 0.6s ease-out both' }}>
+      <style>{`
+        @keyframes app-fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
       <AppLayout
         currentView={currentView}
         onViewChange={(view) => {
@@ -377,6 +383,6 @@ export default function HomePage() {
         isOpen={planModalOpen}
         onClose={() => setPlanModalOpen(false)}
       />
-    </>
+    </div>
   );
 }

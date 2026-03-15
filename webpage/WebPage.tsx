@@ -121,6 +121,16 @@ function Counter({ value, suffix = '', prefix = '' }: { value: number; suffix?: 
    NAV — todesktop-style morphing navigation
    ═══════════════════════════════════════════════ */
 
+/* Smooth page exit — fades out then navigates */
+function smoothNavigate(e: React.MouseEvent<HTMLAnchorElement>, url: string) {
+  e.preventDefault();
+  document.body.style.transition = 'opacity 0.4s ease-out';
+  document.body.style.opacity = '0';
+  setTimeout(() => {
+    window.location.href = url;
+  }, 400);
+}
+
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -203,6 +213,7 @@ function Nav() {
           <div className="flex items-center gap-3">
             <a
               href={APP_URL}
+              onClick={(e) => smoothNavigate(e, APP_URL)}
               className="text-[13px] font-medium transition-colors duration-300 px-3 py-2"
               style={{ color: scrolled ? '#6b7280' : 'rgba(255,255,255,0.60)' }}
               onMouseEnter={(e) => { e.currentTarget.style.color = scrolled ? '#0a0a0a' : '#fff'; }}
@@ -212,6 +223,7 @@ function Nav() {
             </a>
             <a
               href={APP_URL}
+              onClick={(e) => smoothNavigate(e, APP_URL)}
               className="flex items-center gap-2 rounded-full text-[13px] font-semibold transition-all duration-300 hover:shadow-lg active:scale-[0.97]"
               style={{
                 padding: scrolled ? '8px 20px' : '10px 24px',
@@ -384,6 +396,7 @@ function Hero() {
         >
           <a
             href={APP_URL}
+            onClick={(e) => smoothNavigate(e, APP_URL)}
             className="group flex items-center gap-2.5 px-8 py-4 rounded-full text-[15px] font-semibold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/35 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
           >
             無料で始める
@@ -1357,6 +1370,7 @@ function Pricing() {
 
               <a
                 href={APP_URL}
+                onClick={(e) => smoothNavigate(e, APP_URL)}
                 className={`block w-full py-3.5 rounded-xl text-center text-[14px] font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-jp ${
                   p.popular
                     ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/30'
@@ -1415,6 +1429,7 @@ function FinalCTA() {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <a
               href={APP_URL}
+              onClick={(e) => smoothNavigate(e, APP_URL)}
               className="group flex items-center gap-2.5 px-8 py-4 rounded-full text-[15px] font-semibold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/35 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 font-jp"
             >
               無料で始める
@@ -1422,6 +1437,7 @@ function FinalCTA() {
             </a>
             <a
               href={APP_URL}
+              onClick={(e) => smoothNavigate(e, APP_URL)}
               className="flex items-center gap-2 px-8 py-4 rounded-full text-[15px] font-medium text-gray-400 border border-gray-800 hover:text-white hover:border-gray-600 transition-all duration-300 font-jp"
             >
               ログイン
@@ -1536,7 +1552,8 @@ function Footer() {
 
 export default function WebPage() {
   return (
-    <div className="bg-white text-gray-900 overflow-x-hidden" style={{ fontFamily: "'Inter', 'Noto Sans JP', system-ui, sans-serif" }}>
+    <div className="bg-white text-gray-900 overflow-x-hidden" style={{ fontFamily: "'Inter', 'Noto Sans JP', system-ui, sans-serif", animation: 'pageIn 0.5s ease-out both' }}>
+      <style>{`@keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }`}</style>
       <Nav />
       <Hero />
       <Stats />
