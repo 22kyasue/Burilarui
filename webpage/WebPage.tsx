@@ -8,7 +8,7 @@ import {
   FileText, Wifi, Database, Settings, Filter,
 } from 'lucide-react';
 
-const APP_URL = 'http://localhost:3000';
+const APP_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
 const ease = [0.22, 1, 0.36, 1] as const;
 
 /* ═══════════════════════════════════════════════
@@ -148,7 +148,7 @@ function Nav() {
         className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4"
       >
         <nav
-          className="flex items-center justify-between w-full transition-all duration-700 ease-out"
+          className="flex flex-wrap items-center justify-between w-full transition-all duration-700 ease-out"
           style={{
             maxWidth: scrolled ? 720 : 1200,
             marginTop: scrolled ? 14 : 0,
@@ -176,8 +176,8 @@ function Nav() {
             </span>
           </a>
 
-          {/* Desktop links */}
-          <div className="hidden lg:flex items-center gap-0.5">
+          {/* Links + CTAs — always visible, responsive sizing */}
+          <div className="flex items-center gap-0.5 flex-wrap">
             {links.map((l) => (
               <a
                 key={l.label}
@@ -192,14 +192,15 @@ function Nav() {
                   e.currentTarget.style.color = scrolled ? '#6b7280' : 'rgba(255,255,255,0.60)';
                   e.currentTarget.style.background = 'transparent';
                 }}
+                onClick={() => setMobileOpen(false)}
               >
                 {l.label}
               </a>
             ))}
           </div>
 
-          {/* Desktop CTAs */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* CTAs */}
+          <div className="flex items-center gap-3">
             <a
               href={APP_URL}
               className="text-[13px] font-medium transition-colors duration-300 px-3 py-2"
@@ -224,42 +225,8 @@ function Nav() {
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
-
-          {/* Mobile menu button */}
-          <button
-            className="lg:hidden p-2 rounded-lg transition-colors"
-            style={{ color: scrolled ? '#0a0a0a' : '#ffffff' }}
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </nav>
       </motion.header>
-
-      {/* Mobile menu overlay */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="fixed inset-x-0 top-[72px] mx-4 p-5 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-gray-200/50 lg:hidden z-50"
-          >
-            <div className="flex flex-col gap-1">
-              {links.map((l) => (
-                <a key={l.label} href={l.href} className="px-4 py-3 text-[15px] font-medium text-gray-700 rounded-xl hover:bg-gray-50 transition-colors" onClick={() => setMobileOpen(false)}>
-                  {l.label}
-                </a>
-              ))}
-              <hr className="my-3 border-gray-100" />
-              <a href={APP_URL} className="px-4 py-3 text-[15px] font-medium text-gray-500 hover:text-gray-900 transition-colors">ログイン</a>
-              <a href={APP_URL} className="mt-1 px-4 py-3 text-[15px] font-semibold text-white bg-gray-900 rounded-xl text-center hover:bg-gray-800 transition-colors">
-                無料で始める
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }
