@@ -30,12 +30,12 @@ function AnimatedBackground() {
 
     // Orbs
     const colors = [
-      [99, 102, 241],   // indigo
-      [139, 92, 246],   // purple
-      [236, 72, 153],   // pink
-      [59, 130, 246],   // blue
-      [168, 85, 247],   // violet
-      [244, 114, 182],  // pink-light
+      [30, 58, 138],    // navy
+      [37, 99, 235],    // blue
+      [59, 130, 246],   // blue-light
+      [245, 158, 11],   // amber
+      [249, 115, 22],   // orange
+      [251, 191, 36],   // amber-light
     ];
 
     const orbs = Array.from({ length: 14 }, (_, i) => ({
@@ -195,7 +195,7 @@ function AnimatedBackground() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(139,92,246,${(1 - dist / 120) * 0.12})`;
+            ctx.strokeStyle = `rgba(37,99,235,${(1 - dist / 120) * 0.12})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -264,7 +264,7 @@ export default function LoginModal() {
   const inputClass = (field: string) =>
     `w-full px-4 py-3.5 rounded-2xl text-sm backdrop-blur-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all duration-300 border ${
       focusedField === field
-        ? 'bg-white/90 dark:bg-gray-800/90 border-indigo-400/50 dark:border-indigo-500/50 shadow-lg shadow-indigo-500/10'
+        ? 'bg-white/90 dark:bg-gray-800/90 border-amber-400/50 dark:border-amber-500/50 shadow-lg shadow-amber-500/10'
         : 'bg-white/50 dark:bg-gray-800/50 border-white/60 dark:border-gray-700/60 hover:bg-white/70 dark:hover:bg-gray-800/70'
     }`;
 
@@ -276,7 +276,7 @@ export default function LoginModal() {
       {/* Subtle grid */}
       <div className="fixed inset-0 z-[1] pointer-events-none opacity-30 dark:opacity-10"
         style={{
-          backgroundImage: 'radial-gradient(circle, rgba(99,102,241,0.12) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, rgba(37,99,235,0.12) 1px, transparent 1px)',
           backgroundSize: '28px 28px',
         }}
       />
@@ -294,14 +294,14 @@ export default function LoginModal() {
           >
             {/* Logo */}
             <div className="relative mb-10">
-              <div className="absolute -inset-3 bg-gradient-to-br from-indigo-500/30 to-purple-500/30 rounded-3xl blur-2xl" />
-              <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-2xl shadow-purple-500/30">
+              <div className="absolute -inset-3 bg-gradient-to-br from-amber-400/30 to-orange-500/30 rounded-3xl blur-2xl" />
+              <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-2xl shadow-orange-500/30">
                 <span className="text-white text-3xl font-bold">B</span>
               </div>
             </div>
 
             <h1 className="text-5xl font-bold leading-[1.15] mb-6">
-              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-900 via-blue-700 to-blue-500 bg-clip-text text-transparent">
                 あらゆるトピックを
               </span>
               <br />
@@ -327,15 +327,15 @@ export default function LoginModal() {
                     background: 'rgba(255,255,255,0.45)',
                     backdropFilter: 'blur(20px)',
                     border: '1px solid rgba(255,255,255,0.6)',
-                    boxShadow: '0 8px 32px rgba(99,102,241,0.06)',
+                    boxShadow: '0 8px 32px rgba(37,99,235,0.06)',
                     transitionDelay: `${i * 100}ms`,
                   }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-700/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative z-10 flex flex-col items-start gap-2">
                     <div className="text-2xl group-hover:scale-110 transition-transform duration-300">{s.emoji}</div>
                     <div>
-                      <div className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">{s.value}</div>
+                      <div className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-transparent leading-tight">{s.value}</div>
                       <div className="text-xs text-gray-500 mt-1">{s.label}</div>
                     </div>
                   </div>
@@ -358,12 +358,12 @@ export default function LoginModal() {
             {/* Mobile logo */}
             <div className="lg:hidden text-center mb-10">
               <div className="relative inline-block mb-4">
-                <div className="absolute -inset-2 bg-gradient-to-br from-indigo-500/25 to-purple-500/25 rounded-2xl blur-xl" />
-                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-2xl shadow-purple-500/30 mx-auto">
+                <div className="absolute -inset-2 bg-gradient-to-br from-amber-400/25 to-orange-500/25 rounded-2xl blur-xl" />
+                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-2xl shadow-orange-500/30 mx-auto">
                   <span className="text-white text-2xl font-bold">B</span>
                 </div>
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent">
                 Burilar
               </h1>
             </div>
@@ -384,7 +384,7 @@ export default function LoginModal() {
                   {isRegister && (
                     <div className="transition-all duration-300">
                       <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        <User className={`w-4 h-4 transition-colors duration-300 ${focusedField === 'name' ? 'text-indigo-500' : 'text-gray-400'}`} />
+                        <User className={`w-4 h-4 transition-colors duration-300 ${focusedField === 'name' ? 'text-amber-500' : 'text-gray-400'}`} />
                         名前
                       </label>
                       <input
@@ -402,7 +402,7 @@ export default function LoginModal() {
 
                   <div className="transition-all duration-300">
                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      <Mail className={`w-4 h-4 transition-colors duration-300 ${focusedField === 'email' ? 'text-indigo-500' : 'text-gray-400'}`} />
+                      <Mail className={`w-4 h-4 transition-colors duration-300 ${focusedField === 'email' ? 'text-amber-500' : 'text-gray-400'}`} />
                       メールアドレス
                     </label>
                     <input
@@ -419,7 +419,7 @@ export default function LoginModal() {
 
                   <div className="transition-all duration-300">
                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      <Lock className={`w-4 h-4 transition-colors duration-300 ${focusedField === 'password' ? 'text-indigo-500' : 'text-gray-400'}`} />
+                      <Lock className={`w-4 h-4 transition-colors duration-300 ${focusedField === 'password' ? 'text-amber-500' : 'text-gray-400'}`} />
                       パスワード
                     </label>
                     <div className="relative">
@@ -436,7 +436,7 @@ export default function LoginModal() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-500 transition-colors duration-300"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-500 transition-colors duration-300"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -455,8 +455,8 @@ export default function LoginModal() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="group relative w-full flex items-center justify-center gap-2.5 py-4 rounded-xl text-[15px] font-semibold text-white overflow-hidden shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.97] transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
-                    style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7)' }}
+                    className="group relative w-full flex items-center justify-center gap-2.5 py-4 rounded-xl text-[15px] font-semibold text-white overflow-hidden shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-[0.97] transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
+                    style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b, #f97316)' }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                     <span className="relative z-10 flex items-center gap-2.5">
@@ -487,7 +487,7 @@ export default function LoginModal() {
                     onClick={() => { setIsRegister(!isRegister); clearError(); }}
                   >
                     {isRegister ? 'すでにアカウントをお持ちですか？ ' : 'アカウントをお持ちでないですか？ '}
-                    <span className="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <span className="font-semibold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
                       {isRegister ? 'サインイン' : '新規登録'}
                     </span>
                   </button>

@@ -45,23 +45,23 @@ export default function TrackingListView({
             <button
               onClick={() => setActiveTab('tracking')}
               className={`pb-2 px-1 transition-colors relative text-sm font-medium ${
-                activeTab === 'tracking' ? 'text-indigo-600' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                activeTab === 'tracking' ? 'text-amber-600' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
               }`}
             >
               追跡中のプロンプト
               {activeTab === 'tracking' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-600 rounded-full" />
               )}
             </button>
             <button
               onClick={() => setActiveTab('all')}
               className={`pb-2 px-1 transition-colors relative text-sm font-medium ${
-                activeTab === 'all' ? 'text-indigo-600' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                activeTab === 'all' ? 'text-amber-600' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
               }`}
             >
               全てのプロンプト
               {activeTab === 'all' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-600 rounded-full" />
               )}
             </button>
           </div>
@@ -111,7 +111,7 @@ export default function TrackingListView({
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="検索..."
                         autoFocus
-                        className="w-full pl-4 pr-10 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:bg-white dark:focus:bg-gray-600 transition-all"
+                        className="w-full pl-4 pr-10 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white dark:focus:bg-gray-600 transition-all"
                       />
                       <button
                         type="button"
@@ -137,7 +137,7 @@ export default function TrackingListView({
             {/* New Button */}
             <button
               onClick={onNewSearch}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-xl transition-all shadow-md hover:shadow-lg text-sm font-medium"
             >
               <Plus className="w-5 h-5" />
               新規作成
@@ -191,7 +191,7 @@ export default function TrackingListView({
                   <div
                     key={tracking.id}
                     onClick={() => onSelectTracking(tracking.id)}
-                    className="relative bg-white dark:bg-gray-800 rounded-2xl cursor-pointer hover:shadow-xl transition-all border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-700 group animate-stagger-in"
+                    className="relative bg-white dark:bg-gray-800 rounded-2xl cursor-pointer hover:shadow-xl transition-all border border-gray-100 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-700 group animate-stagger-in"
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {/* Status dot */}
@@ -203,7 +203,7 @@ export default function TrackingListView({
                     </div>
 
                     {/* Image placeholder */}
-                    <div className="relative h-40 bg-gradient-to-br from-indigo-100 to-purple-100 overflow-hidden rounded-t-2xl">
+                    <div className="relative h-40 bg-gradient-to-br from-amber-100 to-orange-100 overflow-hidden rounded-t-2xl">
                       {tracking.imageUrl ? (
                         <img
                           src={tracking.imageUrl}
@@ -218,8 +218,8 @@ export default function TrackingListView({
 
                       {/* Category badge */}
                       <div className="absolute top-3 left-3">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-indigo-600 shadow-sm">
-                          <Circle className="w-2 h-2" fill="#6366f1" stroke="none" />
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-amber-600 shadow-sm">
+                          <Circle className="w-2 h-2" fill="#f59e0b" stroke="none" />
                           追跡中
                         </span>
                       </div>
@@ -236,7 +236,7 @@ export default function TrackingListView({
 
                     {/* Content */}
                     <div className="p-4">
-                      <h3 className="text-gray-900 dark:text-gray-100 font-medium mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                      <h3 className="text-gray-900 dark:text-gray-100 font-medium mb-2 line-clamp-2 group-hover:text-amber-600 transition-colors">
                         {tracking.title}
                       </h3>
                       <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs">
@@ -252,7 +252,7 @@ export default function TrackingListView({
                   <p className="mb-4 text-sm">追跡中のプロンプトはありません</p>
                   <button
                     onClick={onNewSearch}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg text-sm font-medium"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-xl transition-all shadow-md hover:shadow-lg text-sm font-medium"
                   >
                     <Plus className="w-4 h-4" />
                     新規作成
@@ -267,7 +267,7 @@ export default function TrackingListView({
                   <div
                     key={tracking.id}
                     onClick={() => onSelectTracking(tracking.id)}
-                    className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-4 cursor-pointer hover:bg-white/90 dark:hover:bg-gray-800/90 transition-all border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md animate-stagger-in"
+                    className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-4 cursor-pointer hover:bg-white/90 dark:hover:bg-gray-800/90 transition-all border border-gray-100 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-700 hover:shadow-md animate-stagger-in"
                     style={{ animationDelay: `${index * 30}ms` }}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -297,7 +297,7 @@ export default function TrackingListView({
                       </div>
                       {tracking.unreadCount > 0 && (
                         <div className="flex-shrink-0">
-                          <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs rounded-full font-semibold shadow-sm">
+                          <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs rounded-full font-semibold shadow-sm">
                             {tracking.unreadCount}
                           </span>
                         </div>
@@ -311,7 +311,7 @@ export default function TrackingListView({
                   <p className="mb-4 text-sm">追跡中のプロンプトはありません</p>
                   <button
                     onClick={onNewSearch}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg text-sm font-medium"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-xl transition-all shadow-md hover:shadow-lg text-sm font-medium"
                   >
                     <Plus className="w-4 h-4" />
                     新規作成

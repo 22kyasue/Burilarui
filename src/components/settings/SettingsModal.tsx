@@ -146,7 +146,7 @@ export default function SettingsModal({
                         <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                         <span className="text-gray-800 dark:text-gray-200 text-sm font-medium">{item.label}</span>
                         {item.hasDot && (
-                          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500" />
                         )}
                       </div>
                       {item.hasArrow && (
@@ -170,7 +170,7 @@ export default function SettingsModal({
                                 <button onClick={() => setTheme(themeOption.id)} className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
                                   <span className="text-gray-800 dark:text-gray-200 text-sm font-medium">{themeOption.label}</span>
                                   {currentTheme === themeOption.id && (
-                                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
+                                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
                                       <Check className="w-3 h-3 text-white" strokeWidth={3} />
                                     </div>
                                   )}
@@ -194,9 +194,9 @@ export default function SettingsModal({
               <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
                 <p className="mb-1">&copy; 2026 Burilar. All rights reserved.</p>
                 <p>
-                  <span className="text-indigo-600 hover:text-indigo-700 transition-colors cursor-pointer">利用規約</span>
+                  <span className="text-amber-600 hover:text-amber-700 transition-colors cursor-pointer">利用規約</span>
                   {' • '}
-                  <span className="text-indigo-600 hover:text-indigo-700 transition-colors cursor-pointer">プライバシーポリシー</span>
+                  <span className="text-amber-600 hover:text-amber-700 transition-colors cursor-pointer">プライバシーポリシー</span>
                 </p>
               </div>
             </div>

@@ -119,7 +119,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
           {/* Left: Prompt list */}
           <div className="w-96 flex-shrink-0">
             <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden sticky top-8 shadow-sm">
-              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30">
+              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30">
                 <h2 className="text-sm text-gray-700 dark:text-gray-300 font-semibold">通知設定の管理</h2>
               </div>
 
@@ -129,12 +129,12 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                   onClick={() => setSelectedPromptId(null)}
                   className={`w-full p-4 text-left border-b border-gray-100 dark:border-gray-800 transition-colors ${
                     selectedPromptId === null
-                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 border-l-4 border-l-indigo-500'
+                      ? 'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 border-l-4 border-l-amber-500'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-md">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-md">
                       <Bell className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -151,7 +151,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                     onClick={() => setSelectedPromptId(tracking.id)}
                     className={`w-full p-4 text-left border-b border-gray-100 dark:border-gray-800 transition-colors ${
                       selectedPromptId === tracking.id
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 border-l-4 border-l-indigo-500'
+                        ? 'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 border-l-4 border-l-amber-500'
                         : 'hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >
@@ -189,7 +189,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
               {/* Frequency */}
               <div className="mb-8">
                 <label className="text-sm text-gray-700 dark:text-gray-300 block mb-3 font-medium flex items-center gap-2">
-                  <span className="text-indigo-600">🔄</span>
+                  <span className="text-amber-600">🔄</span>
                   追跡検索の頻度
                 </label>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
@@ -202,8 +202,8 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                       onClick={() => updateCurrentSettings({ frequency: opt.value })}
                       className={`px-4 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
                         currentSettings.frequency === opt.value
-                          ? 'border-indigo-400 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 text-indigo-700 dark:text-indigo-300 shadow-sm'
-                          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'
+                          ? 'border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-300 shadow-sm'
+                          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20'
                       }`}
                     >
                       {opt.label}
@@ -215,14 +215,14 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
               {/* Notification Methods */}
               <div className="mb-8">
                 <label className="text-sm text-gray-700 dark:text-gray-300 block mb-3 font-medium flex items-center gap-2">
-                  <span className="text-purple-600">🔔</span>
+                  <span className="text-orange-600">🔔</span>
                   通知形式
                 </label>
                 <div className="space-y-3">
                   {/* Email */}
-                  <div className="flex items-center justify-between p-4 rounded-xl border border-indigo-100 dark:border-indigo-800 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-900/20 dark:to-purple-900/20">
+                  <div className="flex items-center justify-between p-4 rounded-xl border border-amber-100 dark:border-amber-800 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-900/20 dark:to-orange-900/20">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-700 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-amber-200 dark:border-amber-700 flex items-center justify-center">
                         <span className="text-lg">✉️</span>
                       </div>
                       <div>
@@ -234,7 +234,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                       onClick={() => updateCurrentSettings({ emailNotifications: !currentSettings.emailNotifications })}
                       className={`w-12 h-6 rounded-full relative transition-all ${
                         currentSettings.emailNotifications
-                          ? 'bg-gradient-to-r from-indigo-500 to-purple-500'
+                          ? 'bg-gradient-to-r from-amber-500 to-orange-500'
                           : 'bg-gray-300'
                       }`}
                     >
@@ -245,9 +245,9 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                   </div>
 
                   {/* Push */}
-                  <div className="flex items-center justify-between p-4 rounded-xl border border-purple-100 dark:border-purple-800 bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-900/20 dark:to-pink-900/20">
+                  <div className="flex items-center justify-between p-4 rounded-xl border border-orange-100 dark:border-orange-800 bg-gradient-to-r from-orange-50/50 to-pink-50/50 dark:from-orange-900/20 dark:to-pink-900/20">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-purple-200 dark:border-purple-700 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-700 flex items-center justify-center">
                         <span className="text-lg">📱</span>
                       </div>
                       <div>
@@ -259,7 +259,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                       onClick={() => updateCurrentSettings({ pushNotifications: !currentSettings.pushNotifications })}
                       className={`w-12 h-6 rounded-full relative transition-all ${
                         currentSettings.pushNotifications
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500'
+                          ? 'bg-gradient-to-r from-orange-500 to-pink-500'
                           : 'bg-gray-300'
                       }`}
                     >
@@ -270,7 +270,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                   </div>
 
                   {/* In-app */}
-                  <div className="flex items-center justify-between p-4 rounded-xl border border-pink-100 dark:border-pink-800 bg-gradient-to-r from-pink-50/50 to-indigo-50/50 dark:from-pink-900/20 dark:to-indigo-900/20">
+                  <div className="flex items-center justify-between p-4 rounded-xl border border-pink-100 dark:border-pink-800 bg-gradient-to-r from-pink-50/50 to-amber-50/50 dark:from-pink-900/20 dark:to-amber-900/20">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-pink-200 dark:border-pink-700 flex items-center justify-center">
                         <span className="text-lg">💬</span>
@@ -284,7 +284,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                       onClick={() => updateCurrentSettings({ inAppNotifications: !currentSettings.inAppNotifications })}
                       className={`w-12 h-6 rounded-full relative transition-all ${
                         currentSettings.inAppNotifications
-                          ? 'bg-gradient-to-r from-pink-500 to-indigo-500'
+                          ? 'bg-gradient-to-r from-pink-500 to-amber-500'
                           : 'bg-gray-300'
                       }`}
                     >
@@ -305,14 +305,14 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                 <div className="space-y-2">
                   <label className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all ${
                     currentSettings.notifyOnNewUpdate
-                      ? 'border-2 border-indigo-300 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30'
-                      : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-200 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20'
+                      ? 'border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30'
+                      : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amber-200 hover:bg-amber-50/30 dark:hover:bg-amber-900/20'
                   }`}>
                     <input
                       type="checkbox"
                       checked={currentSettings.notifyOnNewUpdate}
                       onChange={() => updateCurrentSettings({ notifyOnNewUpdate: !currentSettings.notifyOnNewUpdate })}
-                      className="mt-0.5 w-5 h-5 rounded border-2 border-indigo-400 text-indigo-600 focus:ring-2 focus:ring-indigo-200"
+                      className="mt-0.5 w-5 h-5 rounded border-2 border-amber-400 text-amber-600 focus:ring-2 focus:ring-amber-200"
                     />
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-800 dark:text-gray-200">新しいアップデートがあった時</div>
@@ -322,14 +322,14 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
 
                   <label className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all ${
                     currentSettings.notifyOnDailyDigest
-                      ? 'border-2 border-indigo-300 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30'
-                      : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-200 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20'
+                      ? 'border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30'
+                      : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amber-200 hover:bg-amber-50/30 dark:hover:bg-amber-900/20'
                   }`}>
                     <input
                       type="checkbox"
                       checked={currentSettings.notifyOnDailyDigest}
                       onChange={() => updateCurrentSettings({ notifyOnDailyDigest: !currentSettings.notifyOnDailyDigest })}
-                      className="mt-0.5 w-5 h-5 rounded border-2 border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-200"
+                      className="mt-0.5 w-5 h-5 rounded border-2 border-gray-300 text-amber-600 focus:ring-2 focus:ring-amber-200"
                     />
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-800 dark:text-gray-200">日次ダイジェスト</div>
@@ -339,14 +339,14 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
 
                   <label className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all ${
                     currentSettings.notifyOnWeeklyDigest
-                      ? 'border-2 border-indigo-300 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30'
-                      : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-200 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20'
+                      ? 'border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30'
+                      : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amber-200 hover:bg-amber-50/30 dark:hover:bg-amber-900/20'
                   }`}>
                     <input
                       type="checkbox"
                       checked={currentSettings.notifyOnWeeklyDigest}
                       onChange={() => updateCurrentSettings({ notifyOnWeeklyDigest: !currentSettings.notifyOnWeeklyDigest })}
-                      className="mt-0.5 w-5 h-5 rounded border-2 border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-200"
+                      className="mt-0.5 w-5 h-5 rounded border-2 border-gray-300 text-amber-600 focus:ring-2 focus:ring-amber-200"
                     />
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-800 dark:text-gray-200">週次ダイジェスト</div>
@@ -359,7 +359,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
               {/* Detail Level */}
               <div className="mb-8">
                 <label className="text-sm text-gray-700 dark:text-gray-300 block mb-3 font-medium flex items-center gap-2">
-                  <span className="text-indigo-600">📊</span>
+                  <span className="text-amber-600">📊</span>
                   通知の詳細度
                 </label>
                 <div className="space-y-2">
@@ -374,8 +374,8 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                         key={level}
                         className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all ${
                           currentSettings.notificationDetail === level
-                            ? 'border-2 border-indigo-300 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30'
-                            : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-200 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20'
+                            ? 'border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30'
+                            : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amber-200 hover:bg-amber-50/30 dark:hover:bg-amber-900/20'
                         }`}
                       >
                         <input
@@ -383,7 +383,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
                           name="detail-level"
                           checked={currentSettings.notificationDetail === level}
                           onChange={() => updateCurrentSettings({ notificationDetail: level })}
-                          className="mt-0.5 w-5 h-5 border-2 border-indigo-400 text-indigo-600 focus:ring-2 focus:ring-indigo-200"
+                          className="mt-0.5 w-5 h-5 border-2 border-amber-400 text-amber-600 focus:ring-2 focus:ring-amber-200"
                         />
                         <div className="flex-1">
                             <div className="text-sm font-medium text-gray-800 dark:text-gray-200">{labels[level].title}</div>
@@ -398,7 +398,7 @@ export default function NotificationSettings({ trackings, onBack: _onBack }: Not
               {/* Save Button */}
               <button
                 onClick={handleSave}
-                className="w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium transition-all shadow-md hover:shadow-lg"
+                className="w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-600 hover:to-orange-700 text-white font-medium transition-all shadow-md hover:shadow-lg"
               >
                 設定を保存
               </button>

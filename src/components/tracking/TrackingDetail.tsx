@@ -138,7 +138,7 @@ export default function TrackingDetail({
       <div className="w-[65%] h-full p-4 flex flex-col">
         <div className="flex-1 min-h-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-300 dark:border-gray-700 shadow-lg flex flex-col">
           {/* Skeleton header */}
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-900/20 dark:to-purple-900/20">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-900/20 dark:to-orange-900/20">
             <div className="flex items-center justify-between mb-3">
               <Skeleton className="h-7 w-2/3" />
               <Skeleton className="h-6 w-6 rounded-lg" />
@@ -177,7 +177,7 @@ export default function TrackingDetail({
       <div className="w-[65%] h-full p-4 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-500 mb-4">{error}</p>
-          <button onClick={onClose} className="text-indigo-600 hover:text-indigo-700 font-medium">
+          <button onClick={onClose} className="text-amber-600 hover:text-amber-700 font-medium">
             ホームに戻る
           </button>
         </div>
@@ -190,7 +190,7 @@ export default function TrackingDetail({
       <div className="w-[65%] h-full p-4 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-400 mb-4">トラッキングが見つかりません</p>
-          <button onClick={onClose} className="text-indigo-600 hover:text-indigo-700 font-medium">
+          <button onClick={onClose} className="text-amber-600 hover:text-amber-700 font-medium">
             ホームに戻る
           </button>
         </div>
@@ -209,7 +209,7 @@ export default function TrackingDetail({
       {/* Container with border */}
       <div className="flex-1 min-h-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-300 dark:border-gray-700 shadow-lg flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-900/20 dark:to-purple-900/20 flex-shrink-0">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-900/20 dark:to-orange-900/20 flex-shrink-0">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-gray-900 dark:text-gray-100 text-xl font-semibold">{tracking.title}</h2>
             <button
@@ -236,14 +236,14 @@ export default function TrackingDetail({
               </span>
             </button>
 
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200">
-              <span className="text-xs font-medium text-purple-700">{tracking.frequency}</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200">
+              <span className="text-xs font-medium text-orange-700">{tracking.frequency}</span>
             </div>
 
             {tracking.unreadCount > 0 && (
               <button
                 onClick={onMarkAllRead}
-                className="text-xs text-indigo-600 hover:text-indigo-700 font-medium px-3 py-1.5 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
+                className="text-xs text-amber-600 hover:text-amber-700 font-medium px-3 py-1.5 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-colors"
               >
                 すべて既読にする
               </button>
@@ -252,29 +252,29 @@ export default function TrackingDetail({
         </div>
 
         {/* Content - scrollable */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-6 pb-32 bg-gradient-to-br from-indigo-50/20 via-purple-50/20 to-pink-50/20 dark:from-indigo-950/20 dark:via-purple-950/20 dark:to-pink-950/20" ref={scrollContainerRef}>
+        <div className="flex-1 min-h-0 overflow-y-auto p-6 pb-32 bg-gradient-to-br from-amber-50/20 via-orange-50/20 to-pink-50/20 dark:from-amber-950/20 dark:via-orange-950/20 dark:to-pink-950/20" ref={scrollContainerRef}>
           <div className="space-y-6">
             {/* AI Recommended Config */}
-            <div className="bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl p-6 border-2 border-indigo-400 shadow-lg ring-2 ring-indigo-200/50 dark:ring-indigo-800/50">
+            <div className="bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl p-6 border-2 border-amber-400 shadow-lg ring-2 ring-amber-200/50 dark:ring-amber-800/50">
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-lg">✨</span>
                 <h3 className="text-gray-900 dark:text-gray-100 font-semibold">プロンプト内容</h3>
               </div>
 
-              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4 mb-4 border border-indigo-100 dark:border-indigo-800">
+              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4 mb-4 border border-amber-100 dark:border-amber-800">
                 {isEditingPrompt ? (
                   <div className="space-y-3">
                     <textarea
                       value={editedQuery}
                       onChange={(e) => setEditedQuery(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-lg border border-indigo-200 dark:border-indigo-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 leading-relaxed focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all resize-none"
+                      className="w-full px-3 py-2.5 rounded-lg border border-amber-200 dark:border-amber-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 leading-relaxed focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 dark:focus:ring-amber-900 transition-all resize-none"
                       rows={4}
                       autoFocus
                     />
                     <div className="flex items-center justify-between">
                       <button
                         onClick={handleResetPrompt}
-                        className="text-xs text-indigo-500 hover:text-indigo-700 font-medium transition-colors"
+                        className="text-xs text-amber-500 hover:text-amber-700 font-medium transition-colors"
                       >
                         デフォルトに戻す
                       </button>
@@ -288,7 +288,7 @@ export default function TrackingDetail({
                         </button>
                         <button
                           onClick={handleSavePrompt}
-                          className="p-1.5 rounded-lg bg-gradient-to-r from-indigo-400 to-purple-400 text-white hover:from-indigo-500 hover:to-purple-500 transition-all shadow-sm"
+                          className="p-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-orange-400 text-white hover:from-amber-500 hover:to-orange-500 transition-all shadow-sm"
                           title="保存"
                         >
                           <Check className="w-4 h-4" />
@@ -303,7 +303,7 @@ export default function TrackingDetail({
                     </p>
                     <button
                       onClick={handleStartEditPrompt}
-                      className="flex-shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all opacity-0 group-hover:opacity-100"
+                      className="flex-shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-all opacity-0 group-hover:opacity-100"
                       title="プロンプトを編集"
                     >
                       <Pencil className="w-4 h-4" />
@@ -315,7 +315,7 @@ export default function TrackingDetail({
               {tracking.description && (
                 <div className="space-y-3">
                   <div className="flex gap-3">
-                    <div className="flex-shrink-0 w-1 bg-indigo-400 rounded-full" />
+                    <div className="flex-shrink-0 w-1 bg-amber-400 rounded-full" />
                     <div>
                       <div className="text-sm font-medium text-gray-900 dark:text-gray-100">説明</div>
                       <div className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{tracking.description}</div>
@@ -329,7 +329,7 @@ export default function TrackingDetail({
             {tracking.updates.length > 0 && (
               <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
                 <h3 className="text-gray-900 dark:text-gray-100 font-semibold mb-4 flex items-center gap-2">
-                  <span className="text-indigo-600">📍</span>
+                  <span className="text-amber-600">📍</span>
                   アップデート ({tracking.updates.length}件)
                 </h3>
                 <div className="space-y-4">
@@ -349,7 +349,7 @@ export default function TrackingDetail({
             {/* Source URLs */}
             <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
               <h3 className="text-gray-900 dark:text-gray-100 font-semibold mb-2 flex items-center gap-2">
-                <span className="text-purple-600">🔗</span>
+                <span className="text-orange-600">🔗</span>
                 参照する情報ソース（任意）
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
@@ -361,7 +361,7 @@ export default function TrackingDetail({
                   <input
                     type="text"
                     placeholder="例: https://www.example.com"
-                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm placeholder-gray-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all"
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm placeholder-gray-400 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 dark:focus:ring-amber-900 transition-all"
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
                     onKeyDown={handleKeyPress}
@@ -370,7 +370,7 @@ export default function TrackingDetail({
                   />
                   <button
                     onClick={handleAddUrl}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-400 to-purple-400 text-white text-sm font-medium hover:from-indigo-500 hover:to-purple-500 transition-all shadow-sm hover:shadow-md"
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 text-white text-sm font-medium hover:from-amber-500 hover:to-orange-500 transition-all shadow-sm hover:shadow-md"
                   >
                     追加
                   </button>
@@ -385,10 +385,10 @@ export default function TrackingDetail({
                   {sourceUrls.map((url, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 rounded-xl border border-indigo-100 dark:border-indigo-800 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-900/30 dark:to-purple-900/30 group hover:border-indigo-200 dark:hover:border-indigo-700 transition-all"
+                      className="flex items-center justify-between p-3 rounded-xl border border-amber-100 dark:border-amber-800 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-900/30 dark:to-orange-900/30 group hover:border-amber-200 dark:hover:border-amber-700 transition-all"
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <span className="text-indigo-600">🌐</span>
+                        <span className="text-amber-600">🌐</span>
                         <span className="text-sm text-gray-800 dark:text-gray-200 truncate">{url}</span>
                       </div>
                       <button
@@ -426,12 +426,12 @@ export default function TrackingDetail({
                   {/* Frequency */}
                   <div className="mb-6">
                     <label className="text-sm text-gray-700 dark:text-gray-300 block mb-3 font-medium flex items-center gap-2">
-                      <span className="text-indigo-600">🔄</span>
+                      <span className="text-amber-600">🔄</span>
                       追跡検索の頻度
                     </label>
                     <div className="grid grid-cols-3 gap-2 mb-2">
                       {['1h', '6h', '12h'].map(freq => (
-                        <button key={freq} className="px-4 py-2.5 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium hover:border-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
+                        <button key={freq} className="px-4 py-2.5 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium hover:border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-all">
                           {freq}
                         </button>
                       ))}
@@ -440,8 +440,8 @@ export default function TrackingDetail({
                       {['1d', '3d', '1w'].map(freq => (
                         <button key={freq} className={`px-4 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
                           freq === '1d'
-                            ? 'border-indigo-400 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 text-indigo-700 dark:text-indigo-300 shadow-sm'
-                            : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30'
+                            ? 'border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-300 shadow-sm'
+                            : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/30'
                         }`}>
                           {freq}
                         </button>
@@ -452,7 +452,7 @@ export default function TrackingDetail({
                   {/* Detail Level */}
                   <div className="mb-6">
                     <label className="text-sm text-gray-700 dark:text-gray-300 block mb-3 font-medium flex items-center gap-2">
-                      <span className="text-indigo-600">📊</span>
+                      <span className="text-amber-600">📊</span>
                       通知の詳細度
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -469,8 +469,8 @@ export default function TrackingDetail({
                           }}
                           className={`px-4 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
                             detailLevel === value
-                              ? 'border-indigo-400 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 text-indigo-700 dark:text-indigo-300 shadow-sm'
-                              : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30'
+                              ? 'border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-300 shadow-sm'
+                              : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/30'
                           }`}
                         >
                           {label}
@@ -482,13 +482,13 @@ export default function TrackingDetail({
                   {/* Notification Methods */}
                   <div className="mb-6">
                     <label className="text-sm text-gray-700 dark:text-gray-300 block mb-3 font-medium flex items-center gap-2">
-                      <span className="text-purple-600">🔔</span>
+                      <span className="text-orange-600">🔔</span>
                       通知形式
                     </label>
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between p-4 rounded-xl border border-indigo-100 dark:border-indigo-800 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-900/30 dark:to-purple-900/30">
+                      <div className="flex items-center justify-between p-4 rounded-xl border border-amber-100 dark:border-amber-800 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-900/30 dark:to-orange-900/30">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-700 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-amber-200 dark:border-amber-700 flex items-center justify-center">
                             <span className="text-lg">✉️</span>
                           </div>
                           <div>
@@ -496,14 +496,14 @@ export default function TrackingDetail({
                             <div className="text-xs text-gray-500 dark:text-gray-400">登録メールアドレスに通知を送信</div>
                           </div>
                         </div>
-                        <button className="w-12 h-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full relative transition-all">
+                        <button className="w-12 h-6 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full relative transition-all">
                           <span className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm" />
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between p-4 rounded-xl border border-purple-100 dark:border-purple-800 bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-900/30 dark:to-pink-900/30">
+                      <div className="flex items-center justify-between p-4 rounded-xl border border-orange-100 dark:border-orange-800 bg-gradient-to-r from-orange-50/50 to-pink-50/50 dark:from-orange-900/30 dark:to-pink-900/30">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-purple-200 dark:border-purple-700 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-700 flex items-center justify-center">
                             <span className="text-lg">📱</span>
                           </div>
                           <div>
@@ -511,12 +511,12 @@ export default function TrackingDetail({
                             <div className="text-xs text-gray-500 dark:text-gray-400">モバイルデバイスに通知を送信</div>
                           </div>
                         </div>
-                        <button className="w-12 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full relative transition-all">
+                        <button className="w-12 h-6 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full relative transition-all">
                           <span className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm" />
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between p-4 rounded-xl border border-pink-100 dark:border-pink-800 bg-gradient-to-r from-pink-50/50 to-indigo-50/50 dark:from-pink-900/30 dark:to-indigo-900/30">
+                      <div className="flex items-center justify-between p-4 rounded-xl border border-pink-100 dark:border-pink-800 bg-gradient-to-r from-pink-50/50 to-amber-50/50 dark:from-pink-900/30 dark:to-amber-900/30">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-pink-200 dark:border-pink-700 flex items-center justify-center">
                             <span className="text-lg">💬</span>
@@ -526,7 +526,7 @@ export default function TrackingDetail({
                             <div className="text-xs text-gray-500 dark:text-gray-400">Burilarアプリ内で通知を表示</div>
                           </div>
                         </div>
-                        <button className="w-12 h-6 bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full relative transition-all">
+                        <button className="w-12 h-6 bg-gradient-to-r from-pink-500 to-amber-500 rounded-full relative transition-all">
                           <span className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm" />
                         </button>
                       </div>
@@ -556,7 +556,7 @@ export default function TrackingDetail({
               className={`flex-1 px-6 py-3.5 rounded-xl text-white font-medium transition-all shadow-md hover:shadow-lg cursor-pointer relative overflow-hidden ${
                 isExecuting
                   ? 'bg-gradient-to-r from-green-400 to-emerald-400'
-                  : 'bg-gradient-to-r from-indigo-400 to-purple-400 hover:from-indigo-500 hover:to-purple-500'
+                  : 'bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500'
               }`}
               whileTap={!isExecuting ? { scale: 0.95 } : {}}
             >

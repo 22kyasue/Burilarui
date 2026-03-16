@@ -31,8 +31,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
             <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
                 <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-2xl shadow-xl">
                     <div className="text-center">
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
-                            <Lock className="h-6 w-6 text-indigo-600" aria-hidden="true" />
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+                            <Lock className="h-6 w-6 text-amber-600" aria-hidden="true" />
                         </div>
                         <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
                             サイトアクセス
@@ -52,7 +52,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
                                     name="password"
                                     type="password"
                                     required
-                                    className="relative block w-full rounded-xl border-0 py-3.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-50/50 backdrop-blur-sm transition-all duration-200"
+                                    className="relative block w-full rounded-xl border-0 py-3.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-amber-600 sm:text-sm sm:leading-6 bg-gray-50/50 backdrop-blur-sm transition-all duration-200"
                                     placeholder="パスワード"
                                     value={accessPassword}
                                     onChange={(e) => setAccessPassword(e.target.value)}
@@ -68,10 +68,10 @@ export function AuthGuard({ children }: AuthGuardProps) {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative flex w-full justify-center rounded-xl bg-indigo-600 px-4 py-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-lg shadow-indigo-200"
+                                className="group relative flex w-full justify-center rounded-xl bg-amber-500 px-4 py-4 text-sm font-medium text-white hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all shadow-lg shadow-amber-200"
                             >
                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <ArrowRight className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
+                                    <ArrowRight className="h-5 w-5 text-amber-500 group-hover:text-amber-400" aria-hidden="true" />
                                 </span>
                                 アクセスする
                             </button>

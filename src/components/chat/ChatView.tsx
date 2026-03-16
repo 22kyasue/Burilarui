@@ -120,7 +120,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
               >
                 {/* AI avatar */}
                 {message.role === 'assistant' && (
-                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                  <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
                     <Sparkles className="w-4 h-4 text-white" />
                   </div>
                 )}
@@ -129,7 +129,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
                   <div
                     className={`rounded-2xl ${
                       message.role === 'user'
-                        ? 'bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 text-gray-800 dark:text-gray-200 border border-indigo-200/50 dark:border-indigo-700/50 px-4 py-3'
+                        ? 'bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/50 dark:to-orange-900/50 text-gray-800 dark:text-gray-200 border border-amber-200/50 dark:border-amber-700/50 px-4 py-3'
                         : 'bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 shadow-sm px-5 py-4'
                     }`}
                   >
@@ -139,7 +139,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
                           <textarea
                             value={editedContent}
                             onChange={(e) => setEditedContent(e.target.value)}
-                            className="w-full px-2 py-1.5 text-sm rounded-lg border border-indigo-300 dark:border-indigo-600 bg-white dark:bg-gray-800 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-400 resize-none"
+                            className="w-full px-2 py-1.5 text-sm rounded-lg border border-amber-300 dark:border-amber-600 bg-white dark:bg-gray-800 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-amber-400 resize-none"
                             rows={3}
                             autoFocus
                           />
@@ -153,7 +153,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
                             </button>
                             <button
                               onClick={handleEditSave}
-                              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs text-white bg-indigo-500 hover:bg-indigo-600 transition-colors"
+                              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs text-white bg-amber-500 hover:bg-amber-600 transition-colors"
                             >
                               <Check className="w-3 h-3" />
                               保存
@@ -165,7 +165,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
                           <p className="whitespace-pre-wrap text-sm flex-1">{message.content}</p>
                           <button
                             onClick={() => handleEditStart(message)}
-                            className="p-1 rounded-md hover:bg-indigo-200/50 dark:hover:bg-indigo-700/50 transition-colors opacity-0 group-hover/msg:opacity-100 flex-shrink-0"
+                            className="p-1 rounded-md hover:bg-amber-200/50 dark:hover:bg-amber-700/50 transition-colors opacity-0 group-hover/msg:opacity-100 flex-shrink-0"
                             title="編集"
                           >
                             <Pencil className="w-3 h-3 text-gray-500 dark:text-gray-400" />
@@ -199,7 +199,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
                                 <strong className="font-semibold text-gray-900 dark:text-gray-100" {...props}>{children}</strong>
                               ),
                               a: ({ children, href, ...props }) => (
-                                <a href={href} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-700 underline" {...props}>{children}</a>
+                                <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-700 underline" {...props}>{children}</a>
                               ),
                             }}
                           >
@@ -235,7 +235,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
                           {onTrackThis && lastUserMessage && (
                             <button
                               onClick={() => onTrackThis(lastUserMessage.content)}
-                              className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-medium hover:shadow-md transition-all"
+                              className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-medium hover:shadow-md transition-all"
                               title="この話題を追跡する"
                             >
                               <Radar className="w-3.5 h-3.5" />
@@ -250,7 +250,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
 
                 {/* User avatar */}
                 {message.role === 'user' && (
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
                     <User className="w-4 h-4 text-white" />
                   </div>
                 )}
@@ -265,15 +265,15 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-3 mb-6"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+              <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 shadow-sm rounded-2xl px-5 py-4">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">考え中...</span>
                 </div>
@@ -328,7 +328,7 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
                     disabled={!inputValue.trim() || isLoading}
                     className={`p-2 rounded-full transition-all ${
                       inputValue.trim() && !isLoading
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-md'
+                        ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:shadow-md'
                         : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                     }`}
                   >

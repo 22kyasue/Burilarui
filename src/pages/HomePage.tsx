@@ -167,10 +167,10 @@ export default function HomePage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec] dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-2xl mx-auto mb-4" style={{ animation: 'logo-fade-in 0.6s ease-out' }}>
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-2xl mx-auto mb-4" style={{ animation: 'logo-fade-in 0.6s ease-out' }}>
             <span className="text-white text-2xl font-bold">B</span>
           </div>
-          <h1 className="text-2xl font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" style={{ animation: 'fade-in-up 0.6s ease-out 0.3s both' }}>
+          <h1 className="text-2xl font-semibold bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent" style={{ animation: 'fade-in-up 0.6s ease-out 0.3s both' }}>
             Burilar
           </h1>
         </div>
@@ -231,7 +231,7 @@ export default function HomePage() {
 
                 {/* Search Input */}
                 <form onSubmit={handleSubmit} className="mb-8">
-                  <div className="relative rounded-3xl shadow-lg border overflow-visible transition-all hover:shadow-xl focus-within:ring-2 focus-within:ring-indigo-300/50 focus-within:shadow-indigo-100/50 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                  <div className="relative rounded-3xl shadow-lg border overflow-visible transition-all hover:shadow-xl focus-within:ring-2 focus-within:ring-amber-300/50 focus-within:shadow-amber-100/50 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                     <div className="flex items-start gap-2 px-3 py-2">
                       <div className="relative flex-shrink-0">
                         <button
@@ -271,7 +271,7 @@ export default function HomePage() {
                           disabled={!inputValue.trim() || isSending}
                           className={`p-2 rounded-full transition-all ${
                             inputValue.trim() && !isSending
-                              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-md'
+                              ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:shadow-md'
                               : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                           }`}
                         >
@@ -286,7 +286,7 @@ export default function HomePage() {
                 {isSending && (
                   <div className="text-center mb-4">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm">
-                      <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
                       <span className="text-sm text-gray-600 dark:text-gray-400">考え中...</span>
                     </div>
                   </div>
@@ -299,7 +299,7 @@ export default function HomePage() {
                       <button
                         key={suggestion.id}
                         onClick={() => handleSuggestionClick(suggestion.title, suggestion.description)}
-                        className="rounded-2xl p-5 border text-left group bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-xl hover:scale-[1.02] transform transition-all"
+                        className="rounded-2xl p-5 border text-left group bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-xl hover:scale-[1.02] transform transition-all"
                       >
                         <div className="flex items-start gap-3">
                           <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${suggestion.gradient} flex items-center justify-center flex-shrink-0 text-2xl shadow-md group-hover:scale-110 transition-transform`}>

@@ -154,7 +154,7 @@ export default function Sidebar({
         <div className="p-4 space-y-2 border-b border-gray-100 dark:border-gray-800">
           <button
             onClick={onClose}
-            className="lg:block p-2 rounded-xl w-full flex items-center justify-start transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-gray-700 dark:text-gray-300"
+            className="lg:block p-2 rounded-xl w-full flex items-center justify-start transition-colors hover:bg-amber-50 dark:hover:bg-amber-900/30 text-gray-700 dark:text-gray-300"
             aria-label="閉じる"
           >
             <Menu className="w-5 h-5" />
@@ -162,17 +162,17 @@ export default function Sidebar({
 
           <button
             onClick={onViewNotificationSettings}
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl transition-colors w-full text-left text-sm font-medium hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-gray-700 dark:text-gray-300"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl transition-colors w-full text-left text-sm font-medium hover:bg-amber-50 dark:hover:bg-amber-900/30 text-gray-700 dark:text-gray-300"
           >
-            <Code2 className="w-4 h-4 text-indigo-600" />
+            <Code2 className="w-4 h-4 text-amber-600" />
             通知設定
           </button>
 
           <button
             onClick={onNewSearch}
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl transition-colors w-full text-left text-sm font-medium hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-gray-700 dark:text-gray-300"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl transition-colors w-full text-left text-sm font-medium hover:bg-amber-50 dark:hover:bg-amber-900/30 text-gray-700 dark:text-gray-300"
           >
-            <SquarePen className="w-4 h-4 text-indigo-600" />
+            <SquarePen className="w-4 h-4 text-amber-600" />
             新規作成
           </button>
         </div>
@@ -186,7 +186,7 @@ export default function Sidebar({
               placeholder="検索"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full border rounded-xl pl-9 pr-3 py-2.5 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 focus:border-indigo-300 focus:bg-white dark:focus:bg-gray-800 transition-colors"
+              className="w-full border rounded-xl pl-9 pr-3 py-2.5 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 focus:border-amber-300 focus:bg-white dark:focus:bg-gray-800 transition-colors"
             />
           </div>
         </div>
@@ -197,12 +197,12 @@ export default function Sidebar({
           <div className="px-3 py-3">
             <div className="px-2 py-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Podcast className="w-4 h-4 text-indigo-600" />
+                <Podcast className="w-4 h-4 text-amber-600" />
                 <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">追跡中</h4>
               </div>
               <button
                 onClick={onViewTracking}
-                className="text-xs hover:bg-indigo-50 dark:hover:bg-indigo-900/30 px-2 py-1 rounded-lg transition-all font-medium cursor-pointer text-indigo-600 hover:text-indigo-700"
+                className="text-xs hover:bg-amber-50 dark:hover:bg-amber-900/30 px-2 py-1 rounded-lg transition-all font-medium cursor-pointer text-amber-600 hover:text-amber-700"
               >
                 すべて表示
               </button>
@@ -242,7 +242,7 @@ export default function Sidebar({
                     </div>
                     {tracking.unreadCount > 0 && (
                       <div className="flex-shrink-0 mt-1">
-                        <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs rounded-full font-semibold shadow-sm">
+                        <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs rounded-full font-semibold shadow-sm">
                           {tracking.unreadCount}
                         </span>
                       </div>
@@ -262,7 +262,7 @@ export default function Sidebar({
           <div className="px-3 py-3 border-t border-gray-100 dark:border-gray-800">
             <div className="px-2 py-2">
               <div className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-purple-600" />
+                <MessageSquare className="w-4 h-4 text-amber-600" />
                 <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">会話</h4>
               </div>
             </div>
@@ -279,7 +279,7 @@ export default function Sidebar({
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 relative mt-1">
-                        <div className="w-2 h-2 rounded-full bg-purple-400" />
+                        <div className="w-2 h-2 rounded-full bg-amber-400" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-sm mb-0.5 truncate font-medium text-gray-900 dark:text-gray-100">{chat.title}</div>
@@ -354,9 +354,9 @@ export default function Sidebar({
         <div className="p-3 border-t border-gray-100 dark:border-gray-800 space-y-1">
           <button
             onClick={onViewSettings}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors w-full text-left group hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors w-full text-left group hover:bg-amber-50 dark:hover:bg-amber-900/30"
           >
-            <Settings className="w-4 h-4 transition-colors text-gray-600 dark:text-gray-400 group-hover:text-indigo-600" />
+            <Settings className="w-4 h-4 transition-colors text-gray-600 dark:text-gray-400 group-hover:text-amber-600" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">設定とヘルプ</span>
           </button>
         </div>

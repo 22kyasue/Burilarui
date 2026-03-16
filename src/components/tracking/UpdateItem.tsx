@@ -21,13 +21,13 @@ export default function UpdateItem({ update }: UpdateItemProps) {
   return (
     <div className={`rounded-xl border p-4 transition-all ${
       !update.isRead
-        ? 'border-indigo-200 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 shadow-sm'
+        ? 'border-amber-200 bg-gradient-to-r from-amber-50/50 to-orange-50/50 shadow-sm'
         : 'border-gray-100 bg-white hover:border-gray-200'
     }`}>
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2">
           {!update.isRead && (
-            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex-shrink-0" />
+            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex-shrink-0" />
           )}
           <h3 className="font-medium text-sm text-gray-900">{update.title}</h3>
         </div>
@@ -42,7 +42,7 @@ export default function UpdateItem({ update }: UpdateItemProps) {
               href={source.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-amber-600 hover:text-amber-800 px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 transition-colors"
             >
               <ExternalLink className="h-3 w-3" />
               {source.title}

@@ -39,10 +39,10 @@ export default function Header({ onLogoClick, onNotificationClick, onViewSetting
           onClick={onLogoClick}
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
         >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
             <span className="text-white text-sm font-bold">B</span>
           </div>
-          <h1 className="text-xl font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-xl font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
             Burilar
           </h1>
         </button>
@@ -67,14 +67,14 @@ export default function Header({ onLogoClick, onNotificationClick, onViewSetting
           {user?.plan === 'pro' ? (
             <button
               onClick={onViewPlan}
-              className="px-3 py-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold rounded-full cursor-pointer select-none"
+              className="px-3 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-semibold rounded-full cursor-pointer select-none"
             >
               PRO
             </button>
           ) : (
             <button
               onClick={onViewPlan}
-              className="px-3 py-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold rounded-full cursor-pointer select-none opacity-80 hover:opacity-100 transition-opacity"
+              className="px-3 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-semibold rounded-full cursor-pointer select-none opacity-80 hover:opacity-100 transition-opacity"
             >
               Upgrade
             </button>
@@ -84,7 +84,7 @@ export default function Header({ onLogoClick, onNotificationClick, onViewSetting
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
-              className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-semibold text-sm hover:opacity-80 transition-opacity"
+              className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-semibold text-sm hover:opacity-80 transition-opacity"
               aria-label="ユーザーメニュー"
             >
               {userInitial.toUpperCase()}

@@ -22,10 +22,10 @@ export default function CollapsedSidebar({
       {/* Hamburger menu - opens sidebar */}
       <button
         onClick={onToggleSidebar}
-        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-amber-50 dark:hover:bg-amber-900/30"
         aria-label="サイドバーを開く"
       >
-        <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-indigo-600 transition-colors" />
+        <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-amber-600 transition-colors" />
         <span className="absolute left-16 px-3 py-2 text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg bg-gray-800 text-white">
           サイドバーを開く
         </span>
@@ -34,10 +34,10 @@ export default function CollapsedSidebar({
       {/* Notification settings */}
       <button
         onClick={onViewNotificationSettings}
-        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-amber-50 dark:hover:bg-amber-900/30"
         aria-label="通知設定"
       >
-        <Code2 className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-indigo-600 transition-colors" />
+        <Code2 className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-amber-600 transition-colors" />
         <span className="absolute left-16 px-3 py-2 text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg bg-gray-800 text-white">
           通知設定
         </span>
@@ -46,10 +46,10 @@ export default function CollapsedSidebar({
       {/* New search */}
       <button
         onClick={onNewSearch}
-        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-amber-50 dark:hover:bg-amber-900/30"
         aria-label="新しい検索"
       >
-        <SquarePen className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-indigo-600 transition-colors" />
+        <SquarePen className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-amber-600 transition-colors" />
         <span className="absolute left-16 px-3 py-2 text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg bg-gray-800 text-white">
           新しい検索
         </span>
@@ -61,10 +61,10 @@ export default function CollapsedSidebar({
       {/* Tracking list */}
       <button
         onClick={onViewTracking}
-        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-amber-50 dark:hover:bg-amber-900/30"
         aria-label="追跡中のプロンプト"
       >
-        <Podcast className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-indigo-600 transition-colors" />
+        <Podcast className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-amber-600 transition-colors" />
         <span className="absolute left-16 px-3 py-2 text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg bg-gray-800 text-white">
           追跡中のプロンプト
         </span>
@@ -76,10 +76,10 @@ export default function CollapsedSidebar({
           onToggleSidebar();
           setTimeout(() => onScrollToHistory(), 300);
         }}
-        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative hover:bg-amber-50 dark:hover:bg-amber-900/30"
         aria-label="履歴"
       >
-        <History className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-indigo-600 transition-colors" />
+        <History className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-amber-600 transition-colors" />
         <span className="absolute left-16 px-3 py-2 text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg bg-gray-800 text-white">
           履歴
         </span>
@@ -91,10 +91,10 @@ export default function CollapsedSidebar({
       {/* Settings (bottom) */}
       <button
         onClick={onViewSettings}
-        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative mb-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+        className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors group relative mb-2 hover:bg-amber-50 dark:hover:bg-amber-900/30"
         aria-label="設定"
       >
-        <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-indigo-600 transition-colors" />
+        <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-amber-600 transition-colors" />
         <span className="absolute left-16 px-3 py-2 text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg bg-gray-800 text-white">
           設定
         </span>

@@ -19,8 +19,8 @@ const PLAN_ICONS: Record<string, typeof Zap> = {
 
 const PLAN_COLORS: Record<string, string> = {
   free: 'from-gray-400 to-gray-500',
-  pro: 'from-indigo-500 to-purple-600',
-  enterprise: 'from-amber-500 to-orange-600',
+  pro: 'from-amber-400 to-orange-500',
+  enterprise: 'from-amber-400 to-orange-500',
 };
 
 export default function PlanModal({ isOpen, onClose }: PlanModalProps) {
@@ -90,7 +90,7 @@ export default function PlanModal({ isOpen, onClose }: PlanModalProps) {
               <div>
                 <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">プランを選択</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                  現在のプラン: <span className="font-semibold text-indigo-600">{status?.displayName || 'フリー'}</span>
+                  現在のプラン: <span className="font-semibold text-amber-600">{status?.displayName || 'フリー'}</span>
                 </p>
               </div>
               <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
@@ -100,7 +100,7 @@ export default function PlanModal({ isOpen, onClose }: PlanModalProps) {
 
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+                <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
               </div>
             ) : (
               <div className="p-6">
@@ -138,12 +138,12 @@ export default function PlanModal({ isOpen, onClose }: PlanModalProps) {
                         key={plan.id}
                         className={`relative rounded-xl border p-5 transition-all ${
                           isCurrent
-                            ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20 ring-2 ring-indigo-500/30'
+                            ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-2 ring-amber-500/30'
                             : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                         }`}
                       >
                         {isCurrent && (
-                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-indigo-500 text-white text-xs font-semibold rounded-full">
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-500 text-white text-xs font-semibold rounded-full">
                             現在のプラン
                           </div>
                         )}
@@ -195,7 +195,7 @@ export default function PlanModal({ isOpen, onClose }: PlanModalProps) {
                           <button
                             onClick={handleUpgrade}
                             disabled={checkoutLoading}
-                            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 text-white text-sm font-semibold hover:from-amber-600 hover:to-orange-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                           >
                             {checkoutLoading ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
@@ -249,7 +249,7 @@ function UsageCard({ label, used, limit }: { label: string; used: number; limit:
         <div className="mt-1.5 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all ${
-              isNearLimit ? 'bg-red-500' : 'bg-indigo-500'
+              isNearLimit ? 'bg-red-500' : 'bg-amber-500'
             }`}
             style={{ width: `${pct}%` }}
           />
