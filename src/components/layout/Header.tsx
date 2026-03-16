@@ -32,8 +32,8 @@ export default function Header({ onLogoClick, onNotificationClick, onViewSetting
   }, [avatarMenuOpen]);
 
   return (
-    <header className="backdrop-blur-md border-b flex-shrink-0 z-10 shadow-sm bg-white/80 dark:bg-gray-900/80 border-gray-200/50 dark:border-gray-700/50">
-      <div className="px-6 py-3 flex items-center justify-between">
+    <header className="sticky top-0 backdrop-blur-md border-b flex-shrink-0 z-20 shadow-sm bg-white/80 dark:bg-gray-900/80 border-gray-200/50 dark:border-gray-700/50">
+      <div className="px-6 lg:px-8 py-3 flex items-center justify-between">
         {/* Left: Logo */}
         <button
           onClick={onLogoClick}
