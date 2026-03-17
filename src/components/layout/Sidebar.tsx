@@ -4,6 +4,7 @@ import { useTracking } from '../../hooks/useTracking';
 import { useAuth } from '../../context/AuthContext';
 import { Skeleton } from '../ui/skeleton';
 import { toast } from 'sonner';
+
 import type { Chat } from '../../types/chat';
 
 interface SidebarProps {
@@ -18,6 +19,8 @@ interface SidebarProps {
   onScrollToHistoryComplete?: () => void;
   chats?: Chat[];
   onSelectChat?: (id: string) => void;
+  onDeleteChat?: (id: string) => Promise<boolean>;
+  onRenameChat?: (id: string, title: string) => Promise<boolean>;
 }
 
 export default function Sidebar({
@@ -32,12 +35,16 @@ export default function Sidebar({
   onScrollToHistoryComplete,
   chats = [],
   onSelectChat,
+  onDeleteChat,
+  onRenameChat,
 }: SidebarProps) {
   const historyRef = useRef<HTMLDivElement>(null);
+  const renameInputRef = useRef<HTMLInputElement>(null);
   const { isAuthenticated } = useAuth();
-  const { trackings, fetchTrackings, loading } = useTracking();
+  const { trackings, fetchTrackings, updateTracking, deleteTracking, loading } = useTracking();
   const [searchQuery, setSearchQuery] = useState('');
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; itemId: string; type: 'tracking' | 'chat' } | null>(null);
+  const [renaming, setRenaming] = useState<{ id: string; type: 'tracking' | 'chat'; currentTitle: string } | null>(null);
 
   const handleContextMenu = useCallback((e: React.MouseEvent, itemId: string, type: 'tracking' | 'chat') => {
     e.preventDefault();
@@ -48,6 +55,59 @@ export default function Sidebar({
   const closeContextMenu = useCallback(() => {
     setContextMenu(null);
   }, []);
+
+  const handleRename = useCallback((id: string, type: 'tracking' | 'chat', currentTitle: string) => {
+    setRenaming({ id, type, currentTitle });
+    setContextMenu(null);
+  }, []);
+
+  const handleRenameSubmit = useCallback(async (newTitle: string) => {
+    if (!renaming) return;
+    const trimmed = newTitle.trim();
+    if (!trimmed || trimmed === renaming.currentTitle) {
+      setRenaming(null);
+      return;
+    }
+    if (renaming.type === 'tracking') {
+      await updateTracking(renaming.id, { title: trimmed });
+      toast.success('名前を変更しました');
+    } else {
+      const success = await onRenameChat?.(renaming.id, trimmed);
+      if (success) toast.success('名前を変更しました');
+    }
+    setRenaming(null);
+  }, [renaming, updateTracking, onRenameChat]);
+
+  const handleDelete = useCallback(async (id: string, type: 'tracking' | 'chat') => {
+    setContextMenu(null);
+    const confirmed = window.confirm('本当に削除しますか？');
+    if (!confirmed) return;
+    if (type === 'tracking') {
+      await deleteTracking(id);
+    } else {
+      await onDeleteChat?.(id);
+    }
+  }, [deleteTracking, onDeleteChat]);
+
+  const handleArchive = useCallback(async (id: string) => {
+    setContextMenu(null);
+    await updateTracking(id, { isActive: false });
+    toast.success('アーカイブしました');
+  }, [updateTracking]);
+
+  const handleShare = useCallback((id: string, type: 'tracking' | 'chat') => {
+    setContextMenu(null);
+    const url = `${window.location.origin}/${type === 'tracking' ? 'tracking' : 'chat'}/${id}`;
+    navigator.clipboard.writeText(url);
+    toast.success('リンクをコピーしました');
+  }, []);
+
+  // Focus rename input when it appears
+  useEffect(() => {
+    if (renaming) {
+      setTimeout(() => renameInputRef.current?.focus(), 0);
+    }
+  }, [renaming]);
 
   // Close context menu on click outside or Escape
   useEffect(() => {
@@ -237,8 +297,24 @@ export default function Sidebar({
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm mb-0.5 truncate font-medium text-gray-900 dark:text-gray-100">{tracking.title}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">{formatDate(tracking.updatedAt)}</div>
+                      {renaming?.id === tracking.id ? (
+                        <input
+                          ref={renameInputRef}
+                          defaultValue={renaming.currentTitle}
+                          className="text-sm w-full px-1 py-0.5 rounded border border-amber-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleRenameSubmit(e.currentTarget.value);
+                            if (e.key === 'Escape') setRenaming(null);
+                          }}
+                          onBlur={(e) => handleRenameSubmit(e.currentTarget.value)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      ) : (
+                        <>
+                          <div className="text-sm mb-0.5 truncate font-medium text-gray-900 dark:text-gray-100">{tracking.title}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{formatDate(tracking.updatedAt)}</div>
+                        </>
+                      )}
                     </div>
                     {tracking.unreadCount > 0 && (
                       <div className="flex-shrink-0 mt-1">
@@ -282,13 +358,29 @@ export default function Sidebar({
                         <div className="w-2 h-2 rounded-full bg-amber-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm mb-0.5 truncate font-medium text-gray-900 dark:text-gray-100">{chat.title}</div>
-                        {lastMessage && (
-                          <div className="text-xs text-gray-400 dark:text-gray-500 truncate mb-0.5">
-                            {truncate(lastMessage, 40)}
-                          </div>
+                        {renaming?.id === chat.id ? (
+                          <input
+                            ref={renameInputRef}
+                            defaultValue={renaming.currentTitle}
+                            className="text-sm w-full px-1 py-0.5 rounded border border-amber-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleRenameSubmit(e.currentTarget.value);
+                              if (e.key === 'Escape') setRenaming(null);
+                            }}
+                            onBlur={(e) => handleRenameSubmit(e.currentTarget.value)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        ) : (
+                          <>
+                            <div className="text-sm mb-0.5 truncate font-medium text-gray-900 dark:text-gray-100">{chat.title}</div>
+                            {lastMessage && (
+                              <div className="text-xs text-gray-400 dark:text-gray-500 truncate mb-0.5">
+                                {truncate(lastMessage, 40)}
+                              </div>
+                            )}
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{formatDate(chat.updatedAt)}</div>
+                          </>
                         )}
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{formatDate(chat.updatedAt)}</div>
                       </div>
                     </div>
                   </div>
@@ -335,8 +427,24 @@ export default function Sidebar({
                       <div className="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm mb-0.5 truncate font-medium text-gray-900 dark:text-gray-100">{tracking.title}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">{formatDate(tracking.updatedAt)}</div>
+                      {renaming?.id === tracking.id ? (
+                        <input
+                          ref={renameInputRef}
+                          defaultValue={renaming.currentTitle}
+                          className="text-sm w-full px-1 py-0.5 rounded border border-amber-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleRenameSubmit(e.currentTarget.value);
+                            if (e.key === 'Escape') setRenaming(null);
+                          }}
+                          onBlur={(e) => handleRenameSubmit(e.currentTarget.value)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      ) : (
+                        <>
+                          <div className="text-sm mb-0.5 truncate font-medium text-gray-900 dark:text-gray-100">{tracking.title}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{formatDate(tracking.updatedAt)}</div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -370,29 +478,36 @@ export default function Sidebar({
           onClick={(e) => e.stopPropagation()}
         >
           <button
-            className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={() => { toast('近日公開'); closeContextMenu(); }}
+            onClick={() => {
+              const item = contextMenu.type === 'tracking'
+                ? trackings.find(t => t.id === contextMenu.itemId)
+                : chats.find(c => c.id === contextMenu.itemId);
+              if (item) handleRename(contextMenu.itemId, contextMenu.type, item.title);
+            }}
+            className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <Pencil className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             名前を変更
           </button>
+          {contextMenu.type === 'tracking' && (
+            <button
+              onClick={() => handleArchive(contextMenu.itemId)}
+              className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              <Archive className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              アーカイブ
+            </button>
+          )}
           <button
-            className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={() => { toast('近日公開'); closeContextMenu(); }}
+            onClick={() => handleDelete(contextMenu.itemId, contextMenu.type)}
+            className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
           >
-            <Archive className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            アーカイブ
-          </button>
-          <button
-            className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={() => { toast('近日公開'); closeContextMenu(); }}
-          >
-            <Trash2 className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <Trash2 className="w-4 h-4 text-red-500" />
             削除
           </button>
           <button
-            className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={() => { toast('近日公開'); closeContextMenu(); }}
+            onClick={() => handleShare(contextMenu.itemId, contextMenu.type)}
+            className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <Share2 className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             共有

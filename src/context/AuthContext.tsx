@@ -19,6 +19,7 @@ interface AuthContextType {
   loginWithApple: () => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
   error: string | null;
   clearError: () => void;
 }
@@ -224,6 +225,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const userData = await authApi.getCurrentUser();
+      setAndCacheUser({
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        avatar: userData.avatar,
+        plan: userData.plan,
+      });
+    } catch {
+      // silently fail
+    }
+  }, [setAndCacheUser]);
+
   const clearError = useCallback(() => {
     setError(null);
   }, []);
@@ -239,6 +255,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         loginWithApple,
         register,
         logout,
+        refreshUser,
         error,
         clearError,
       }}

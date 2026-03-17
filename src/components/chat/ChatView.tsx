@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Plus, Sparkles, User, Copy, RefreshCw, Share2, Radar, Pencil, Check, X } from 'lucide-react';
+import { Send, Plus, Sparkles, User, Copy, RefreshCw, Share2, Radar, Pencil, Check, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
@@ -320,9 +320,6 @@ export default function ChatView({ messages, onSendMessage, isLoading, onTrackTh
                 />
 
                 <div className="flex items-center gap-1 flex-shrink-0">
-                  <button type="button" className="p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400">
-                    <Mic className="w-5 h-5" />
-                  </button>
                   <button
                     type="submit"
                     disabled={!inputValue.trim() || isLoading}

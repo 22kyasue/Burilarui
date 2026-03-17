@@ -71,6 +71,7 @@ export interface CreateTrackingResponse {
 }
 
 export interface UpdateTrackingRequest {
+  title?: string;
   isActive?: boolean;
   isPinned?: boolean;
   query?: string;

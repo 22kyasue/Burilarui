@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bell, User, Settings, LogOut } from 'lucide-react';
-import { toast } from 'sonner';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
 
@@ -9,9 +8,10 @@ interface HeaderProps {
   onNotificationClick: () => void;
   onViewSettings?: () => void;
   onViewPlan?: () => void;
+  onViewProfile?: () => void;
 }
 
-export default function Header({ onLogoClick, onNotificationClick, onViewSettings, onViewPlan }: HeaderProps) {
+export default function Header({ onLogoClick, onNotificationClick, onViewSettings, onViewPlan, onViewProfile }: HeaderProps) {
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
@@ -95,7 +95,7 @@ export default function Header({ onLogoClick, onNotificationClick, onViewSetting
                 <button
                   onClick={() => {
                     setAvatarMenuOpen(false);
-                    toast('近日公開');
+                    onViewProfile?.();
                   }}
                   className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >

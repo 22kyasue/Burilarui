@@ -1,6 +1,5 @@
 import { useRef, useEffect } from 'react';
 import { Upload, ImagePlus, Search, LayoutGrid, FolderOpen, Code } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface PlusMenuProps {
   isOpen: boolean;
@@ -38,21 +37,20 @@ export default function PlusMenu({ isOpen, onClose, className = '' }: PlusMenuPr
   return (
     <div
       ref={menuRef}
-      className={`absolute z-50 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 ${className}`}
+      className={`absolute z-50 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-1 ${className}`}
     >
+      <div className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+        今後の機能
+      </div>
       {menuItems.map(({ label, icon: Icon }) => (
-        <button
+        <div
           key={label}
-          type="button"
-          onClick={() => {
-            toast('近日公開');
-            onClose();
-          }}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 dark:text-gray-500"
         >
-          <Icon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          {label}
-        </button>
+          <Icon className="w-4 h-4 text-gray-300 dark:text-gray-600" />
+          <span>{label}</span>
+          <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500">準備中</span>
+        </div>
       ))}
     </div>
   );

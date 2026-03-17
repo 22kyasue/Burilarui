@@ -71,6 +71,13 @@ export async function getCurrentUser(): Promise<User> {
 }
 
 /**
+ * Update current user's profile
+ */
+export async function updateProfile(data: { name: string }): Promise<User> {
+  return api.patch<User>('/auth/me', data);
+}
+
+/**
  * Register new user
  */
 export async function register(email: string, password: string, name: string): Promise<AuthResponse> {

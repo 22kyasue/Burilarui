@@ -49,8 +49,8 @@ export default function TrackingDetailPage() {
 
   if (authLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-2xl" style={{ animation: 'logo-fade-in 0.6s ease-out' }}>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec] dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-2xl" style={{ animation: 'logo-fade-in 0.6s ease-out' }}>
           <span className="text-white text-2xl font-bold">B</span>
         </div>
       </div>
@@ -82,7 +82,7 @@ export default function TrackingDetailPage() {
       case 'home':
       default:
         return (
-          <div className="flex-1 flex bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec]">
+          <div className="flex-1 flex bg-gradient-to-br from-[#f5f7fa] via-[#e8eaf6] to-[#fce4ec] dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
             <TrackingDetail
               tracking={selectedTracking}
               loading={loading}

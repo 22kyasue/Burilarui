@@ -18,7 +18,12 @@ export default function CollapsedSidebar({
   onScrollToHistory,
 }: CollapsedSidebarProps) {
   return (
-    <div className="fixed left-0 top-0 h-screen w-16 border-r flex flex-col items-center py-4 gap-2 z-30 shadow-sm bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-gray-200/50 dark:border-gray-700/50">
+    <div className="fixed left-0 top-0 h-screen w-16 border-r flex flex-col items-center py-3 gap-2 z-30 shadow-sm bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-gray-200/50 dark:border-gray-700/50">
+      {/* Logo */}
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg mb-1 flex-shrink-0">
+        <span className="text-white text-sm font-bold">B</span>
+      </div>
+
       {/* Hamburger menu - opens sidebar */}
       <button
         onClick={onToggleSidebar}

@@ -1855,14 +1855,9 @@
       "Claude",
       "GPT"
     ],
-    "last_search_result": {
-      "status": null,
-      "key_developments": [],
-      "latest_update_summary": null,
-      "source_url": null
-    },
-    "last_executed_at": "2026-03-15T20:29:05.152639",
-    "next_execute_at": "2026-03-16T20:29:05.152639",
+    "last_search_result": {},
+    "last_executed_at": "2026-03-16T20:50:35.391808",
+    "next_execute_at": "2026-03-17T20:50:35.391808",
     "image_url": "",
     "update_count": 4,
     "unread_count": 3,
@@ -2027,7 +2022,7 @@
     },
     "detail_level": "detailed",
     "created_at": "2026-03-08T16:59:34.451220",
-    "updated_at": "2026-03-15T20:29:05.156270"
+    "updated_at": "2026-03-16T20:50:35.394045"
   },
   {
     "id": "1773215974452",
@@ -2056,13 +2051,118 @@
       "TypeScript",
       "Tailwind"
     ],
-    "last_search_result": "React 19\u306e\u30b5\u30fc\u30d0\u30fc\u30b3\u30f3\u30dd\u30fc\u30cd\u30f3\u30c8\u6a5f\u80fd\u304c\u5b89\u5b9a\u7248\u306b\u3002Next.js 15\u304c\u30d1\u30d5\u30a9\u30fc\u30de\u30f3\u30b9\u3092\u5927\u5e45\u306b\u6539\u5584\u3002",
-    "last_executed_at": "2026-03-11T04:59:34.451220",
-    "next_execute_at": "2026-03-12T04:59:34.451220",
+    "last_search_result": {},
+    "last_executed_at": "2026-03-17T19:31:39.361912",
+    "next_execute_at": "2026-03-18T19:31:39.361912",
     "image_url": "",
-    "update_count": 2,
-    "unread_count": 1,
+    "update_count": 3,
+    "unread_count": 2,
     "updates": [
+      {
+        "title": "Next.js 15.1 released, introducing official stable React 19 support for both Pag",
+        "content": "Next.js 15.1 released, introducing official stable React 19 support for both Pages Router and App Router (up from RC/Canary in Next.js 15), plus new features like improved error debugging, experimental authorization APIs, increased max cache tags to 128, and various bug fixes.[1] This advances beyond the previous summary's mention of React 19 server components stabilizing and Next.js 15 performance improvements.[2]\n\n**Sources:**\n[1] https://nextjs.org/blog/next-15-1\n[2] https://nextjs.org/blog/next-15\n[3] https://dev.to/mahdijazini/react-19-lands-in-nextjs-15-heres-why-im-hyped-1ade\n[4] https://buildwithangga.com/tips/update-react-19-di-nextjs-15-apa-yang-baru-kapan-harus-dipakai\n[5] https://www.indujitechnologies.com/blog/nextjs-15-vs-react-19-enterprise\n[6] https://nasywan.my.id/blog/update-web-dev-2026-react-19-2-next-js-15-dan-evolusi-laravel-12\n[7] https://www.articsledge.com/post/nextjs\n[8] https://www.youtube.com/watch?v=2lN1xYmuGJY",
+        "sources": [
+          {
+            "id": "1",
+            "title": "Source 1",
+            "url": "https://openstandia.jp/oss_info/react/version/"
+          },
+          {
+            "id": "2",
+            "title": "Source 2",
+            "url": "https://codezine.jp/news/detail/23651"
+          },
+          {
+            "id": "3",
+            "title": "Source 3",
+            "url": "https://www.ecomottblog.com/?p=21953"
+          },
+          {
+            "id": "4",
+            "title": "Source 4",
+            "url": "https://bistro.site/post-4090/"
+          },
+          {
+            "id": "5",
+            "title": "Source 5",
+            "url": "https://zenn.dev/tellernovel_inc/articles/62d0a51f049ce3"
+          },
+          {
+            "id": "6",
+            "title": "Source 6",
+            "url": "https://monotein.com/blog/first-chapter-from-react-book"
+          },
+          {
+            "id": "7",
+            "title": "Source 7",
+            "url": "https://www.oflight.co.jp/ja/columns/react-native-enterprise-deployment-2026"
+          },
+          {
+            "id": "8",
+            "title": "Source 8",
+            "url": "https://speakerdeck.com/uhyo/react-19shi-dai-nokonponentoshe-ji-besutopurakuteisu"
+          },
+          {
+            "id": "9",
+            "title": "Source 9",
+            "url": "https://techblog.tebiki.co.jp/react-19"
+          }
+        ],
+        "details": {
+          "summary": "Next.js 15.1 released, introducing official stable React 19 support for both Pages Router and App Router (up from RC/Canary in Next.js 15), plus new features like improved error debugging, experimental authorization APIs, increased max cache tags to 128, and various bug fixes.[1] This advances beyond the previous summary's mention of React 19 server components stabilizing and Next.js 15 performance improvements.[2]\n\n**Sources:**\n[1] https://nextjs.org/blog/next-15-1\n[2] https://nextjs.org/blog/next-15\n[3] https://dev.to/mahdijazini/react-19-lands-in-nextjs-15-heres-why-im-hyped-1ade\n[4] https://buildwithangga.com/tips/update-react-19-di-nextjs-15-apa-yang-baru-kapan-harus-dipakai\n[5] https://www.indujitechnologies.com/blog/nextjs-15-vs-react-19-enterprise\n[6] https://nasywan.my.id/blog/update-web-dev-2026-react-19-2-next-js-15-dan-evolusi-laravel-12\n[7] https://www.articsledge.com/post/nextjs\n[8] https://www.youtube.com/watch?v=2lN1xYmuGJY",
+          "changes": [],
+          "sources": [
+            {
+              "id": "1",
+              "title": "Source 1",
+              "url": "https://openstandia.jp/oss_info/react/version/"
+            },
+            {
+              "id": "2",
+              "title": "Source 2",
+              "url": "https://codezine.jp/news/detail/23651"
+            },
+            {
+              "id": "3",
+              "title": "Source 3",
+              "url": "https://www.ecomottblog.com/?p=21953"
+            },
+            {
+              "id": "4",
+              "title": "Source 4",
+              "url": "https://bistro.site/post-4090/"
+            },
+            {
+              "id": "5",
+              "title": "Source 5",
+              "url": "https://zenn.dev/tellernovel_inc/articles/62d0a51f049ce3"
+            },
+            {
+              "id": "6",
+              "title": "Source 6",
+              "url": "https://monotein.com/blog/first-chapter-from-react-book"
+            },
+            {
+              "id": "7",
+              "title": "Source 7",
+              "url": "https://www.oflight.co.jp/ja/columns/react-native-enterprise-deployment-2026"
+            },
+            {
+              "id": "8",
+              "title": "Source 8",
+              "url": "https://speakerdeck.com/uhyo/react-19shi-dai-nokonponentoshe-ji-besutopurakuteisu"
+            },
+            {
+              "id": "9",
+              "title": "Source 9",
+              "url": "https://techblog.tebiki.co.jp/react-19"
+            }
+          ]
+        },
+        "id": "1773646237025",
+        "timestamp": "2026-03-16T16:30:37.025946",
+        "is_read": false
+      },
       {
         "id": "demo_update_4",
         "title": "Vite 6.0\u304c\u30ea\u30ea\u30fc\u30b9 - \u30d3\u30eb\u30c9\u901f\u5ea6\u304c2\u500d\u306b",
@@ -2104,7 +2204,7 @@
     },
     "detail_level": "summary",
     "created_at": "2026-03-06T16:59:34.451220",
-    "updated_at": "2026-03-11T11:59:34.451220"
+    "updated_at": "2026-03-17T19:31:39.364337"
   },
   {
     "id": "1773215974453",
@@ -2201,20 +2301,15 @@
     "keywords": [
       "hello latest news"
     ],
-    "last_search_result": {
-      "status": null,
-      "key_developments": null,
-      "latest_update_summary": null,
-      "source_url": null
-    },
-    "last_executed_at": "2026-03-15T20:29:10.946110",
-    "next_execute_at": "2026-03-16T20:29:10.946110",
+    "last_search_result": {},
+    "last_executed_at": "2026-03-16T20:50:42.312677",
+    "next_execute_at": "2026-03-17T20:50:42.312677",
     "image_url": "",
     "update_count": 0,
     "unread_count": 0,
     "updates": [],
     "id": "1773224770729",
     "created_at": "2026-03-11T19:26:10.729961",
-    "updated_at": "2026-03-15T20:29:10.947539"
+    "updated_at": "2026-03-16T20:50:42.315753"
   }
 ]

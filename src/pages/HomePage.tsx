@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Mic, Send } from 'lucide-react';
+import { Plus, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 import { useTracking } from '../hooks/useTracking';
@@ -15,6 +15,8 @@ import SettingsModal from '../components/settings/SettingsModal';
 import PlanModal from '../components/billing/PlanModal';
 import ChatView from '../components/chat/ChatView';
 import PlusMenu from '../components/ui/PlusMenu';
+import HelpModal from '../components/settings/HelpModal';
+import ProfileModal from '../components/profile/ProfileModal';
 
 const suggestions = [
   {
@@ -51,7 +53,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { trackings, fetchTrackings, createTracking } = useTracking();
-  const { chats, currentChat, sendMessage, createChat, selectChat, clearCurrentChat, fetchChats, loading: chatLoading } = useChat();
+  const { chats, currentChat, sendMessage, createChat, selectChat, clearCurrentChat, fetchChats, deleteChat, renameChat, loading: chatLoading } = useChat();
   const { notifications } = useNotifications();
 
   const [currentView, setCurrentView] = useState<AppView>('home');
@@ -61,6 +63,8 @@ export default function HomePage() {
   const [isSending, setIsSending] = useState(false);
   const [plusMenuOpen, setPlusMenuOpen] = useState(false);
   const [planModalOpen, setPlanModalOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -162,6 +166,14 @@ export default function HomePage() {
     setCurrentView('home');
   }, [selectChat]);
 
+  const handleDeleteChat = useCallback(async (id: string) => {
+    return deleteChat(id);
+  }, [deleteChat]);
+
+  const handleRenameChat = useCallback(async (id: string, title: string) => {
+    return renameChat(id, title);
+  }, [renameChat]);
+
   // Loading screen
   if (authLoading) {
     return (
@@ -261,12 +273,6 @@ export default function HomePage() {
 
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <button
-                          type="button"
-                          className="p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
-                        >
-                          <Mic className="w-5 h-5" />
-                        </button>
-                        <button
                           type="submit"
                           disabled={!inputValue.trim() || isSending}
                           className={`p-2 rounded-full transition-all ${
@@ -343,6 +349,9 @@ export default function HomePage() {
         onToggleUpdatePanel={() => setUpdatePanelOpen(!updatePanelOpen)}
         chats={chats}
         onSelectChat={handleSelectChat}
+        onDeleteChat={handleDeleteChat}
+        onRenameChat={handleRenameChat}
+        onViewProfile={() => setProfileOpen(true)}
         onViewPlan={() => setPlanModalOpen(true)}
       >
         {renderContent()}
@@ -376,12 +385,28 @@ export default function HomePage() {
           setSettingsOpen(false);
           setPlanModalOpen(true);
         }}
+        onViewHelp={() => {
+          setSettingsOpen(false);
+          setHelpOpen(true);
+        }}
       />
 
       {/* Plan Modal */}
       <PlanModal
         isOpen={planModalOpen}
         onClose={() => setPlanModalOpen(false)}
+      />
+
+      {/* Help Modal */}
+      <HelpModal
+        isOpen={helpOpen}
+        onClose={() => setHelpOpen(false)}
+      />
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={profileOpen}
+        onClose={() => setProfileOpen(false)}
       />
     </div>
   );

@@ -23,6 +23,9 @@ interface AppLayoutProps {
   // Chat data
   chats?: Chat[];
   onSelectChat?: (id: string) => void;
+  onDeleteChat?: (id: string) => Promise<boolean>;
+  onRenameChat?: (id: string, title: string) => Promise<boolean>;
+  onViewProfile?: () => void;
 }
 
 export default function AppLayout({
@@ -34,6 +37,9 @@ export default function AppLayout({
   onViewPlan,
   chats,
   onSelectChat,
+  onDeleteChat,
+  onRenameChat,
+  onViewProfile,
 }: AppLayoutProps) {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -104,6 +110,8 @@ export default function AppLayout({
         onScrollToHistoryComplete={() => setShouldScrollToHistory(false)}
         chats={chats}
         onSelectChat={handleSelectChat}
+        onDeleteChat={onDeleteChat}
+        onRenameChat={onRenameChat}
       />
 
       {/* Main area - offset by collapsed sidebar */}
@@ -114,6 +122,7 @@ export default function AppLayout({
           onNotificationClick={handleNotificationClick}
           onViewSettings={() => setSettingsOpen(!settingsOpen)}
           onViewPlan={onViewPlan}
+          onViewProfile={onViewProfile}
         />
 
         {/* Main content */}

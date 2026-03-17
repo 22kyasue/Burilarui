@@ -185,6 +185,41 @@ def get_me():
     })
 
 
+@auth_bp.route('/me', methods=['PATCH'])
+@auth_required
+def update_me():
+    """Update current authenticated user's profile (name only)."""
+    user = get_current_user()
+
+    if not user or user.get('id') == 'dev-user-001':
+        return jsonify({
+            'error': {
+                'code': 'UNAUTHORIZED',
+                'message': '認証が必要です'
+            }
+        }), 401
+
+    data = request.json or {}
+    name = data.get('name', '').strip()
+
+    if not name:
+        return jsonify({
+            'error': {
+                'code': 'VALIDATION_ERROR',
+                'message': '名前は必須です'
+            }
+        }), 400
+
+    updated = user_storage.update(user['id'], {'name': name})
+
+    return jsonify({
+        'id': updated['id'],
+        'email': updated['email'],
+        'name': updated['name'],
+        'plan': updated.get('plan', 'free'),
+    })
+
+
 @auth_bp.route('/google', methods=['POST'])
 def google_login():
     """Login with Google OAuth."""

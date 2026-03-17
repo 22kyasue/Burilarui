@@ -108,6 +108,20 @@ export function useChat() {
     }
   }, [currentChat]);
 
+  const renameChat = useCallback(async (id: string, title: string) => {
+    try {
+      await chatApi.updateChat(id, { title });
+      setChats(prev => prev.map(c => c.id === id ? { ...c, title } : c));
+      if (currentChat?.id === id) {
+        setCurrentChat(prev => prev ? { ...prev, title } : prev);
+      }
+      return true;
+    } catch (e) {
+      toast.error('Failed to rename chat');
+      return false;
+    }
+  }, [currentChat]);
+
   const clearCurrentChat = useCallback(() => {
     setCurrentChat(null);
   }, []);
@@ -122,6 +136,7 @@ export function useChat() {
     selectChat,
     sendMessage,
     deleteChat,
+    renameChat,
     clearCurrentChat,
   };
 }

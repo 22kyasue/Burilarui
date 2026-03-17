@@ -10,7 +10,6 @@ import {
   Check,
 } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { useTheme } from '../../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -20,6 +19,7 @@ interface SettingsModalProps {
   onViewNotificationSettings?: () => void;
   onViewTrackingSettings?: () => void;
   onViewPlan?: () => void;
+  onViewHelp?: () => void;
 }
 
 export default function SettingsModal({
@@ -28,17 +28,28 @@ export default function SettingsModal({
   onViewNotificationSettings: _onViewNotificationSettings,
   onViewTrackingSettings,
   onViewPlan,
+  onViewHelp,
 }: SettingsModalProps) {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
-  const settingsItems = [
+  const settingsItems: Array<{
+    id: string;
+    icon: typeof Puzzle;
+    label: string;
+    hasArrow: boolean;
+    hasDot: boolean;
+    hasSubmenu?: boolean;
+    disabled?: boolean;
+    action: () => void;
+  }> = [
     {
       id: 'integrations',
       icon: Puzzle,
       label: 'アプリ連携',
-      hasArrow: false,
-      hasDot: true,
-      action: () => { toast('アプリ連携は近日公開予定です'); onClose(); },
+      hasArrow: true,
+      hasDot: false,
+      hasSubmenu: true,
+      action: () => {},
     },
     {
       id: 'tracking',
@@ -74,7 +85,8 @@ export default function SettingsModal({
       label: 'Perplexity API',
       hasArrow: true,
       hasDot: false,
-      action: () => { toast('API設定は近日公開予定です'); onClose(); },
+      hasSubmenu: true,
+      action: () => {},
     },
     {
       id: 'feedback',
@@ -90,7 +102,7 @@ export default function SettingsModal({
       label: 'ヘルプとサポート',
       hasArrow: true,
       hasDot: false,
-      action: () => { toast('ヘルプページは近日公開予定です'); onClose(); },
+      action: () => { onViewHelp?.(); onClose(); },
     },
   ];
 
@@ -128,8 +140,7 @@ export default function SettingsModal({
             <div className="py-2">
               {settingsItems.map((item) => {
                 const Icon = item.icon;
-                const isTheme = item.id === 'theme';
-                const showThemeSubmenu = isTheme && hoveredItem === 'theme';
+                const showSubmenu = item.hasSubmenu && hoveredItem === item.id;
 
                 return (
                   <div
@@ -140,12 +151,20 @@ export default function SettingsModal({
                   >
                     <button
                       onClick={item.action}
-                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all group"
+                      disabled={item.disabled}
+                      className={`w-full flex items-center justify-between px-4 py-3 transition-all group ${
+                        item.disabled
+                          ? 'opacity-50 cursor-not-allowed'
+                          : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }`}
                     >
                       <div className="flex items-center gap-3">
                         <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                         <span className="text-gray-800 dark:text-gray-200 text-sm font-medium">{item.label}</span>
-                        {item.hasDot && (
+                        {item.disabled && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500">準備中</span>
+                        )}
+                        {item.hasDot && !item.disabled && (
                           <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500" />
                         )}
                       </div>
@@ -154,9 +173,9 @@ export default function SettingsModal({
                       )}
                     </button>
 
-                    {/* Theme Submenu */}
+                    {/* Submenus */}
                     <AnimatePresence>
-                      {showThemeSubmenu && (
+                      {showSubmenu && (
                         <motion.div
                           initial={{ opacity: 0, x: -10, scale: 0.95 }}
                           animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -164,23 +183,50 @@ export default function SettingsModal({
                           transition={{ duration: 0.15, ease: 'easeOut' }}
                           className="absolute left-full top-0 ml-2 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700 overflow-hidden z-10"
                         >
-                          <div className="py-1">
-                            {themeOptions.map((themeOption, idx) => (
-                              <div key={themeOption.id}>
-                                <button onClick={() => setTheme(themeOption.id)} className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
-                                  <span className="text-gray-800 dark:text-gray-200 text-sm font-medium">{themeOption.label}</span>
-                                  {currentTheme === themeOption.id && (
-                                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
-                                      <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                                    </div>
+                          {item.id === 'theme' && (
+                            <div className="py-1">
+                              {themeOptions.map((themeOption, idx) => (
+                                <div key={themeOption.id}>
+                                  <button onClick={() => setTheme(themeOption.id)} className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                                    <span className="text-gray-800 dark:text-gray-200 text-sm font-medium">{themeOption.label}</span>
+                                    {currentTheme === themeOption.id && (
+                                      <div className="w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
+                                        <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                                      </div>
+                                    )}
+                                  </button>
+                                  {idx < themeOptions.length - 1 && (
+                                    <div className="mx-3 border-b border-gray-200/50 dark:border-gray-700" />
                                   )}
-                                </button>
-                                {idx < themeOptions.length - 1 && (
-                                  <div className="mx-3 border-b border-gray-200/50 dark:border-gray-700" />
-                                )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {item.id === 'integrations' && (
+                            <div className="py-1">
+                              {['Slack', 'Discord', 'LINE', 'Notion'].map((name, idx) => (
+                                <div key={name}>
+                                  <div className="w-full flex items-center justify-between px-4 py-3">
+                                    <span className="text-gray-800 dark:text-gray-200 text-sm font-medium">{name}</span>
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500">準備中</span>
+                                  </div>
+                                  {idx < 3 && (
+                                    <div className="mx-3 border-b border-gray-200/50 dark:border-gray-700" />
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {item.id === 'perplexity' && (
+                            <div className="py-1">
+                              <div className="px-4 py-3 flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                <span className="text-gray-800 dark:text-gray-200 text-sm font-medium">API接続済み ✓</span>
                               </div>
-                            ))}
-                          </div>
+                            </div>
+                          )}
                         </motion.div>
                       )}
                     </AnimatePresence>
