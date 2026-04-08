@@ -15,6 +15,7 @@ initErrorTracking();
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('./pages/HomePage'));
 const TrackingDetailPage = lazy(() => import('./pages/TrackingDetailPage'));
+const WebPage = lazy(() => import('../webpage/WebPage'));
 
 function LoadingFallback() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<WebPage />} />
               <Route path="/tracking/:id" element={<TrackingDetailPage />} />
             </Routes>
           </Suspense>
