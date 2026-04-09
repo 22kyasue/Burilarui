@@ -8,7 +8,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
+from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from backend.core.tracker import BurilarTracker
 from backend.extensions import limiter
@@ -40,9 +41,27 @@ def ratelimit_handler(e):
 import logging
 logger = logging.getLogger(__name__)
 
-# Global 500 handler — catch unhandled exceptions
+# SPA fallback for client-side routes (e.g. /home) — must be registered
+# before the catch-all Exception handler so 404s on non-API GETs serve index.html.
+@app.errorhandler(404)
+def spa_fallback(e):
+    # Only fall back to the SPA for non-API GET requests; API misses stay 404.
+    if request.method == 'GET' and not request.path.startswith('/api/'):
+        return send_from_directory(app.static_folder, 'index.html')
+    return jsonify({
+        'error': {
+            'code': 'NOT_FOUND',
+            'message': 'リソースが見つかりません。',
+        }
+    }), 404
+
+
+# Global 500 handler — catch unhandled exceptions, but let HTTPExceptions
+# (404, 429, etc.) flow through to their dedicated handlers.
 @app.errorhandler(Exception)
 def handle_unhandled_exception(e):
+    if isinstance(e, HTTPException):
+        return e
     logger.exception('Unhandled exception: %s', e)
     return jsonify({
         'error': {
